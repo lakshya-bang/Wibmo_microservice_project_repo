@@ -3,20 +3,20 @@ package com.wibmo.bean;
 import java.util.List;
 
 public class Professor {
-	private String Name;
-	private String ID; 
+	private String professorName;
+	private int professorID; 
 	private List<Course> coursesTaught;
-	public String getName() {
-		return Name;
+	public String getProfessorName() {
+		return professorName;
 	}
-	public void setName(String name) {
-		Name = name;
+	public void setProfessorName(String name) {
+		professorName = name;
 	}
-	public String getID() {
-		return ID;
+	public int getProfessorID() {
+		return professorID;
 	}
-	public void setID(String iD) {
-		ID = iD;
+	public void setProfessorID(int iD) {
+		professorID = iD;
 	}
 	public List<Course> getCoursesTaught() {
 		return coursesTaught;
