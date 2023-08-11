@@ -1,13 +1,9 @@
-/**
- * 
- */
 package com.wibmo.bean;
 
 import java.util.List;
 
-/**
- * 
- */
+import java.util.List;
+
 public class Course {
 	private int courseID;
 	private String courseTitle;
