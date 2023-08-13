@@ -1,4 +1,6 @@
 package com.wibmo.dao;
+import com.wibmo.bean.Course;
+import com.wibmo.bean.ReportCard;
 
 import java.util.List;
 
