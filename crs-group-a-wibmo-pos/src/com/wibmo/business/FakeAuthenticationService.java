@@ -3,30 +3,39 @@
  */
 package com.wibmo.business;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import com.wibmo.bean.User;
 
 /**
  * 
  */
 public class FakeAuthenticationService implements AuthenticationService {
 
-	Map<Long, String> fakeAuthDB = Map.of(
-				1001L, "1234", 
-				1002L, "root", 
-				1003L, "password");
-
+	static private User user1 = new User("Lakshya", 101L, "Bangalore", "lakshya1@test.com", "Student", "abc");
+	static private User user2 = new User("Lakshya", 102L, "India", "lakshya2@test.com", "Professor", "abc");
+	static private User user3 = new User("Lakshya", 103L, "Delhi", "lakshya3@test.com", "Admin", "abc");
+	static Map<String,Map<String,User>> fakeAuthDB = new HashMap<>();
 	
-	@Override
-	public Boolean login(Long userId, String password) {
-		if(fakeAuthDB.containsKey(userId)) {
+	public FakeAuthenticationService() {
+		
+	}
+	public static User login(String username, String password) {
+		fakeAuthDB.put(user1.getUserEmail(), Map.of("abc",user1));
+		fakeAuthDB.put(user2.getUserEmail(), Map.of("abc",user2));
+		fakeAuthDB.put(user3.getUserEmail(), Map.of("abc",user3));	
+		
+		if(!fakeAuthDB.containsKey(username)) {
 			// TODO: Should return "User does not exists."
-			return false;
+			return null;
 		}
-		if(!password.equals(fakeAuthDB.get(userId))) {
+		
+		if(!fakeAuthDB.get(username).containsKey(password)) {
 			// TODO: Should return "Incorrect password."
-			return false;
+			return null;
 		}
-		return true;
+		return fakeAuthDB.get(username).get(password);
 	}
 
 }
