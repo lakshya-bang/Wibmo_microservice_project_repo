@@ -1,47 +1,67 @@
 package com.wibmo.business;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
+import com.wibmo.dao.FakeStudentDAOImpl;
+import com.wibmo.dao.StudentDAO;
+import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
+import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
+import com.wibmo.exception.StudentNotFoundException;
 
 public class StudentOperationImpl implements StudentOperation {
-
+	
+	AuthenticationService fakeAuthenticationService = new FakeAuthenticationService();
+//	CourseRegistrationOperation courseRegistration = new CourseRegistrationOperationImpl(null,null);
+//	CourseOperationImpl courseOperation = new CourseOperationImpl();
+	StudentDAO studentDAO = new FakeStudentDAOImpl();
+	Student student = new Student();
 	@Override
 	public boolean authenticate() {
+		
 		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean login(Long userId,String password) {
+		return true;
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean registerCourse(Long studentId,int courseId) {
+		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	@Override
-	public boolean login() {
+	public ReportCard getReportCard(Long studentId) {
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean registerCourse(int courseId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ReportCard getReportCard(int studentId) {
-		// TODO Auto-generated method stub
-		return null;
+		ReportCard reportCard = new ReportCard();
+		studentDAO.getGrade(studentId);
+//		reportCard.setGrades();
+		return reportCard;
 	}
 
 	@Override
 	public boolean addCourse(int courseId) {
 		// TODO Auto-generated method stub
-		return false;
+		studentDAO.addCourse(courseId, student.getId());
+		return true;
 	}
 
 	@Override
 	public boolean dropCourse(int courseId) {
 		// TODO Auto-generated method stub
+		studentDAO.dropCourse(courseId, student.getId());
 		return false;
 	}
 
@@ -54,6 +74,7 @@ public class StudentOperationImpl implements StudentOperation {
 	@Override
 	public List<Course> viewRegisteredCourses() {
 		// TODO Auto-generated method stub
+		studentDAO.viewRegisteredCourses(student.getId());
 		return null;
 	}
 
