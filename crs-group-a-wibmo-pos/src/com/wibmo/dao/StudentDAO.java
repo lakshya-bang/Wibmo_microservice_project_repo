@@ -15,7 +15,7 @@ public interface StudentDAO {
 	/**
 	 * 
 	 */
-	public void logIn(Long StudentId, String Password);
+	public boolean logIn(Long StudentId, String Password);
 	/**
 	 *
 	 */
