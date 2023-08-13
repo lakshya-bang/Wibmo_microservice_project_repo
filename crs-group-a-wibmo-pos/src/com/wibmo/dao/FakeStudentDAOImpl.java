@@ -14,7 +14,7 @@ import com.wibmo.bean.Student;
  * 
  */
 public class FakeStudentDAOImpl implements StudentDAO{
-	Map<Long, String> credential = Map.of(1001L, "user1", 1002L, "user2", 1003L, "user3", 1004L, "user4");
+	Map<Long, String> credential = Map.of(1001L, "user1", 1002L, "user2", 1003L, "user3", 1004L, "user4", 1004L, "user4");
 	
 	Map<Integer, String> Courses = Map.of( 101, "Maths", 102, "Physics",
 			103, "Chemistry", 104, "English", 105,
@@ -23,7 +23,7 @@ public class FakeStudentDAOImpl implements StudentDAO{
 	Map<Long, List<Integer>> registeredCourses = Map.of(
 			1001L, List.of(101, 102, 103, 201, 109),
 			1002L, List.of(101, 105, 201, 104),
-			1003L, List.of(101, 105, 201),
+			1003L, List.of(101, 105, 102),
 			1004L, List.of(101, 105, 201, 108)
 			);
 	Map<Long, Map<Integer, List<String>>> gradeCard = Map.of(
@@ -50,26 +50,21 @@ public class FakeStudentDAOImpl implements StudentDAO{
 	@Override
 	public boolean registerCourse(Long StudentId, List<Integer> CourseIds) {
 		// TODO Auto-generated method stub
-		//new student
-		List<Integer> regCourses = registeredCourses.get(StudentId);
-	    if (regCourses != null) {
-	        boolean validCourseIds = true;
-	        for (Integer courseId : CourseIds) {
-	            if (!Courses.containsKey(courseId)) {
-	            	validCourseIds = false;
-	                break;
+		 if (!registeredCourses.containsKey(studentId)) {
+	            registeredCourses.put(studentId, courseIds);
+	            System.out.println("Student with id: " + studentId + " is registered for the courses: ");
+	            for (Integer courseId : courseIds) {
+	                String courseName = Courses.get(courseId);
+	                if (courseName != null) {
+	                    System.out.println(courseName);
+	                }
 	            }
-	        }
-	        if (validCourseIds) {
-	            regCourses.addAll(CourseIds);
-	            System.out.println("Registration Successful");
 	            return true;
-	        } else {
-	            System.out.println("Invalid course Id.");
-	            return false;
 	        }
-	    }
-	    return false;
+		 else {
+			 System.out.println("User is already registered and can choose to add/drop courses.");
+			 return false;
+		 }
 	}
 	
 	@Override
@@ -91,9 +86,11 @@ public class FakeStudentDAOImpl implements StudentDAO{
 	public boolean addCourse(int courseId, Long StudentId) {
 		// TODO Auto-generated method stub
 		List<Integer> regCourses = registeredCourses.get(StudentId);
-		
-		//null -> reinitialize
-	    if (regCourses != null && !regCourses.contains(courseId)) {
+		if(regCourses == null) {
+			regCourses.add(courseId);
+			System.out.println("Course was added Successfuly");
+		}
+		else (regCourses != null && !regCourses.contains(courseId)) {
 	    	regCourses.add(courseId);
 	        System.out.println("Course was added Successfuly");
 	        return true;
@@ -105,6 +102,10 @@ public class FakeStudentDAOImpl implements StudentDAO{
 	public boolean dropCourse(int courseId, Long StudentId) {
 		// TODO Auto-generated method stub
 		List<Integer> regCourses = registeredCourses.get(StudentId);
+		if(regCourses == null) {
+			System.out.println("Student " + StudentId + " was not enrolled in this course.");
+	        return true;
+		}
 	    if (regCourses != null && regCourses.contains(courseId)) {
 	    	regCourses.remove(Integer.valueOf(courseId));
 	        System.out.println("Course was removed Successfuly");
