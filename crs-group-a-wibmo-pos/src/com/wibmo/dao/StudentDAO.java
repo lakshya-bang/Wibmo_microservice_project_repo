@@ -1,4 +1,6 @@
 package com.wibmo.dao;
+import com.wibmo.bean.Course;
+import com.wibmo.bean.ReportCard;
 
 import java.util.List;
 
@@ -6,42 +8,48 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 
 public interface StudentDAO {
-	/**
-	 * 
-	 */
-	public boolean Authenticate(int StudentID);
-	/**
-	 * 
-	 */
-	public boolean logIn(int StudentId, String Password);
 	
+	
+	/**
+	 * 
+	 */
+//	public boolean Authenticate(int StudentID);
+	/**
+	 * 
+	 */
+	public boolean logIn(Long StudentId, String Password);
 	/**
 	 *
 	 */
-	public boolean RegisterCourse(int courseId, int StudentId);
+	public boolean registerCourse(Long StudentId, List<Integer> CourseIds);
 	
 	/**
 	 * 
 	 */
-	public ReportCard getReportCard(int StudentId);
+	public void getGrade(Long studentId);
 	
 	/**
 	 * 
 	 */
-	public boolean addCourse(int courseId, int StudentId);
+//	public void getReportCard(int StudentId);
 	
 	/**
 	 * 
 	 */
-	public boolean dropCourse(int courseId, int StudentId);
+	public boolean addCourse(int courseId, Long StudentId);
 	
 	/**
 	 * 
 	 */
-	public boolean payBill(float billId);
+	public boolean dropCourse(int courseId, Long StudentId);
 	
 	/**
 	 * 
 	 */
-	public List<Course> viewRegisteredCourses(int studentId);
+//	public boolean payBill(float billId);
+	
+	/**
+	 * 
+	 */
+	public void viewRegisteredCourses(Long StudentId);
 }
