@@ -12,28 +12,17 @@ public class User {
 	private String userAddress;
 	private String userEmail;
 	private String userType;
-	private String userPassword; //This should be removed while implementing DB.
+
 	
-	public User(String name, Long Id, String address, String email, String type, String password) {
+	public User(String name, Long id, String address, String email, String type) {
 		this.userName = name;
 		this.userEmail = email;
 		this.userAddress = address;
-		this.userPassword = password;
-		this.userType = type;
+		this.userType = type;	
+		this.userId = id;
 	}
 	
-	/**
-	 * @return the userPassword
-	 */
-	public String getUserPassword() {
-		return userPassword;
-	}
-	/**
-	 * @param userPassword the userPassword to set
-	 */
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
+
 	/**
 	 * @return the userName
 	 */

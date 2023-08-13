@@ -3,6 +3,7 @@ package com.wibmo.client;
 import java.util.Scanner;
 
 import com.wibmo.bean.User;
+import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.FakeAuthenticationService;
 import com.wibmo.dao.AuthenticationDaoImpl;
 
@@ -15,12 +16,7 @@ public class Main {
 		char ch = '\0';
 		
 		
-		System.out.println("Enter Username: ");
-		String username = scanner.next();
-		System.out.println("Enter Password: ");
-		String password = scanner.next();
-		
-		Boolean isTrue = AuthenticationDaoImpl.authenticate(username,password);
-		System.out.println(isTrue);
+		User user = new AuthenticationServiceImpl().login();
+		System.out.println("Details - " + user.getUserName() + " " + user.getUserId());
 	}
 }
