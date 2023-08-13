@@ -16,4 +16,5 @@ public interface AuthenticationService {
 	 * TODO: should return UserDetails w.r.t. UserType of this user.
 	 */
 	public User login();
+
 }
