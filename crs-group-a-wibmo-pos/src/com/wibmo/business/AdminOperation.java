@@ -6,8 +6,9 @@ import java.util.Set;
 import com.wibmo.bean.Admin;
 import com.wibmo.bean.Course;
 import com.wibmo.enums.RegistrationApprovalStatus;
+import com.wibmo.enums.RegistrationStatus;
 
-public interface AdminBusiness {
+public interface AdminOperation {
 
 	/**
 	 * Fetches the Admins of the respective Ids
@@ -31,7 +32,7 @@ public interface AdminBusiness {
 	 * @param registrationId
 	 * @return
 	 */
-	public RegistrationApprovalStatus acknowledgeStudentRegistration(Long registrationId, Integer semester);
+	public RegistrationStatus acknowledgeStudentRegistration(Long registrationId, Integer semester);
 	
 	/**
 	 * Allows the Admin to add the given course to the Course Catalog

@@ -5,7 +5,7 @@ package com.wibmo.enums;
  * 
  * @author abhishek.sharma
  */
-public enum RegistrationApprovalStatus {
+public enum RegistrationStatus {
 	APPROVED,
 	REJECTED,
 	PENDING
