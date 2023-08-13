@@ -98,4 +98,6 @@ public class Course {
 	}
 	
 	
+	private Integer availableSeats;
+
 }

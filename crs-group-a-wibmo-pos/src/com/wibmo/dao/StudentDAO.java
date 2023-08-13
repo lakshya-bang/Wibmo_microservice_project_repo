@@ -1,5 +1,10 @@
 package com.wibmo.dao;
 
+import java.util.List;
+
+import com.wibmo.bean.Course;
+import com.wibmo.bean.ReportCard;
+
 public interface StudentDAO {
 	/**
 	 * 
@@ -38,5 +43,5 @@ public interface StudentDAO {
 	/**
 	 * 
 	 */
-	public Course viewRegisteredCourse(int studentId);
+	public List<Course> viewRegisteredCourses(int studentId);
 }

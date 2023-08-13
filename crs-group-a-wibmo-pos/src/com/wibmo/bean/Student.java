@@ -1,21 +1,13 @@
 package com.wibmo.bean;
 
 public class Student {
-	int studentID;
+
 	String studentName;
 	ReportCard studentReportCard;
-	/**
-	 * @return the studentID
-	 */
-	public int getStudentID() {
-		return studentID;
-	}
-	/**
-	 * @param studentID the studentID to set
-	 */
-	public void setStudentID(int studentID) {
-		this.studentID = studentID;
-	}
+	
+	private Long id;
+	private Integer currentSemester;
+
 	/**
 	 * @return the studentName
 	 */
@@ -41,5 +33,16 @@ public class Student {
 		this.studentReportCard = studentReportCard;
 	}
 	
+	public Long getId() {
+		return id;
+	}
+	
+	public Integer getCurrentSemester() {
+		return currentSemester;
+	}
+	
+	public void setCurrentSemester(Integer semester) {
+		this.currentSemester = semester;
+	}
 	
 }
