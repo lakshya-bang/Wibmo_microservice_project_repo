@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import com.wibmo.bean.User;
 import com.wibmo.business.FakeAuthenticationService;
+import com.wibmo.dao.AuthenticationDaoImpl;
 
 public class Main {
 	
@@ -19,7 +20,7 @@ public class Main {
 		System.out.println("Enter Password: ");
 		String password = scanner.next();
 		
-		User user = FakeAuthenticationService.login(username,password);
-		System.out.println(user);
+		Boolean isTrue = AuthenticationDaoImpl.authenticate(username,password);
+		System.out.println(isTrue);
 	}
 }
