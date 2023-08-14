@@ -50,10 +50,10 @@ public class FakeStudentDAOImpl implements StudentDAO{
 	@Override
 	public boolean registerCourse(Long StudentId, List<Integer> CourseIds) {
 		// TODO Auto-generated method stub
-		 if (!registeredCourses.containsKey(studentId)) {
-	            registeredCourses.put(studentId, courseIds);
-	            System.out.println("Student with id: " + studentId + " is registered for the courses: ");
-	            for (Integer courseId : courseIds) {
+		 if (!registeredCourses.containsKey(StudentId)) {
+	            registeredCourses.put(StudentId, CourseIds);
+	            System.out.println("Student with id: " + StudentId + " is registered for the courses: ");
+	            for (Integer courseId : CourseIds) {
 	                String courseName = Courses.get(courseId);
 	                if (courseName != null) {
 	                    System.out.println(courseName);
@@ -90,7 +90,7 @@ public class FakeStudentDAOImpl implements StudentDAO{
 			regCourses.add(courseId);
 			System.out.println("Course was added Successfuly");
 		}
-		else (regCourses != null && !regCourses.contains(courseId)) {
+		else if(regCourses != null && !regCourses.contains(courseId)) {
 	    	regCourses.add(courseId);
 	        System.out.println("Course was added Successfuly");
 	        return true;
