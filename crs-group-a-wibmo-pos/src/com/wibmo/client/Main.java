@@ -1,10 +1,13 @@
 package com.wibmo.client;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.wibmo.bean.User;
+import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.FakeAuthenticationService;
 import com.wibmo.dao.AuthenticationDaoImpl;
+import com.wibmo.dao.FakeStudentDAOImpl;
 
 public class Main {
 	
@@ -14,13 +17,9 @@ public class Main {
 		
 		char ch = '\0';
 		
+		FakeStudentDAOImpl fakeStudent = new FakeStudentDAOImpl();
 		
-		System.out.println("Enter Username: ");
-		String username = scanner.next();
-		System.out.println("Enter Password: ");
-		String password = scanner.next();
-		
-		Boolean isTrue = AuthenticationDaoImpl.authenticate(username,password);
-		System.out.println(isTrue);
+		fakeStudent.registerCourse(1005L, List.of(101,102,103));
+		fakeStudent.viewRegisteredCourses(1005L);
 	}
 }

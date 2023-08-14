@@ -3,29 +3,26 @@
  */
 package com.wibmo.dao;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.wibmo.bean.Course;
-import com.wibmo.bean.Student;
 
 /**
  * 
  */
 public class FakeStudentDAOImpl implements StudentDAO{
-	Map<Long, String> credential = Map.of(1001L, "user1", 1002L, "user2", 1003L, "user3", 1004L, "user4", 1004L, "user4");
 	
 	Map<Integer, String> Courses = Map.of( 101, "Maths", 102, "Physics",
 			103, "Chemistry", 104, "English", 105,
 			"Hindi", 109, "Sanskrit", 201, "History" );
 	
-	Map<Long, List<Integer>> registeredCourses = Map.of(
+	Map<Long, List<Integer>> registeredCourses = new HashMap<Long, List<Integer>>(Map.of(
 			1001L, List.of(101, 102, 103, 201, 109),
 			1002L, List.of(101, 105, 201, 104),
 			1003L, List.of(101, 105, 102),
 			1004L, List.of(101, 105, 201, 108)
-			);
+			));;
+	
 	Map<Long, Map<Integer, List<String>>> gradeCard = Map.of(
 		    1001L, Map.of(1, List.of("Maths: A", "Physics: B", "Chemistry: A", "English: C", "Hindi: D", "History: B")),
 		    1002L, Map.of(1, List.of("Maths: C", "Physics: B", "Chemistry: A", "English: A", "Hindi: B", "History: B")),
@@ -34,18 +31,6 @@ public class FakeStudentDAOImpl implements StudentDAO{
 		    );
 	
 	
-	@Override
-	public boolean logIn(Long StudentId, String Password) {
-		// TODO Auto-generated method stub
-		String pwd = credential.get(StudentId);
-	    if (pwd != null && pwd.equals(Password)) {
-	        System.out.println("LogIn Successful");
-	        return true;
-	    } else {
-	        System.out.println("Invalid UserId and Password.");
-	        return false;
-	    }
-	}
 
 	@Override
 	public boolean registerCourse(Long StudentId, List<Integer> CourseIds) {
@@ -90,7 +75,7 @@ public class FakeStudentDAOImpl implements StudentDAO{
 			regCourses.add(courseId);
 			System.out.println("Course was added Successfuly");
 		}
-		else if(regCourses != null && !regCourses.contains(courseId)) {
+		else if(regCourses!= null && !regCourses.contains(courseId)) {
 	    	regCourses.add(courseId);
 	        System.out.println("Course was added Successfuly");
 	        return true;

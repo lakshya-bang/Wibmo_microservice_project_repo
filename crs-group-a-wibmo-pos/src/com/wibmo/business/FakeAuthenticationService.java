@@ -13,15 +13,15 @@ import com.wibmo.bean.User;
  */
 public class FakeAuthenticationService implements AuthenticationService {
 
-	static private User user1 = new User("Lakshya", 101L, "Bangalore", "lakshya1@test.com", "Student", "abc");
-	static private User user2 = new User("Lakshya", 102L, "India", "lakshya2@test.com", "Professor", "abc");
-	static private User user3 = new User("Lakshya", 103L, "Delhi", "lakshya3@test.com", "Admin", "abc");
+	static private User user1 = new User("Lakshya", 101L, "Bangalore", "lakshya1@test.com", "Student");
+	static private User user2 = new User("Lakshya", 102L, "India", "lakshya2@test.com", "Professor");
+	static private User user3 = new User("Lakshya", 103L, "Delhi", "lakshya3@test.com", "Admin");
 	static Map<String,Map<String,User>> fakeAuthDB = new HashMap<>();
 	
 	public FakeAuthenticationService() {
 		
 	}
-	public static User login(String username, String password) {
+	public User login(String username, String password) {
 		fakeAuthDB.put(user1.getUserEmail(), Map.of("abc",user1));
 		fakeAuthDB.put(user2.getUserEmail(), Map.of("abc",user2));
 		fakeAuthDB.put(user3.getUserEmail(), Map.of("abc",user3));	
@@ -36,6 +36,11 @@ public class FakeAuthenticationService implements AuthenticationService {
 			return null;
 		}
 		return fakeAuthDB.get(username).get(password);
+	}
+	@Override
+	public User login() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
