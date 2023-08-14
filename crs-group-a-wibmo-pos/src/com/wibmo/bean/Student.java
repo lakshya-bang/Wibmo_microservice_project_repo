@@ -1,20 +1,15 @@
 package com.wibmo.bean;
 
+import java.util.Map;
+import java.util.Set;
+
 public class Student {
 	
 	private Long id;
-	private Integer currentSemester;
+	private Map<Integer, Set<Long>> semesterToRegisteredCourseIdsMapping;
 	
 	public Long getId() {
 		return id;
-	}
-	
-	public Integer getCurrentSemester() {
-		return currentSemester;
-	}
-	
-	public void setCurrentSemester(Integer semester) {
-		this.currentSemester = semester;
 	}
 	
 }

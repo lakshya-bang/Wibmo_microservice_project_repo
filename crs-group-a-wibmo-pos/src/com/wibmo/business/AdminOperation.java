@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.wibmo.bean.Admin;
 import com.wibmo.bean.Course;
-import com.wibmo.enums.RegistrationApprovalStatus;
 import com.wibmo.enums.RegistrationStatus;
 
 public interface AdminOperation {

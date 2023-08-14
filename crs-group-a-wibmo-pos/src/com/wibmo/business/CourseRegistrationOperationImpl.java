@@ -20,9 +20,15 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	
 	private CourseOperation courseOperation;
 	
+	private CourseCatalogueOperation courseCatalogueOperation;
+	
 	private CourseRegistrationDAO courseRegistrationDAO;
 	
-	public CourseRegistrationOperationImpl(StudentOperation studentOperation, CourseOperation courseOperation) {
+	public CourseRegistrationOperationImpl(
+			StudentOperation studentOperation, 
+			CourseOperation courseOperation,
+			CourseCatalogueOperation courseCatalogueOperation) {
+		
 		this.studentOperation = studentOperation;
 		this.courseOperation = courseOperation;
 		courseRegistrationDAO = new CourseRegistrationDAOImpl();
@@ -47,7 +53,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			throw new StudentAlreadyRegisteredForSemesterException(studentId, semOfStudy);
 		}
 		
-		Set<Long> courseIdsWithNoVacancy = courseOperation
+		Set<Long> courseIdsWithNoVacancy = courseCatalogueOperation
 				.getCourseIdToVacantSeatsMapping(courseIds)
 				.entrySet()
 				.stream()
@@ -62,7 +68,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		/**
 		 * TODO: should be synchronized
 		 */
-		courseOperation.reduceSeatsBy1(courseIds);
+		courseCatalogueOperation.reduceSeatsByCourseIdsAndSeatCount(courseIds, 1);
 		courseRegistrationDAO.save(
 				studentId,
 				semOfStudy,
