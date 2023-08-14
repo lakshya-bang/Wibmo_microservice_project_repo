@@ -15,6 +15,9 @@ public interface StudentOperation {
 	 * @param studentId
 	 * @return
 	 */
+
+	public boolean registerCourse(Long studentId,int courseId);
+	public ReportCard getReportCard(Long studentId);
 	public Optional<Student> getStudentById(Long studentId);
 	
 	/**

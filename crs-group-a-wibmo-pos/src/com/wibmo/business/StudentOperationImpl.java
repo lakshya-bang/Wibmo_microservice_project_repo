@@ -1,6 +1,8 @@
 package com.wibmo.business;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,20 +33,25 @@ public class StudentOperationImpl implements StudentOperation {
 	}
 	
 	@Override
-	public ReportCard getReportCard(int studentId) {
+	public ReportCard getReportCard(Long studentId) {
 		// TODO Auto-generated method stub
-		return null;
+		ReportCard reportCard = new ReportCard();
+		studentDAO.getGrade(studentId);
+//		reportCard.setGrades();
+		return reportCard;
 	}
 
 	@Override
 	public boolean addCourse(int courseId) {
 		// TODO Auto-generated method stub
-		return false;
+		studentDAO.addCourse(courseId, student.getId());
+		return true;
 	}
 
 	@Override
 	public boolean dropCourse(int courseId) {
 		// TODO Auto-generated method stub
+		studentDAO.dropCourse(courseId, student.getId());
 		return false;
 	}
 
@@ -56,6 +63,19 @@ public class StudentOperationImpl implements StudentOperation {
 
 	@Override
 	public List<Course> viewRegisteredCourses() {
+		// TODO Auto-generated method stub
+		studentDAO.viewRegisteredCourses(student.getId());
+		return null;
+	}
+
+	@Override
+	public boolean registerCourse(Long studentId, int courseId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ReportCard getReportCard(int studentId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
