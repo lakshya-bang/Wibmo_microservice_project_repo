@@ -1,13 +1,20 @@
 package com.wibmo.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import java.util.Scanner;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.FakeAuthenticationService;
+import com.wibmo.business.ProfessorBusinessImpl;
 import com.wibmo.dao.AuthenticationDaoImpl;
 import com.wibmo.dao.FakeStudentDAOImpl;
+import com.wibmo.dao.*;
 
 public class Main {
 	
@@ -21,5 +28,14 @@ public class Main {
 		
 		fakeStudent.registerCourse(1005L, List.of(101,102,103));
 		fakeStudent.viewRegisteredCourses(1005L);
+		
+		ProfessorDAO professorDao = ProfessorDAOImpl.getInstance();
+		System.out.println(professorDao.fetchCoursesTaught(1, 1, 1));
+		
+		Professor professor = new Professor();
+		
+		professor.setCoursesTaught(new ArrayList<Integer>(Arrays.asList(2,3)));
+		ProfessorBusinessImpl professorBusiness = new ProfessorBusinessImpl();
+		professorBusiness.viewEnrolledStudents(professor);
 	}
 }

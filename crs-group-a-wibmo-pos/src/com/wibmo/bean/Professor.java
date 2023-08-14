@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Professor {
 	private String professorName;
-	private int professorID; 
-	private List<Course> coursesTaught;
+	private long professorID; 
+	private List<Integer> coursesTaught;
 	/**
 	 * @return the professorName
 	 */
@@ -21,26 +21,26 @@ public class Professor {
 	/**
 	 * @return the professorID
 	 */
-	public int getProfessorID() {
+	public long getProfessorID() {
 		return professorID;
 	}
 	/**
 	 * @param professorID the professorID to set
 	 */
-	public void setProfessorID(int professorID) {
+	public void setProfessorID(long professorID) {
 		this.professorID = professorID;
 	}
 	/**
 	 * @return the coursesTaught
 	 */
-	public List<Course> getCoursesTaught() {
+	public List<Integer> getCoursesTaught() {
 		return coursesTaught;
 	}
 	/**
-	 * @param coursesTaught the coursesTaught to set
+	 * @param list the coursesTaught to set
 	 */
-	public void setCoursesTaught(List<Course> coursesTaught) {
-		this.coursesTaught = coursesTaught;
+	public void setCoursesTaught(List<Integer> list) {
+		this.coursesTaught = list;
 	}
 	
 	

@@ -2,9 +2,19 @@ package com.wibmo.business;
 
 import java.util.List;
 
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
+import com.wibmo.bean.User;
+import com.wibmo.dao.ProfessorDAOImpl;
 
 public interface ProfessorBusiness {
-	public boolean authenticate();
-	public List<Student> viewEnrolledStudents();
+	public static Professor fetchDetails(User user) {
+		Professor professor = new Professor();
+		professor.setProfessorName(user.getUserName());
+		professor.setProfessorID(user.getUserId());
+		ProfessorDAOImpl professorDao = ProfessorDAOImpl.getInstance();
+		professor.setCoursesTaught(professorDao.fetchCoursesTaught(user.getUserId(), 1, 1));
+		return professor;
+	}
+	void viewEnrolledStudents(Professor professor);
 }

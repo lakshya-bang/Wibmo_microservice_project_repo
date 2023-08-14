@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.constant;
+package com.wibmo.constants;
 
 /**
  * 
