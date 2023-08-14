@@ -3,6 +3,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 
 import java.util.List;
+import java.util.Map;
 
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
@@ -23,8 +24,8 @@ public interface StudentDAO {
 	/**
 	 * 
 	 */
-	public void getGrade(Long studentId);
-	
+//	public void getGrade(Long studentId);
+	public Map<Integer, String> getGrade(Long studentId);
 	/**
 	 * 
 	 */

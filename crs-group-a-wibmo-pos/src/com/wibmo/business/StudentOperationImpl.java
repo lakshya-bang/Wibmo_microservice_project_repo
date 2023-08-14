@@ -9,7 +9,7 @@ import java.util.Set;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
-import com.wibmo.dao.FakeStudentDAOImpl;
+import com.wibmo.dao.StudentDAOImpl;
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
@@ -20,7 +20,7 @@ public class StudentOperationImpl implements StudentOperation {
 	AuthenticationService fakeAuthenticationService = new FakeAuthenticationService();
 //	CourseRegistrationOperation courseRegistration = new CourseRegistrationOperationImpl(null,null);
 //	CourseOperationImpl courseOperation = new CourseOperationImpl();
-	StudentDAO studentDAO = new FakeStudentDAOImpl();
+	StudentDAO studentDAO = new StudentDAOImpl();
 	Student student = new Student();
 	@Override
 	public boolean authenticate() {

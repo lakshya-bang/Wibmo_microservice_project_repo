@@ -7,7 +7,7 @@ import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.FakeAuthenticationService;
 import com.wibmo.dao.AuthenticationDaoImpl;
-import com.wibmo.dao.FakeStudentDAOImpl;
+import com.wibmo.dao.StudentDAOImpl;
 
 public class Main {
 	
@@ -17,7 +17,7 @@ public class Main {
 		
 		char ch = '\0';
 		
-		FakeStudentDAOImpl fakeStudent = new FakeStudentDAOImpl();
+		StudentDAOImpl fakeStudent = new StudentDAOImpl();
 		
 		fakeStudent.registerCourse(1005L, List.of(101,102,103));
 		fakeStudent.viewRegisteredCourses(1005L);
