@@ -1,6 +1,8 @@
 package com.wibmo.business;
 
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
@@ -17,4 +19,6 @@ public interface ProfessorBusiness {
 		return professor;
 	}
 	void viewEnrolledStudents(Professor professor);
+	
+	Boolean updateGradeDetails();
 }

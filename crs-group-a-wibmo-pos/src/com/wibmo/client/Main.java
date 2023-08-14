@@ -2,8 +2,9 @@ package com.wibmo.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import java.util.Scanner;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
@@ -37,5 +38,10 @@ public class Main {
 		professor.setCoursesTaught(new ArrayList<Integer>(Arrays.asList(2,3)));
 		ProfessorBusinessImpl professorBusiness = new ProfessorBusinessImpl();
 		professorBusiness.viewEnrolledStudents(professor);
+		Map<Integer,Character> grades = new HashMap<Integer,Character>();
+		grades.put(1, 'A');
+		grades.put(2, 'B');
+		grades.put(3, 'C');
+		professorBusiness.updateGradeDetails();
 	}
 }

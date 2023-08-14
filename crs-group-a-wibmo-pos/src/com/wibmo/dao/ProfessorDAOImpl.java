@@ -88,4 +88,34 @@ public class ProfessorDAOImpl implements ProfessorDAO{
 		return null;
 	}
 
+	@Override
+	public Boolean updateGrades(Map<Integer, Character> gradeSheet, Integer year, Integer semester, Integer reportId, Integer studentId) {
+		PreparedStatement stmt = null;
+		Connection conn = com.wibmo.utils.DBUtils.getConnection();
+		
+		try {
+		for(Map.Entry<Integer, Character> entry : gradeSheet.entrySet()) {
+		
+			stmt = conn.prepareStatement(SQLConstants.CREATE_QUERY_GRADE);
+			stmt.setInt(1, reportId);  // This would set age
+		    stmt.setInt(2,studentId);
+		    stmt.setInt(3, entry.getKey());
+		    stmt.setString(4, String.valueOf(entry.getValue()));
+		    stmt.setInt(5, semester);
+		    stmt.setInt(6, year);
+		    stmt.executeUpdate();   
+		}
+		stmt.close();
+	    conn.close();
+		}catch(SQLException se){
+		      se.printStackTrace();
+		   }catch(Exception e){
+		      e.printStackTrace();
+		   }
+		System.out.println("Successfully added the grade details......");
+		return true;
+	}
+	
+	
+
 }
