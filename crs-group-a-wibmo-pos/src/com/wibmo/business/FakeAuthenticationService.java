@@ -13,9 +13,9 @@ import com.wibmo.bean.User;
  */
 public class FakeAuthenticationService implements AuthenticationService {
 
-	static private User user1 = new User("Lakshya", 101L, "Bangalore", "lakshya1@test.com", "Student");
-	static private User user2 = new User("Lakshya", 102L, "India", "lakshya2@test.com", "Professor");
-	static private User user3 = new User("Lakshya", 103L, "Delhi", "lakshya3@test.com", "Admin");
+	static private User user1 = new User("Lakshya", 101L, "Bangalore", "lakshya1@test.com", "Student", 900000L);
+	static private User user2 = new User("Lakshya", 102L, "India", "lakshya2@test.com", "Professor", 900000L);
+	static private User user3 = new User("Lakshya", 103L, "Delhi", "lakshya3@test.com", "Admin", 900000L);
 	static Map<String,Map<String,User>> fakeAuthDB = new HashMap<>();
 	
 	public FakeAuthenticationService() {

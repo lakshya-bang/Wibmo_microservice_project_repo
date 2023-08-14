@@ -62,7 +62,7 @@ public class AuthenticationDaoImpl implements AuthenticationDao{
 	    ResultSet rs = stmt.executeQuery(SQLConstants.USER_DETAILS + "'" + user_name + "'");
 	   if(rs.next()) {
 		   System.out.println(rs.getLong(1));
-		   return new User(rs.getString("name"), (long) rs.getInt("id"), rs.getString("address"), rs.getString("email"), rs.getString("type"));
+		   return new User(rs.getString("name"), (long) rs.getInt("user_id"), rs.getString("address"), rs.getString("email"), rs.getString("type"), (long) rs.getInt("number"));
 	   }
 	   else {
 		   return null;
