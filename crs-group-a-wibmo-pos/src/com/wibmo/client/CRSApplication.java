@@ -8,7 +8,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 import com.wibmo.bean.Student;
+import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
+import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.CourseCatalogueOperation;
 import com.wibmo.business.CourseCatalogueOperationImpl;
 import com.wibmo.business.FakeAuthenticationService;
@@ -30,13 +32,12 @@ public class CRSApplication {
 	public static void main(String[] args) {
 		
 		Scanner in = new Scanner(System.in);
-		Long userId, courseId;
-		String password;
+		Long courseId;
 		boolean exit = false;
 		boolean response;
 		int ch;
 		
-		AuthenticationService authenticationService = new FakeAuthenticationService();
+		AuthenticationService authenticationService = new AuthenticationServiceImpl();
 		
 		System.out.println("Welcome to Course Registration System\n"
 				+ "Time: " + LocalTime.now().toString() + "\n"
@@ -57,17 +58,30 @@ public class CRSApplication {
 			switch(ch) {
 				
 			case 1:
-				userId = in.nextLong();
-				password = in.next();
 				
-				response = authenticationService.login(userId, password);
+				User user = authenticationService.login();
 				
-				if(!response) {
+				if(user == null) {
 					System.out.println("Login Failure");
 					break;
 				}
 				
-				while(crsStudentMenu.display());
+				String userType = user.getUserType();
+				
+				switch(userType) {
+				
+				case "Student":
+					while(CRSStudentMenu.display(user));
+					break;
+				
+				case "Professor":
+//					while(CRSProfessorMenu.display(user));
+					break;
+					
+				case "Admin":
+//					while(CRSAdminMenu.display(user));
+					break;
+				}
 				
 				break;
 				

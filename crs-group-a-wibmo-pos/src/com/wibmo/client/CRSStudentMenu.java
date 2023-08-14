@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import com.wibmo.bean.Student;
+import com.wibmo.bean.User;
 import com.wibmo.business.CourseCatalogueOperation;
 import com.wibmo.business.CourseCatalogueOperationImpl;
 import com.wibmo.business.CourseOperation;
@@ -18,12 +19,11 @@ import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotFoundException;
 
 public class CRSStudentMenu {
-
-	public static Boolean display() {
+	
+	public static Boolean display(User user) {
 		
 		Scanner in = new Scanner(System.in);
-		Long userId, courseId;
-		String password;
+		Long courseId;
 		boolean exit = false;
 		boolean response;
 		int ch;
@@ -33,21 +33,16 @@ public class CRSStudentMenu {
 		CourseCatalogueOperation courseCatalogueOperation = 
 				new CourseCatalogueOperationImpl();
 		
-		CourseRegistrationOperation courseRegistrationOperation = 
-				new CourseRegistrationOperationImpl(
-						studentOperation, 
-						courseOperation,
-						courseCatalogueOperation);
-		
-		// TODO: Add UserType functionality
-		// Considering User as Student for simplicity.
-		Student student = studentOperation.getStudentById(userId).get();
+		Student student = studentOperation.getStudentById(userId);
 		Integer semOfStudy = student.getCurrentSemester();
 		
 		boolean logout = false;
 		
+		System.out.print("+......... Welcome Student .........+\n");
+		System.out.println(user);
+		
 		while(!logout) {
-			System.out.print("+......... Welcome Student .........+\n"
+			System.out.println("+-------------------------+"
 					+ "[1] Course Registration\n"
 					+ "[2] View Registered Courses\n"
 					+ "[3] Add Course\n"
@@ -75,7 +70,7 @@ public class CRSStudentMenu {
 					selectedCourses.add(in.nextLong());
 				}
 				try {
-					courseRegistrationOperation.register(userId, selectedCourses);
+					student.registerCourses(userId, selectedCourses);
 				} catch (StudentNotFoundException | CoursesNotAvailableForRegistrationException
 						| StudentAlreadyRegisteredForSemesterException e) {
 					System.out.println(e.getMessage());
@@ -85,7 +80,7 @@ public class CRSStudentMenu {
 				
 			case 2:
 				// TODO: Should be viewRegisteredCoursesBy...() instead
-				courseRegistrationOperation.viewRegisteredCourseIdsByStudentIdAndSemOfStudy(userId, semOfStudy);
+				student.viewRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
 				break;
 				
 			case 3:
@@ -93,15 +88,15 @@ public class CRSStudentMenu {
 				courseCatalogueOperation.viewCourseCatalogue();
 				System.out.print("Enter Id of the course you wish to add: ");
 				courseId = in.nextLong();
-				courseRegistrationOperation.addCourse(userId, courseId, semOfStudy);
+				student.addCourse(courseId, semOfStudy);
 				break;
 				
 			case 4:
 				System.out.println("--- Registered Courses:- ---");
-				courseRegistrationOperation.getRegisteredCourseIdsByStudentIdAndSemOfStudy(userId, semOfStudy);
-				System.out.println("Enter Id of the course you wish to drop: ");
+				student.getRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
+				System.out.print("Enter Id of the course you wish to drop: ");
 				courseId = in.nextLong();
-				courseRegistrationOperation.dropCourse(userId, courseId, semOfStudy);
+				student.dropCourse(courseId, semOfStudy);
 				break;
 				
 			case 5:
@@ -117,5 +112,6 @@ public class CRSStudentMenu {
 				
 			}
 		}
+		return Boolean.FALSE;
 	}
 }

@@ -3,7 +3,6 @@ package com.wibmo.business;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
@@ -21,9 +20,8 @@ public class StudentOperationImpl implements StudentOperation {
 	}
 	
 	@Override
-	public Optional<Student> getStudentById(Long studentId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Student getStudentById(Long studentId) {
+		return studentOperationDAO.getStudentById(studentId);
 	}
 
 	@Override

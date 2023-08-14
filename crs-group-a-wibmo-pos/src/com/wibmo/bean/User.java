@@ -83,4 +83,12 @@ public class User {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+
+
+	@Override
+	public String toString() {
+		return "User [userName=" + userName + ", userId=" + userId + ", userAddress=" + userAddress + ", userEmail="
+				+ userEmail + ", userType=" + userType + "]";
+	}
+	
 }

@@ -1,22 +1,20 @@
 package com.wibmo.dao;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
+import com.wibmo.bean.Student;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 
 public interface StudentDAO {
 	
+	public Student getStudentById(Long userId);
 	
 	/**
 	 * 
-	 */
-//	public boolean Authenticate(int StudentID);
-
-	/**
-	 *
 	 */
 	public boolean registerCourse(Long StudentId, List<Integer> CourseIds);
 	

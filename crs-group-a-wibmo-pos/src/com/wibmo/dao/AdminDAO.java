@@ -7,6 +7,8 @@ import com.wibmo.bean.Admin;
 
 public interface AdminDAO {
 
+	public Admin getById(Long id);
+	
 	/**
 	 * 
 	 * @param ids

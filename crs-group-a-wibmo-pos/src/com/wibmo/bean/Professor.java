@@ -43,5 +43,10 @@ public class Professor {
 		this.coursesTaught = coursesTaught;
 	}
 	
+	@Override
+	public String toString() {
+		return "Professor [professorName=" + professorName + ", professorID=" + professorID + ", coursesTaught="
+				+ coursesTaught + "]";
+	}
 	
 }
