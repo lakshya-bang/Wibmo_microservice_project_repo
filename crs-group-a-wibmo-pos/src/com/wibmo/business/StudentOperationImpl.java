@@ -8,6 +8,10 @@ import java.util.Set;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
+<<<<<<< HEAD
+=======
+import com.wibmo.dao.StudentDAOImpl;
+>>>>>>> d3e12874366e58e88e84229c563fb72c1842997e
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
 
@@ -19,6 +23,14 @@ public class StudentOperationImpl implements StudentOperation {
 		studentDAO = new StudentDAOImpl();
 	}
 	
+<<<<<<< HEAD
+=======
+	AuthenticationService fakeAuthenticationService = new FakeAuthenticationService();
+//	CourseRegistrationOperation courseRegistration = new CourseRegistrationOperationImpl(null,null);
+//	CourseOperationImpl courseOperation = new CourseOperationImpl();
+	StudentDAO studentDAO = new StudentDAOImpl();
+	Student student = new Student();
+>>>>>>> d3e12874366e58e88e84229c563fb72c1842997e
 	@Override
 	public Student getStudentById(Long studentId) {
 		return studentOperationDAO.getStudentById(studentId);

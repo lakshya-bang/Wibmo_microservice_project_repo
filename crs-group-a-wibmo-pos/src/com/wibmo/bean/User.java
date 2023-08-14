@@ -12,14 +12,15 @@ public class User {
 	private String userAddress;
 	private String userEmail;
 	private String userType;
-
+	private Long userNumber;
 	
-	public User(String name, Long id, String address, String email, String type) {
+	public User(String name, Long id, String address, String email, String type, Long number) {
 		this.userName = name;
 		this.userEmail = email;
 		this.userAddress = address;
 		this.userType = type;	
 		this.userId = id;
+		this.userNumber = number;
 	}
 	
 
@@ -29,6 +30,22 @@ public class User {
 	public String getUserName() {
 		return userName;
 	}
+	/**
+	 * @return the userNumber
+	 */
+	public Long getUserNumber() {
+		return userNumber;
+	}
+
+
+	/**
+	 * @param userNumber the userNumber to set
+	 */
+	public void setUserNumber(Long userNumber) {
+		this.userNumber = userNumber;
+	}
+
+
 	/**
 	 * @param userName the userName to set
 	 */
