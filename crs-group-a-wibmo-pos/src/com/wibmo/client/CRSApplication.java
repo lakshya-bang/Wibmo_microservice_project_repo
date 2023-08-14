@@ -13,7 +13,6 @@ import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.CourseCatalogueOperation;
 import com.wibmo.business.CourseCatalogueOperationImpl;
-import com.wibmo.business.FakeAuthenticationService;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.StudentOperation;
@@ -21,8 +20,6 @@ import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotFoundException;
-import com.wibmo.business.CourseRegistrationOperation;
-import com.wibmo.business.CourseRegistrationOperationImpl;
 
 /**
  * 
@@ -46,7 +43,7 @@ public class CRSApplication {
 		while(!exit) {
 			
 			System.out.print(
-				"+-----------------------------------------+"
+				"+-----------------------------------------+\n"
 				+ "[1] Login\n"
 				+ "[2] Registration\n"
 				+ "[3] Forgot Password\n"

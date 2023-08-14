@@ -6,7 +6,7 @@ import java.util.Scanner;
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationServiceImpl;
 import com.wibmo.business.FakeAuthenticationService;
-import com.wibmo.dao.AuthenticationDaoImpl;
+import com.wibmo.dao.AuthenticationDAOImpl;
 import com.wibmo.dao.StudentDAOImpl;
 
 public class Main {

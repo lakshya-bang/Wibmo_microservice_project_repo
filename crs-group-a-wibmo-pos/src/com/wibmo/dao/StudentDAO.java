@@ -32,9 +32,9 @@ public interface StudentDAO {
 	/**
 	 * students already registered for a course can add more course
 	 * @param courseId
-	 * @param StudentId
+	 * @param studentId
 	 */
-	public boolean addCourse(int courseId, Long StudentId);
+	public boolean addCourse(int courseId, Long studentId);
 	
 	/**
 	 * Students already registered in courses can drop a course

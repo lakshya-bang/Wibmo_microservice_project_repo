@@ -15,18 +15,18 @@ import com.wibmo.utils.DBUtils;
 /**
  * 
  */
-public class AuthenticationDaoImpl implements AuthenticationDao{
+public class AuthenticationDAOImpl implements AuthenticationDAO{
 	
-	private static volatile AuthenticationDaoImpl instance = null;
-	private AuthenticationDaoImpl() {
+	private static volatile AuthenticationDAOImpl instance = null;
+	private AuthenticationDAOImpl() {
 		
 	}
 	
 	
-	public static AuthenticationDaoImpl getInstance() {
+	public static AuthenticationDAOImpl getInstance() {
         if (instance == null) {
-            synchronized (AuthenticationDaoImpl.class) { //It's a synchronized object that will thread safe.
-                instance = new AuthenticationDaoImpl();
+            synchronized (AuthenticationDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new AuthenticationDAOImpl();
             }
         }
         return instance;

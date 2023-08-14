@@ -31,4 +31,10 @@ public class AdminDAOImpl implements AdminDAO {
 		return null;
 	}
 
+	@Override
+	public Admin getById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

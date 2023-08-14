@@ -10,8 +10,6 @@ import com.wibmo.business.CourseCatalogueOperation;
 import com.wibmo.business.CourseCatalogueOperationImpl;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
-import com.wibmo.business.CourseRegistrationOperation;
-import com.wibmo.business.CourseRegistrationOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
@@ -23,7 +21,7 @@ public class CRSStudentMenu {
 	public static Boolean display(User user) {
 		
 		Scanner in = new Scanner(System.in);
-		Long courseId;
+		Integer courseId;
 		boolean exit = false;
 		boolean response;
 		int ch;
@@ -32,9 +30,6 @@ public class CRSStudentMenu {
 		StudentOperation studentOperation = new StudentOperationImpl();
 		CourseCatalogueOperation courseCatalogueOperation = 
 				new CourseCatalogueOperationImpl();
-		
-		Student student = studentOperation.getStudentById(userId);
-		Integer semOfStudy = student.getCurrentSemester();
 		
 		boolean logout = false;
 		
@@ -48,7 +43,8 @@ public class CRSStudentMenu {
 					+ "[3] Add Course\n"
 					+ "[4] Drop Course\n"
 					+ "[5] View Grades\n"
-					+ "[6] Logout\n"
+					+ "[6] Pay Bill\n"
+					+ "[7] Logout\n"
 					+ "Enter your choice: ");
 			
 			ch = in.nextInt();
@@ -69,41 +65,47 @@ public class CRSStudentMenu {
 				for(int i = 1; i <= 2; i++) {
 					selectedCourses.add(in.nextLong());
 				}
-				try {
-					student.registerCourses(userId, selectedCourses);
-				} catch (StudentNotFoundException | CoursesNotAvailableForRegistrationException
-						| StudentAlreadyRegisteredForSemesterException e) {
-					System.out.println(e.getMessage());
-//					e.printStackTrace();
-				}
+				studentOperation.registerCourses(user.getUserId(), selectedCourses);
+//				try {
+//					studentOperation.registerCourses(user.getUserId(), selectedCourses);
+//				} catch (StudentNotFoundException | CoursesNotAvailableForRegistrationException
+//						| StudentAlreadyRegisteredForSemesterException e) {
+//					System.out.println(e.getMessage());
+////					e.printStackTrace();
+//				}
 				break;
 				
 			case 2:
 				// TODO: Should be viewRegisteredCoursesBy...() instead
-				student.viewRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
+//				studentOperation.viewRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
+				studentOperation.viewRegisteredCourses(user.getUserId());
 				break;
 				
 			case 3:
 				System.out.println("*** Course Catalogue:- ***");
 				courseCatalogueOperation.viewCourseCatalogue();
 				System.out.print("Enter Id of the course you wish to add: ");
-				courseId = in.nextLong();
-				student.addCourse(courseId, semOfStudy);
+				courseId = in.nextInt();
+				studentOperation.addCourse(courseId, user.getUserId());
 				break;
 				
 			case 4:
 				System.out.println("--- Registered Courses:- ---");
-				student.getRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
+				studentOperation.viewRegisteredCourses(user.getUserId());
 				System.out.print("Enter Id of the course you wish to drop: ");
-				courseId = in.nextLong();
-				student.dropCourse(courseId, semOfStudy);
+				courseId = in.nextInt();
+				studentOperation.dropCourse(courseId, user.getUserId());
 				break;
 				
 			case 5:
-				gradeOperation.viewGradesByStudentId(userId);
+//				gradeOperation.viewGradesByStudentId(userId);
+				break;
+			
+			case 6:
+//				billOperation.payBill(userId);
 				break;
 				
-			case 6:
+			case 7:
 				logout = true;
 				break;
 				

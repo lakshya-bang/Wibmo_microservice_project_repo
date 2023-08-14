@@ -8,32 +8,24 @@ import java.util.Set;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
-<<<<<<< HEAD
-=======
 import com.wibmo.dao.StudentDAOImpl;
->>>>>>> d3e12874366e58e88e84229c563fb72c1842997e
 import com.wibmo.dao.StudentDAO;
-import com.wibmo.dao.StudentDAOImpl;
 
 public class StudentOperationImpl implements StudentOperation {
 
 	private final StudentDAO studentDAO;
 	
 	public StudentOperationImpl() {
-		studentDAO = new StudentDAOImpl();
+		studentDAO = StudentDAOImpl.getInstance();
 	}
 	
-<<<<<<< HEAD
-=======
-	AuthenticationService fakeAuthenticationService = new FakeAuthenticationService();
 //	CourseRegistrationOperation courseRegistration = new CourseRegistrationOperationImpl(null,null);
 //	CourseOperationImpl courseOperation = new CourseOperationImpl();
-	StudentDAO studentDAO = new StudentDAOImpl();
-	Student student = new Student();
->>>>>>> d3e12874366e58e88e84229c563fb72c1842997e
+//	Student student = new Student();
+	
 	@Override
 	public Student getStudentById(Long studentId) {
-		return studentOperationDAO.getStudentById(studentId);
+		return studentDAO.getStudentById(studentId);
 	}
 
 	@Override
@@ -52,16 +44,16 @@ public class StudentOperationImpl implements StudentOperation {
 	}
 
 	@Override
-	public boolean addCourse(int courseId) {
+	public boolean addCourse(int courseId, Long studentId) {
 		// TODO Auto-generated method stub
-		studentDAO.addCourse(courseId, student.getId());
+		studentDAO.addCourse(courseId, studentId);
 		return true;
 	}
 
 	@Override
-	public boolean dropCourse(int courseId) {
+	public boolean dropCourse(int courseId, Long studentId) {
 		// TODO Auto-generated method stub
-		studentDAO.dropCourse(courseId, student.getId());
+		studentDAO.dropCourse(courseId, studentId);
 		return false;
 	}
 
@@ -72,16 +64,15 @@ public class StudentOperationImpl implements StudentOperation {
 	}
 
 	@Override
-	public List<Course> viewRegisteredCourses() {
+	public List<Course> viewRegisteredCourses(Long studentId) {
 		// TODO Auto-generated method stub
-		studentDAO.viewRegisteredCourses(student.getId());
+		studentDAO.viewRegisteredCourses(studentId);
 		return null;
 	}
 
 	@Override
 	public boolean registerCourse(Long studentId, int courseId) {
-		// TODO Auto-generated method stub
-		return false;
+		return studentDAO.registerCourse(studentId, null);
 	}
 
 	@Override
