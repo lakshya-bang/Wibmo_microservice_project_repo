@@ -9,22 +9,10 @@ import com.wibmo.bean.Student;
 
 public interface StudentOperation {
 
-	public Student getStudentById(Long userId);
+	/**
+	 * @param integer
+	 * @return
+	 */
+	public Student getStudentById(Integer integer);
 
-	ReportCard getReportCard(Long studentId);
-
-	boolean registerCourses(Long studentId, Set<Long> courseIds);
-
-	BillDueNotification payBill(int billId);
-
-	boolean registerCourse(Long studentId, int courseId);
-
-	ReportCard getReportCard(int studentId);
-
-	boolean dropCourse(int courseId, Long studentId);
-
-	boolean addCourse(int courseId, Long studentId);
-
-	List<Course> viewRegisteredCourses(Long studentId);
-	
 }	

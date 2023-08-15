@@ -3,24 +3,38 @@
  */
 package com.wibmo.dao;
 
-import java.util.Set;
+import com.wibmo.bean.CourseRegistration;
+import com.wibmo.bean.Student;
 
 /**
  * 
  */
 public interface CourseRegistrationDAO {
+	
+	/**
+	 * 
+	 * @param courseRegistration
+	 */
+	public void save(CourseRegistration courseRegistration);
+	
+	/**
+	 * 
+	 * @param student
+	 * @return
+	 */
+	public CourseRegistration findByStudent(Student student);
 
 	/**
-	 * Adds the given triplet into the course_registration table
 	 * 
-	 * @param studentId
-	 * @param semOfStudy
-	 * @param courseIds
-	 * @return the number of rows affected.
+	 * @param student
+	 * @return
 	 */
-	public Integer save(Long studentId, Integer semOfStudy, Set<Long> courseIds);
+	public String findRegistrationStatusByStudent(Student student);
 	
-	public Boolean existsByStudentIdAndSemOfStudy(Long studentId, Integer semOfStudy);
-	
-	public Set<Long> findCourseIdsByStudentIdAndSemOfStudy(Long studentId, Integer semOfStudy);
+	/**
+	 * 
+	 * @param student
+	 * @return
+	 */
+	public Boolean existsByStudent(Student student);
 }

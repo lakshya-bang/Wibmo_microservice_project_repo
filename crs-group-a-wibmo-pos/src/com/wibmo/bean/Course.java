@@ -1,103 +1,138 @@
 package com.wibmo.bean;
 
-import java.util.List;
-
-import java.util.List;
-
+/**
+ * 
+ * Table Name: course
+ * Primary Key: (courseId) Auto Increment
+ */
 public class Course {
-	private int courseID;
-	private String courseTitle;
+	
+	private Integer courseId;
+	private Integer year;
+	private Integer semester;
+	private String name;
 	private String department;
-	private Professor assignedProfessor;
-	private List<Course> prerequisites;
-	private boolean isCancelled;
-	private boolean isFilled;
+	private Integer professorId;
+	private Boolean isCancelled;
+	private Integer noOfSeats;
+	
 	/**
-	 * @return the courseID
+	 * @return the courseId
 	 */
-	public int getCourseID() {
-		return courseID;
+	public Integer getCourseId() {
+		return courseId;
 	}
+	
 	/**
-	 * @param courseID the courseID to set
+	 * @param courseId the courseId to set
 	 */
-	public void setCourseID(int courseID) {
-		this.courseID = courseID;
+	public void setCourseId(Integer courseId) {
+		this.courseId = courseId;
 	}
+	
 	/**
-	 * @return the courseTitle
+	 * @return the year
 	 */
-	public String getCourseTitle() {
-		return courseTitle;
+	public Integer getYear() {
+		return year;
 	}
+	
 	/**
-	 * @param courseTitle the courseTitle to set
+	 * @param year the year to set
 	 */
-	public void setCourseTitle(String courseTitle) {
-		this.courseTitle = courseTitle;
+	public void setYear(Integer year) {
+		this.year = year;
 	}
+	
+	/**
+	 * @return the semester
+	 */
+	public Integer getSemester() {
+		return semester;
+	}
+	
+	/**
+	 * @param semester the semester to set
+	 */
+	public void setSemester(Integer semester) {
+		this.semester = semester;
+	}
+	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	/**
 	 * @return the department
 	 */
 	public String getDepartment() {
 		return department;
 	}
+	
 	/**
 	 * @param department the department to set
 	 */
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+	
 	/**
-	 * @return the assignedProfessor
+	 * @return the professorId
 	 */
-	public Professor getAssignedProfessor() {
-		return assignedProfessor;
+	public Integer getProfessorId() {
+		return professorId;
 	}
+	
 	/**
-	 * @param assignedProfessor the assignedProfessor to set
+	 * @param professorId the professorId to set
 	 */
-	public void setAssignedProfessor(Professor assignedProfessor) {
-		this.assignedProfessor = assignedProfessor;
+	public void setProfessorId(Integer professorId) {
+		this.professorId = professorId;
 	}
-	/**
-	 * @return the prerequisites
-	 */
-	public List<Course> getPrerequisites() {
-		return prerequisites;
-	}
-	/**
-	 * @param prerequisites the prerequisites to set
-	 */
-	public void setPrerequisites(List<Course> prerequisites) {
-		this.prerequisites = prerequisites;
-	}
+	
 	/**
 	 * @return the isCancelled
 	 */
-	public boolean isCancelled() {
+	public Boolean getIsCancelled() {
 		return isCancelled;
 	}
+	
 	/**
 	 * @param isCancelled the isCancelled to set
 	 */
-	public void setCancelled(boolean isCancelled) {
+	public void setIsCancelled(Boolean isCancelled) {
 		this.isCancelled = isCancelled;
 	}
+	
 	/**
-	 * @return the isFilled
+	 * @return the noOfSeats
 	 */
-	public boolean isFilled() {
-		return isFilled;
-	}
-	/**
-	 * @param isFilled the isFilled to set
-	 */
-	public void setFilled(boolean isFilled) {
-		this.isFilled = isFilled;
+	public Integer getNoOfSeats() {
+		return noOfSeats;
 	}
 	
+	/**
+	 * @param noOfSeats the noOfSeats to set
+	 */
+	public void setNoOfSeats(Integer noOfSeats) {
+		this.noOfSeats = noOfSeats;
+	}
 	
-	private Integer availableSeats;
-
+	@Override
+	public String toString() {
+		return "Course [courseId=" + courseId + ", year=" + year + ", semester=" + semester + ", name=" + name
+				+ ", department=" + department + ", professorId=" + professorId + ", isCancelled=" + isCancelled
+				+ ", noOfSeats=" + noOfSeats + "]";
+	}
+	
 }

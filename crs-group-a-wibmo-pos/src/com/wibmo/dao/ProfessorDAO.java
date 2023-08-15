@@ -1,16 +1,19 @@
 package com.wibmo.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.bean.Student;
 
+/**
+ * 
+ */
 public interface ProfessorDAO {
-	
+
 	/**
 	 * 
-	 * @param professorId
+	 * @param professorIds
 	 * @return
 	 */
-	public Professor findById(Long professorId);
+	public List<Professor> findAllByIdIn(Set<Integer> professorIds);
 }

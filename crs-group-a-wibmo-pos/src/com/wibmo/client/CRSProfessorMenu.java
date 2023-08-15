@@ -17,6 +17,8 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.business.UserOperation;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.dao.ProfessorDAO;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
@@ -37,13 +39,13 @@ public class CRSProfessorMenu {
 		boolean response;
 		int ch;
 		
-		CourseOperation courseOperation = new CourseOperationImpl();
+		UserOperation userOperation = new UserOperationImpl();
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
-		CourseCatalogueOperation courseCatalogueOperation = 
-				new CourseCatalogueOperationImpl();
+		CourseOperation courseOperation = new CourseOperationImpl(
+				userOperation, professorOperation);
 		
-		Professor professor = professorOperation.getProfessorById(userId);
+		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
 		boolean logout = false;
 		

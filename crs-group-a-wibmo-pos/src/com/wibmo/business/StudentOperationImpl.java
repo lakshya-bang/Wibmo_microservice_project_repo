@@ -13,72 +13,11 @@ import com.wibmo.dao.StudentDAO;
 
 public class StudentOperationImpl implements StudentOperation {
 
-	private final StudentDAO studentDAO;
-	
-	public StudentOperationImpl() {
-		studentDAO = StudentDAOImpl.getInstance();
-	}
-	
-//	CourseRegistrationOperation courseRegistration = new CourseRegistrationOperationImpl(null,null);
-//	CourseOperationImpl courseOperation = new CourseOperationImpl();
-//	Student student = new Student();
+	StudentDAO studentDAO = new StudentDAOImpl();
 	
 	@Override
-	public Student getStudentById(Long studentId) {
-		return studentDAO.getStudentById(studentId);
-	}
-
-	@Override
-	public boolean registerCourses(Long studentId, Set<Long> courseIds) {
-		// TODO Auto-generated method stub
-		return false;
+	public Student getStudentById(Integer studentId) {
+		return studentDAO.findById(studentId);
 	}
 	
-	@Override
-	public ReportCard getReportCard(Long studentId) {
-		// TODO Auto-generated method stub
-		ReportCard reportCard = new ReportCard();
-		studentDAO.getGrade(studentId);
-//		reportCard.setGrades();
-		return reportCard;
-	}
-
-	@Override
-	public boolean addCourse(int courseId, Long studentId) {
-		// TODO Auto-generated method stub
-		studentDAO.addCourse(courseId, studentId);
-		return true;
-	}
-
-	@Override
-	public boolean dropCourse(int courseId, Long studentId) {
-		// TODO Auto-generated method stub
-		studentDAO.dropCourse(courseId, studentId);
-		return false;
-	}
-
-	@Override
-	public BillDueNotification payBill(int billId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Course> viewRegisteredCourses(Long studentId) {
-		// TODO Auto-generated method stub
-		studentDAO.viewRegisteredCourses(studentId);
-		return null;
-	}
-
-	@Override
-	public boolean registerCourse(Long studentId, int courseId) {
-		return studentDAO.registerCourse(studentId, null);
-	}
-
-	@Override
-	public ReportCard getReportCard(int studentId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
