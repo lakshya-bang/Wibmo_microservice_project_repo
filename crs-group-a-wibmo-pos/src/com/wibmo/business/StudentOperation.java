@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
-import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 
 public interface StudentOperation {

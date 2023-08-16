@@ -2,24 +2,10 @@ package com.wibmo.client;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.Scanner;
-import java.util.Set;
-
-import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;
-import com.wibmo.business.CourseCatalogueOperation;
-import com.wibmo.business.CourseCatalogueOperationImpl;
-import com.wibmo.business.CourseOperation;
-import com.wibmo.business.CourseOperationImpl;
-import com.wibmo.business.StudentOperation;
-import com.wibmo.business.StudentOperationImpl;
-import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
-import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
-import com.wibmo.exception.StudentNotFoundException;
 
 /**
  * 
