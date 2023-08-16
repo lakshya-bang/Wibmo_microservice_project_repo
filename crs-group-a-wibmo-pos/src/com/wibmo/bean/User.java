@@ -18,13 +18,9 @@ public class User {
 	
 	public User() {}
 	
-	public User(String name, Integer id, String address, String email, String type, Integer number) {
-		this.userName = name;
-		this.userEmail = email;
-		this.userAddress = address;
+	public User( Integer id, String type) {
 		this.userType = type;	
 		this.userId = id;
-		this.userNumber = number;
 	}
 	
 

@@ -33,12 +33,10 @@ public class UserDAOImpl implements UserDAO {
 			
 			while(rs.next()) {
 				users.add(new User(
-						rs.getString("name"),
+						
 						rs.getInt("user_id"),
-						rs.getString("address"),
-						rs.getString("email"),
-						rs.getString("type"),
-						rs.getInt("number")));
+					
+						rs.getString("type")));
 			}
 			
 		} catch (SQLException e) {

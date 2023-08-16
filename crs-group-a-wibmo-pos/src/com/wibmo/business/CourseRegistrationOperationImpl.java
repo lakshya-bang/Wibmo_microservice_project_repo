@@ -120,4 +120,10 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	private boolean hasRegistered(Student student) {
 		return courseRegistrationDAO.existsByStudent(student);
 	}
+
+	@Override
+	public void getRegisteredStudentsByCourseId(Integer courseId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getRegisteredStudentsByCourseId'");
+	}
 }
