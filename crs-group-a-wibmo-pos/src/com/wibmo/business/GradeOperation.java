@@ -1,5 +1,6 @@
 package com.wibmo.business;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.wibmo.bean.Grade;
@@ -27,5 +28,5 @@ public interface GradeOperation {
 	 * @param studentId
 	 * @return
 	 */
-	public Map<Integer, Grade> getSemesterToGradeMapByStudentId(Integer studentId);
+	public Map<Integer, ArrayList<Grade>> getSemesterToGradeMapByStudentId(Integer studentId);
 }

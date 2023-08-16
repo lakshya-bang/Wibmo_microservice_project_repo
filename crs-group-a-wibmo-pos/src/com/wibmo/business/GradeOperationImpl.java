@@ -3,8 +3,12 @@
  */
 package com.wibmo.business;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.wibmo.bean.Course;
@@ -30,15 +34,16 @@ public class GradeOperationImpl implements GradeOperation {
 	@Override
 	public void viewGradesByStudent(Student student) {
 		
-		Map<Integer, Grade> semesterToGradeMap = getSemesterToGradeMapByStudentId(student.getStudentId());
+		Map<Integer, ArrayList<Grade>> semesterToGradeMap = getSemesterToGradeMapByStudentId(student.getStudentId());
+		ArrayList<Integer> courseIds = new ArrayList<>();
+		for(ArrayList<Grade> temp : semesterToGradeMap.values()){
+			for(Grade grade : temp){
+				courseIds.add(grade.getCourseId());
+			}
+		}
 		Map<Integer, Course> courseIdToCourseMap = courseOperation
-				.getCourseIdToCourseMap(
-						semesterToGradeMap
-							.entrySet()
-							.stream()
-							.map(entry -> entry.getValue().getCourseId())
-							.collect(Collectors.toSet()));
-		
+				.getCourseIdToCourseMap(new HashSet<>(courseIds));
+
 		System.out.println("**** Student Grades:- ****");
 		semesterToGradeMap
 			.entrySet()
@@ -51,41 +56,41 @@ public class GradeOperationImpl implements GradeOperation {
 				
 				System.out.println(" CourseId    CourseTitle    Department    Grade ");
 				System.out.println("+----------------------------------------------+");
-				Grade grade = entry.getValue();
-				System.out.format("%5d%10s%10s%10s", 
+				for(Grade grade : entry.getValue()){
+						System.out.format("%5d%10s%10s%10s", 
 						grade.getCourseId(),
 						courseIdToCourseMap.get(
 								grade.getCourseId()).getName(),  // course title
 						courseIdToCourseMap.get(
 								grade.getCourseId()).getDepartment(),   // CSE, ECE 
 						grade.getGrade());    // "A"
+				}
+				
 			});
-		
-		
 	}
 
 	@Override
 	public void uploadGrade(Grade grade) {
 		if(hasEntry(grade)) {
-			gradeDAO.updateByGradeId(grade.getGradeId());
+			gradeDAO.updateByGradeId(grade); //particular gradeID in DB.
 		} else {
 			gradeDAO.save(grade);
 		}
 	}
 	
 	@Override
-	public Map<Integer, Grade> getSemesterToGradeMapByStudentId(Integer studentId) {
-		return gradeDAO
-			.findAllByStudentId(studentId)
-			.stream()
-			.collect(Collectors.toMap(
-					Grade::getSemester,    	// key (semester)
-					Function.identity()));	// Grade object
+	public Map<Integer, ArrayList<Grade>> getSemesterToGradeMapByStudentId(Integer studentId) { //ArrayList of grades
+		return gradeDAO.findAllByStudentId(studentId);
 	
 	}
 	
 	private boolean hasEntry(Grade grade) {
-		if(grade.getGradeId())
+		if(grade.getGradeId()!=null){
+			return gradeDAO.checkGradeDetails(grade);
+		}
+		else{
+			return false;
+		}
 	}
 
 }
