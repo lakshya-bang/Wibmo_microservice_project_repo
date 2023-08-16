@@ -72,7 +72,7 @@ public class CRSApplication {
 					break;
 				
 				case "Professor":
-//					while(CRSProfessorMenu.display(user));
+					while(CRSProfessorMenu.display(user));
 					break;
 					
 				case "Admin":

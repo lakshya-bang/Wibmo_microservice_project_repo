@@ -48,4 +48,6 @@ public interface CourseRegistrationOperation {
 	 * @param student
 	 */
 	public void dropCourse(Integer courseId, Student student);
+	
+	public void getRegisteredStudentsByCourseId(Integer courseId);
 }

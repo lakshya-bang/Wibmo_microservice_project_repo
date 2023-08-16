@@ -1,5 +1,6 @@
 package com.wibmo.business;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,4 +20,8 @@ public interface CourseOperation {
 	 * @return
 	 */
 	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds);
+	
+	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId);
+	
+	
 }

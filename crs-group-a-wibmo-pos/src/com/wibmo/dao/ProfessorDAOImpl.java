@@ -19,7 +19,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 	public List<Professor> findAllByIdIn(Set<Integer> ids) {
 		List<Professor> professors = new ArrayList<>();
 		
-		String sql = "SELECT * FROM professor"
+		String sql = "SELECT * FROM professor "
 				+ "WHERE professor_id IN(?)";
 		
 		Connection conn = DBUtils.getConnection();
