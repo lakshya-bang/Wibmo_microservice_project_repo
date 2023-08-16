@@ -4,27 +4,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Admin;
+import com.wibmo.bean.Course;
 
 public interface AdminDAO {
 
-	public Admin getById(Long id);
-	
-	/**
-	 * 
-	 * @param ids
-	 * @return
-	 */
-	public List<Admin> getByIdIn(Set<Long> ids);
-	
-	/**
-	 * 
-	 * @param admin
-	 * @return the number of rows affected
-	 */
-	public Integer persist(List<Admin> admins);
-	
-	public Integer update(List<Admin> admins);
-	
-	public Integer removeByIdIn(Set<Long> ids);
+	public boolean saveAdmin(String adminName,String password,String name);
+	public boolean saveCourse(Course course);
+	public boolean assignCoursesToProfessor(String courseName,String professorName);
+	public boolean deleteCourse(String courseName);
 	
 }

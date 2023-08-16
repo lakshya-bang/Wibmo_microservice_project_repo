@@ -15,7 +15,16 @@ public class Course {
 	private Integer professorId;
 	private Boolean isCancelled;
 	private Integer noOfSeats;
+	private String courseType;
 	
+	public String getCourseType() {
+		return courseType;
+	}
+
+	public void setCourseType(String courseType) {
+		this.courseType = courseType;
+	}
+
 	/**
 	 * @return the courseId
 	 */
