@@ -3,7 +3,11 @@
  */
 package com.wibmo.dao;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.wibmo.bean.CourseRegistration;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 
 /**
@@ -37,4 +41,11 @@ public interface CourseRegistrationDAO {
 	 * @return
 	 */
 	public Boolean existsByStudent(Student student);
+
+	/**
+	 * 
+	 * @param professor
+	 * @return 
+	 */
+	public Map<Integer, ArrayList<Integer>> getStudentsByCourseId(Professor professor);
 }

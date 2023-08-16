@@ -26,7 +26,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 			System.out.println("====================================================");
 			User user = AuthenticationDAOImpl.getUserDetails(user_name);
 			System.out.println("Details fetched successfully....");
-			System.out.println("Welcome to the Portal " + user.getUserName() + "!");
 			return user;
 		}
 		

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.wibmo.bean.Student;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -21,8 +22,7 @@ public class StudentDAOImpl implements StudentDAO {
 		
 		Student student = null;
 		
-		String sql = "SELECT * FROM student "
-				+ "WHERE student_id = ?";
+		String sql = SQLConstants.FETCH_STUDENT_BY_ID;
 		
 		Connection conn = DBUtils.getConnection();
 		try {
@@ -34,7 +34,7 @@ public class StudentDAOImpl implements StudentDAO {
 			if(rs.next()) {
 				student = new Student(
 						rs.getInt("student_id"),
-						rs.getInt("current_semester"));
+						rs.getInt("semester"));
 			}
 			
 		} catch (SQLException e) {

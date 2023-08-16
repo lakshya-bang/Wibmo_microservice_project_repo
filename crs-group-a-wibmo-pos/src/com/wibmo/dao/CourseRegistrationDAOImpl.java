@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.utils.DBUtils;
@@ -142,6 +147,51 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		}
 		
 		return row == 1;
+	}
+
+	@Override
+	public Map<Integer,ArrayList<Integer>> getStudentsByCourseId(Professor professor) {
+		String sql = "SELECT student_id "
+				+ "FROM registered_courses "
+				+ "WHERE"
+				+ "primary_course_1_id = ?,"
+				+ "OR"
+				+ "primary_course_2_id = ?,"
+				+ "OR"
+				+ "primary_course_3_id = ?,"
+				+ "OR"
+				+ "primary_course_4_id = ?,";
+		
+		Map<Integer,ArrayList<Integer>> studentsByCourseID = new HashMap<Integer,ArrayList<Integer>>();
+
+		Connection conn = DBUtils.getConnection();
+		ArrayList<Integer> courseIds = new ArrayList<Integer>();
+		professor.getCoursesTaught().forEach(course -> courseIds.add(course.getCourseId()));
+		try {
+			for(Integer courseId : courseIds){
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setInt(1, courseId);
+				stmt.setInt(2, courseId);
+				stmt.setInt(3, courseId);
+				stmt.setInt(4, courseId);
+				ResultSet rs = stmt.executeQuery(sql);
+				while(rs.next()){
+					if(studentsByCourseID.containsKey(courseId)){
+						studentsByCourseID.get(courseId).add(rs.getInt("student_id"));
+					}
+					else{
+						ArrayList<Integer> temp = new ArrayList<Integer>();
+						temp.add(rs.getInt("student_id"));
+						studentsByCourseID.put(courseId, temp);
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		return studentsByCourseID;
 	}
 
 }

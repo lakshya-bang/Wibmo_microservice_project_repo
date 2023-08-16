@@ -17,10 +17,7 @@ public interface ProfessorOperation {
 	
 	public static Professor fetchDetails(User user) {
 		Professor professor = new Professor();
-		ProfessorDAO professorDao = ProfessorDAOImpl.getInstance();
-		professor.setCoursesTaught(
-				professorDao.fetchCoursesTaught(
-						user.getUserId(), 1, 1));
+		professor.setProfessorId(user.getUserId());
 		return professor;
 	}
 	

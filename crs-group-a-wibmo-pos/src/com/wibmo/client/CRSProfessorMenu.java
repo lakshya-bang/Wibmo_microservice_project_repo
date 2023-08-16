@@ -14,8 +14,6 @@ import java.util.Set;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
-import com.wibmo.business.CourseCatalogueOperation;
-import com.wibmo.business.CourseCatalogueOperationImpl;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperationImpl;

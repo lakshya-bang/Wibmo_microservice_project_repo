@@ -14,12 +14,9 @@ import com.wibmo.dao.ProfessorDAOImpl;
 
 public class ProfessorOperationImpl implements ProfessorOperation {
 
-	ProfessorDAO professorDAO = new ProfessorDAOImpl();
+	ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
 	
-	@Override
-	public Professor getProfessorById(Integer userId) {
-		return professorDAO.findById(userId);
-	}
+
 
 	@Override
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
@@ -35,6 +32,18 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 	public Map<Integer, List<Student>> getCourseIdToEnrolledStudentsMapping(Integer professorId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void uploadGrades() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'uploadGrades'");
+	}
+
+	@Override
+	public Professor getProfessorById(Integer userId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getProfessorById'");
 	}
 	
 }
