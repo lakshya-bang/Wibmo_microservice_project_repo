@@ -168,4 +168,46 @@ public class AdminDAOImpl implements AdminDAO {
 		// throw new UnsupportedOperationException("Unimplemented method 'assignCoursesToProfessor'");
 	}
 
+	// public boolean approveStudentRegistration(int regId) throws SQLException {
+	// 	Connection conn = DBUtils.getConnection();
+	// 	PreparedStatement stmt = null;
+    
+	// 	try {
+    //     	String sql = "UPDATE registered_courses SET reg_status = 'APPROVED' WHERE reg_id = ?";
+	// 		stmt = conn.prepareStatement(sql);
+
+	// 		stmt.setInt(1, regId);
+	// 		int result=stmt.executeUpdate();
+	// 		return (result==0?false:true);
+	// 		} catch(SQLException e) {
+	// 			e.printStackTrace();
+	// 			return false;
+	// 		} catch(Exception e) {
+	// 			e.printStackTrace();
+	// 			return false;
+	// 		}
+    // }
+
+    public void generateReportCard(int studentId, int courseId, String grade, int semester, int year) throws SQLException {
+        Connection conn = DBUtils.getConnection();
+		PreparedStatement stmt = null;
+    
+		try {
+			String sql = "INSERT INTO report_card (student_id, course_id, grade, semester, year) VALUES (?, ?, ?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, studentId);
+            stmt.setInt(2, courseId);
+            stmt.setString(3, grade);
+            stmt.setInt(4, semester);
+            stmt.setInt(5, year);
+
+            stmt.executeUpdate();
+        }  catch(SQLException e) {
+				e.printStackTrace();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+    }
+	
 }
