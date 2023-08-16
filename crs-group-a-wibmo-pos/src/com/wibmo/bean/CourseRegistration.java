@@ -3,21 +3,21 @@ package com.wibmo.bean;
 import com.wibmo.enums.RegistrationStatus;
 
 /**
- * 
  * Table Name = registered_courses
  */
 public class CourseRegistration {
 
-	private Integer courseRegId;					// course_reg_id
+	private Integer courseRegId;					// reg_id
 	private Integer studentId;						// student_id
 	private Integer semester;						// semester
+	private Integer year;							// year
 	private Integer primaryCourse1Id;				// primary_course_1_id
 	private Integer primaryCourse2Id;				// primary_course_2_id
 	private Integer primaryCourse3Id;				// primary_course_3_id
 	private Integer primaryCourse4Id;				// primary_course_4_id
 	private Integer alternativeCourse1Id;			// alternative_course_1_id
 	private Integer alternativeCourse2Id;			// alternative_course_2_id
-	private RegistrationStatus registrationStatus;	// registration_status
+	private RegistrationStatus registrationStatus;	// reg_status
 	
 	public CourseRegistration() {}
 	
@@ -25,6 +25,7 @@ public class CourseRegistration {
 			Integer courseRegId, 
 			Integer studentId, 
 			Integer semester, 
+			Integer year,
 			Integer primaryCourse1Id,
 			Integer primaryCourse2Id, 
 			Integer primaryCourse3Id, 
@@ -35,6 +36,7 @@ public class CourseRegistration {
 		this.courseRegId = courseRegId;
 		this.studentId = studentId;
 		this.semester = semester;
+		this.year = year;
 		this.primaryCourse1Id = primaryCourse1Id;
 		this.primaryCourse2Id = primaryCourse2Id;
 		this.primaryCourse3Id = primaryCourse3Id;
@@ -82,6 +84,20 @@ public class CourseRegistration {
 	public void setSemester(Integer semester) {
 		this.semester = semester;
 	}
+	/**
+	 * @return the year
+	 */
+	public Integer getYear() {
+		return year;
+	}
+
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+
 	/**
 	 * @return the primaryCourse1Id
 	 */
@@ -166,13 +182,16 @@ public class CourseRegistration {
 	public void setRegistrationStatus(RegistrationStatus registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
+
 	@Override
 	public String toString() {
 		return "CourseRegistration [courseRegId=" + courseRegId + ", studentId=" + studentId + ", semester=" + semester
-				+ ", primaryCourse1Id=" + primaryCourse1Id + ", primaryCourse2Id=" + primaryCourse2Id
-				+ ", primaryCourse3Id=" + primaryCourse3Id + ", primarycourse4Id=" + primaryCourse4Id
+				+ ", year=" + year + ", primaryCourse1Id=" + primaryCourse1Id + ", primaryCourse2Id=" + primaryCourse2Id
+				+ ", primaryCourse3Id=" + primaryCourse3Id + ", primaryCourse4Id=" + primaryCourse4Id
 				+ ", alternativeCourse1Id=" + alternativeCourse1Id + ", alternativeCourse2Id=" + alternativeCourse2Id
 				+ ", registrationStatus=" + registrationStatus + "]";
 	}
+	
+	
 	
 }

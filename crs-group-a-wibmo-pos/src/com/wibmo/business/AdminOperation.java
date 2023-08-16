@@ -11,10 +11,10 @@ public interface AdminOperation {
 
 	/**
 	 * 
-	 * @param id
+	 * @param integer
 	 * @return
 	 */
-	public Admin getAdminById(Long id);
+	public Admin getAdminById(Integer integer);
 	
 	/**
 	 * Fetches the Admins of the respective Ids

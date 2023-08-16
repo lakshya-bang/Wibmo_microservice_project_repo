@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
-import com.wibmo.bean.CourseCatalogue;
 
 /**
  * 
@@ -13,9 +12,10 @@ public interface CourseDAO {
 
 	/**
 	 * 
+	 * @param semester
 	 * @return
 	 */
-	public List<Course> findAll();
+	public List<Course> findAllBySemester(Integer semester);
 	
 	/**
 	 * 
@@ -26,8 +26,8 @@ public interface CourseDAO {
 	
 	/**
 	 * 
-	 * @param semester
+	 * @param professorId
 	 * @return
 	 */
-	public List<Course> findAllBySemester(Integer semester);
+	public List<Course> findAllByProfessorId(Integer professorId);
 }

@@ -18,9 +18,10 @@ public interface GradeOperation {
 	
 	/**
 	 * 
-	 * @param grade
+	 * @param courseId
+	 * @param studentIdToAssignedGradesMap
 	 */
-	public void uploadGrade(Grade grade);
+	public void uploadGrades(Integer courseId, Map<Integer, String> studentIdToAssignedGradesMap);
 	
 	/**
 	 * 

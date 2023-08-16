@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import com.wibmo.bean.User;
 import com.wibmo.constant.SQLConstants;
+import com.wibmo.enums.UserType;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -59,8 +60,10 @@ public class AuthenticationDAOImpl implements AuthenticationDAO{
 		stmt = conn.prepareStatement(SQLConstants.USER_DETAILS + "'" + user_name + "'");
 	    ResultSet rs = stmt.executeQuery(SQLConstants.USER_DETAILS + "'" + user_name + "'");
 	   if(rs.next()) {
-		   System.out.println(rs.getLong(1));
-		   return new User(rs.getString("name"), rs.getInt("user_id"), rs.getString("address"), rs.getString("email"), rs.getString("type"), rs.getInt("number"));
+//		   System.out.println(rs.getLong(1));
+		   return new User(
+				   rs.getInt("user_id"), 
+				   UserType.valueOf(rs.getString("user_type")));
 	   }
 	   else {
 		   return null;

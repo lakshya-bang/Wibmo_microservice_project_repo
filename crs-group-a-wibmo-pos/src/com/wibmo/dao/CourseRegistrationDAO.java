@@ -3,8 +3,11 @@
  */
 package com.wibmo.dao;
 
+import java.util.Set;
+
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Student;
+import com.wibmo.enums.RegistrationStatus;
 
 /**
  * 
@@ -29,7 +32,14 @@ public interface CourseRegistrationDAO {
 	 * @param student
 	 * @return
 	 */
-	public String findRegistrationStatusByStudent(Student student);
+	public RegistrationStatus findRegistrationStatusByStudent(Student student);
+	
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Set<Integer> findAllStudentIdsByCourseId(Integer courseId);
 	
 	/**
 	 * 
@@ -37,4 +47,16 @@ public interface CourseRegistrationDAO {
 	 * @return
 	 */
 	public Boolean existsByStudent(Student student);
+	
+	/**
+	 * 
+	 * @param courseId
+	 * @param semester
+	 * @param year
+	 * @return
+	 */
+	public CourseRegistration findByCourseIdAndSemesterAndYear(
+			Integer courseId,
+			Integer semester,
+			Integer year);
 }

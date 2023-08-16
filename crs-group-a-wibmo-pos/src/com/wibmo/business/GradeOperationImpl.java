@@ -55,7 +55,7 @@ public class GradeOperationImpl implements GradeOperation {
 				System.out.format("%5d%10s%10s%10s", 
 						grade.getCourseId(),
 						courseIdToCourseMap.get(
-								grade.getCourseId()).getName(),  // course title
+								grade.getCourseId()).getCourseTitle(),  // course title
 						courseIdToCourseMap.get(
 								grade.getCourseId()).getDepartment(),   // CSE, ECE 
 						grade.getGrade());    // "A"
@@ -65,7 +65,10 @@ public class GradeOperationImpl implements GradeOperation {
 	}
 
 	@Override
-	public void uploadGrade(Grade grade) {
+	public void uploadGrades(Integer courseId, Map<Integer, String> studentIdToAssignedGradesMap) {
+		
+		// TODO: Lakshya is doing
+		
 		if(hasEntry(grade)) {
 			gradeDAO.updateByGradeId(grade.getGradeId());
 		} else {

@@ -15,15 +15,6 @@ import com.wibmo.dao.ProfessorDAOImpl;
  */
 public interface ProfessorOperation {
 	
-	public static Professor fetchDetails(User user) {
-		Professor professor = new Professor();
-		ProfessorDAO professorDao = ProfessorDAOImpl.getInstance();
-		professor.setCoursesTaught(
-				professorDao.fetchCoursesTaught(
-						user.getUserId(), 1, 1));
-		return professor;
-	}
-	
 	/**
 	 * 
 	 * @param userId
@@ -37,13 +28,5 @@ public interface ProfessorOperation {
 	 * @return
 	 */
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds);
-	
-	/**
-	 * 
-	 * @param professorId
-	 * @return
-	 */
-	public Map<Integer, List<Student>> getCourseIdToEnrolledStudentsMapping(Integer professorId);
-	
-	public void uploadGrades();
+
 }

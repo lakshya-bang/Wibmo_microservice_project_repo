@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Student;
@@ -18,6 +20,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		String sql = "INSERT INTO registered_courses("
 				+ "student_id, "
 				+ "semester,"
+				+ "year,"
 				+ "primary_course_1_id,"
 				+ "primary_course_2_id,"
 				+ "primary_course_3_id,"
@@ -25,20 +28,21 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 				+ "alternative_course_1_id,"
 				+ "alternative_course_2_id,"
 				+ "is_approved) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, courseRegistration.getStudentId());
 			stmt.setInt(2, courseRegistration.getSemester());
-			stmt.setInt(3, courseRegistration.getPrimaryCourse1Id());
-			stmt.setInt(4, courseRegistration.getPrimaryCourse2Id());
-			stmt.setInt(5, courseRegistration.getPrimaryCourse3Id());
-			stmt.setInt(6, courseRegistration.getPrimaryCourse4Id());
-			stmt.setInt(7, courseRegistration.getAlternativeCourse1Id());
-			stmt.setInt(8, courseRegistration.getAlternativeCourse2Id());
-			stmt.setString(9, courseRegistration.getRegistrationStatus().toString());
+			stmt.setInt(3, courseRegistration.getYear());
+			stmt.setInt(4, courseRegistration.getPrimaryCourse1Id());
+			stmt.setInt(5, courseRegistration.getPrimaryCourse2Id());
+			stmt.setInt(6, courseRegistration.getPrimaryCourse3Id());
+			stmt.setInt(7, courseRegistration.getPrimaryCourse4Id());
+			stmt.setInt(8, courseRegistration.getAlternativeCourse1Id());
+			stmt.setInt(9, courseRegistration.getAlternativeCourse2Id());
+			stmt.setString(10, courseRegistration.getRegistrationStatus().toString());
 			
 			stmt.executeUpdate();
 			
@@ -71,6 +75,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 						rs.getInt("course_reg_id"),
 						rs.getInt("student_id"),
 						rs.getInt("semester"),
+						rs.getInt("year"),
 						rs.getInt("primary_course_1_id"),
 						rs.getInt("primary_course_2_id"),
 						rs.getInt("primary_course_3_id"),
@@ -90,9 +95,9 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	}
 
 	@Override
-	public String findRegistrationStatusByStudent(Student student) {
+	public RegistrationStatus findRegistrationStatusByStudent(Student student) {
 		
-		String registrationStatus = null;
+		RegistrationStatus registrationStatus = null;
 		
 		String sql = "SELECT registration_status FROM registered_courses "
 				+ "WHERE student_id = ? "
@@ -107,7 +112,8 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next()) {
-				registrationStatus = rs.getString("registration_status");
+				registrationStatus = RegistrationStatus
+						.valueOf(rs.getString("registration_status"));
 			}
 			
 		} catch (SQLException e) {
@@ -142,6 +148,90 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		}
 		
 		return row == 1;
+	}
+
+	@Override
+	public Set<Integer> findAllStudentIdsByCourseId(Integer courseId) {
+		
+		Set<Integer> studentIds = new HashSet<>();
+		
+		String sql = "SELECT student_id FROM registered_courses "
+				+ "WHERE primary_course_1_id = ? "
+				+ "OR primary_course_2_id = ? "
+				+ "OR primary_course_3_id = ? "
+				+ "OR primary_course_4_id = ? "
+				+ "OR alternative_course_1_id = ? "
+				+ "OR alternative_course_2_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			for(int i = 1; i <= 6; i++) {
+				stmt.setInt(i, courseId);
+			}
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				studentIds.add(rs.getInt("student_id"));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return studentIds;
+	}
+
+	@Override
+	public CourseRegistration findByCourseIdAndSemesterAndYear(Integer courseId, Integer semester, Integer year) {
+
+		CourseRegistration courseRegistration = null;
+		
+		String sql = "SELECT * FROM registered_courses "
+				+ "WHERE semester = ? "
+				+ "AND year = ? "
+				+ "AND ("
+				+ "primary_course_1_id = ? "
+				+ "OR primary_course_2_id = ? "
+				+ "OR primary_course_3_id = ? "
+				+ "OR primary_course_4_id = ?)";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, semester);
+			stmt.setInt(2, year);
+			for(int i = 3; i <= 6; i++) {
+				stmt.setInt(i, courseId);
+			}
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				courseRegistration = new CourseRegistration(
+						rs.getInt("reg_id"),
+						rs.getInt("student_id"),
+						rs.getInt("semester"),
+						rs.getInt("year"),
+						rs.getInt("primary_course_1_id"),
+						rs.getInt("primary_course_2_id"),
+						rs.getInt("primary_course_3_id"),
+						rs.getInt("primary_course_4_id"),
+						rs.getInt("alternative_course_1_id"),
+						rs.getInt("alternative_course_2_id"),
+						RegistrationStatus.valueOf(
+								rs.getString("registration_status")));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return courseRegistration;
 	}
 
 }

@@ -14,16 +14,14 @@ import java.util.Set;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
-import com.wibmo.business.CourseCatalogueOperation;
-import com.wibmo.business.CourseCatalogueOperationImpl;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
+import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
+import com.wibmo.business.GradeOperation;
+import com.wibmo.business.GradeOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
-import com.wibmo.business.UserOperation;
-import com.wibmo.business.UserOperationImpl;
-import com.wibmo.dao.ProfessorDAO;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
@@ -37,26 +35,24 @@ public class CRSProfessorMenu {
 	
 	public static Boolean display(User user) {
 		
-		Scanner in = new Scanner(System.in);
+		Scanner input = new Scanner(System.in);
 		Integer courseId;
-		boolean exit = false;
-		boolean response;
-		int ch;
+		boolean logout = false;
+		int choice;
 		
-		UserOperation userOperation = new UserOperationImpl();
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
-				userOperation, professorOperation);
-		CourseRegistrationOperationImpl courseRegistrationOperation =
-				new CourseRegistrationOperationImpl(userOperation, courseOperation);
+				professorOperation);
+		CourseRegistrationOperation courseRegistrationOperation =
+				new CourseRegistrationOperationImpl(
+						studentOperation, professorOperation, courseOperation);
+		GradeOperation gradeOperation = new GradeOperationImpl(courseOperation);
 		
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
-		boolean logout = false;
-		
 		System.out.print("+......... Welcome Professor .........+\n");
-		System.out.println(user);
+		System.out.println(professor);
 		
 		while(!logout) {
 			System.out.print("+-------------------------+"
@@ -66,45 +62,56 @@ public class CRSProfessorMenu {
 					+ "[3] Logout\n"
 					+ "Enter your choice: ");
 			
-			ch = in.nextInt();
+			choice = input.nextInt();
 			
-			switch(ch) {
+			switch(choice) {
 			
 			case 0:
-				System.out.println("List of Courses Taught: ");
-				courseOperation.viewCoursesTaughtByProfessorId(professor.getProfessorId());
+				System.out.println("*** List of Courses Taught:- ***");
+				System.out.println(" CourseId    CourseTitle    CourseType ");
+				System.out.println("+------------------------------------+");
+				courseOperation
+					.getCoursesAssignedToProfessor(professor.getProfessorId())
+					.forEach(course -> System.out.format(
+							"%5d%10s%10s", 
+								course.getCourseId(), 
+								course.getCourseTitle(),
+								course.getCourseType().toString()));
 				break;
 			
 			case 1:
 				System.out.println("Enter the courseId to view registered students: ");
 				// TODO: Should check if this professor is teaching this course
-				courseId = in.nextInt();
+				courseId = input.nextInt();
 				System.out.println("*** List of Registered Students:- ***");
 				System.out.println(" StudentId    StudentName ");
 				System.out.println("+------------------------+");
 				courseRegistrationOperation
 					.getRegisteredStudentsByCourseId(courseId)
-					.forEach()
+					.forEach(student -> System.out.format(
+							"%5s%10s", 
+								student.getStudentId(), 
+								student.getStudentName()));
 				break;
 				
 			case 2:
 				// ask the user which course's grade he/she wants to upload
-				courseId = in.nextInt();
+				courseId = input.nextInt();
 				
 				// TODO: if wrong course selected, i.e.
 				// this professor does not teaches any of his assigned courses
 				// show message, and break
 				
 				Map<Integer, String> studentIdToAssignedGradeMap = new HashMap<>();
-				String grade = null;
 				
 				// loop over each student one by one and ask the user to enter the grades.
 				courseRegistrationOperation
 					.getRegisteredStudentsByCourseId(courseId)
 					.forEach(student -> {
+						String grade = null;
 						do {
 							System.out.print("StudentId: " + student.getStudentId() + ", StudentName: " + student.getStudentName() + ", Enter Grade: ");
-							grade = in.next();
+							grade = input.next();
 						} while(!grade.matches("[ABCDEf|abcdef]"));
 						studentIdToAssignedGradeMap.put(student.getStudentId(), grade);
 					});
@@ -121,7 +128,7 @@ public class CRSProfessorMenu {
 				
 			}
 		}
-		
+		input.close();
 		return Boolean.FALSE;
 	}
 }

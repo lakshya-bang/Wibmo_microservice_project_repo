@@ -21,7 +21,10 @@ public interface CourseOperation {
 	 */
 	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds);
 	
-	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId);
-	
-	
+	/**
+	 * 
+	 * @param professor
+	 * @return
+	 */
+	public List<Course> getCoursesAssignedToProfessor(Integer professorId);
 }
