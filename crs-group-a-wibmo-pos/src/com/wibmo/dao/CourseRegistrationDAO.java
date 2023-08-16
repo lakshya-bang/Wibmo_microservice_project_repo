@@ -4,8 +4,11 @@
 package com.wibmo.dao;
 
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Map;
 
 import com.wibmo.bean.CourseRegistration;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
 
@@ -59,4 +62,12 @@ public interface CourseRegistrationDAO {
 			Integer courseId,
 			Integer semester,
 			Integer year);
+
+	/**
+	 * 
+	 * @param professor
+	 * @return 
+	 */
+	public Map<Integer, ArrayList<Integer>> getStudentsByCourseId(Professor professor);
+
 }

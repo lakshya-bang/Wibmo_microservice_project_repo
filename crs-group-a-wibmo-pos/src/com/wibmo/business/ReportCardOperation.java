@@ -1,14 +1,15 @@
 package com.wibmo.business;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-import com.wibmo.bean.Grade;
+import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 
 /**
  * 
  */
-public interface GradeOperation {
+public interface ReportCardOperation {
 
 	/**
 	 * 
@@ -28,5 +29,5 @@ public interface GradeOperation {
 	 * @param studentId
 	 * @return
 	 */
-	public Map<Integer, Grade> getSemesterToGradeMapByStudentId(Integer studentId);
+	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId);
 }

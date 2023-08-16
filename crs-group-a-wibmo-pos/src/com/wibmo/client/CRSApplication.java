@@ -3,7 +3,6 @@ package com.wibmo.client;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
-
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;

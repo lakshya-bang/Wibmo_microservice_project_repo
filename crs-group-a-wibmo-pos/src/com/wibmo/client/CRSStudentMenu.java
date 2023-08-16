@@ -10,8 +10,8 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
-import com.wibmo.business.GradeOperation;
-import com.wibmo.business.GradeOperationImpl;
+import com.wibmo.business.ReportCardOperation;
+import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
@@ -33,7 +33,7 @@ public class CRSStudentMenu {
 		CourseRegistrationOperation courseRegistrationOperation = 
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		GradeOperation gradeOperation = new GradeOperationImpl(courseOperation);
+		ReportCardOperation gradeOperation = new ReportCardOperationImpl(courseOperation);
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
@@ -157,6 +157,8 @@ public class CRSStudentMenu {
 
 			}
 		}
+		
+		input.close();
 		return Boolean.FALSE;
 	}
 }

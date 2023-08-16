@@ -1,6 +1,7 @@
 package com.wibmo.business;
 
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import com.wibmo.bean.Admin;
@@ -14,62 +15,52 @@ public class AdminOperationImpl implements AdminOperation {
 	AdminDAO adminDAO = new AdminDAOImpl();
 	
 	@Override
-	public Admin getAdminById(Long id) {
-		return adminDAO.getById(id);
-	}
-	
-	@Override
-	public List<Admin> getAdminsByIds(Set<Long> ids) {
+	public boolean registerAdmin(String email, String password,String name) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer addAdmins(List<Admin> admins) {
-		// TODO Auto-generated method stub
-		return null;
+		return adminDAO.saveAdmin(email,password,name); 
+		// throw new UnsupportedOperationException("Unimplemented method 'addAdmins'");
 	}
 
 	@Override
 	public RegistrationStatus acknowledgeStudentRegistration(Long registrationId, Integer semester) {
 		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Unimplemented method 'acknowledgeStudentRegistration'");
 	}
 
 	@Override
-	public void addCourseToCatalog(Course course) {
+	public boolean addCourseToCatalog(Course course) {
 		// TODO Auto-generated method stub
-		
+		// Course course = new Course();
+		return adminDAO.saveCourse(course); 
+		// throw new UnsupportedOperationException("Unimplemented method 'addCourseToCatalog'");
 	}
 
 	@Override
-	public void assignCoursesToProfessor() {
+	public boolean dropCourseFromCatalog(String courseName) {
 		// TODO Auto-generated method stub
-		
+		adminDAO.deleteCourse(courseName);
+		throw new UnsupportedOperationException("Unimplemented method 'dropCourseFromCatalog'");
+	}
+
+	@Override
+	public void assignCoursesToProfessor(String courseName,String professorName) {
+		// TODO Auto-generated method stub
+		adminDAO.assignCoursesToProfessor(courseName, professorName);
+		throw new UnsupportedOperationException("Unimplemented method 'assignCoursesToProfessor'");
 	}
 
 	@Override
 	public void generateReportCards() {
 		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Unimplemented method 'generateReportCards'");
 	}
 
 	@Override
-	public void generateBills() {
+	public Admin getAdminById(Integer integer) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
-
-	@Override
-	public void notifyNewRegistration() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void notifyPendingDues() {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 
 }

@@ -1,14 +1,11 @@
-/**
- * 
- */
 package com.wibmo.bean;
 
 /**
- * 
+ *
  */
 public class Professor {
 
-	private Integer professorId;	// professor_id
+	private Integer professorId;	// professor_id (FK)
 	private String professorName;	// professor_name
 	private String department;		// department
 

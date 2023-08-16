@@ -9,10 +9,12 @@ import com.wibmo.bean.Professor;
 import com.wibmo.dao.ProfessorDAO;
 import com.wibmo.dao.ProfessorDAOImpl;
 
-
+/**
+ * 
+ */
 public class ProfessorOperationImpl implements ProfessorOperation {
 
-	ProfessorDAO professorDAO = new ProfessorDAOImpl();
+	ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
 	
 	@Override
 	public Professor getProfessorById(Integer professorId) {
@@ -30,5 +32,4 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 						Professor::getProfessorId, 
 						Function.identity()));
 	}
-	
 }

@@ -18,8 +18,8 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
-import com.wibmo.business.GradeOperation;
-import com.wibmo.business.GradeOperationImpl;
+import com.wibmo.business.ReportCardOperation;
+import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.business.ProfessorOperation;
@@ -47,7 +47,7 @@ public class CRSProfessorMenu {
 		CourseRegistrationOperation courseRegistrationOperation =
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		GradeOperation gradeOperation = new GradeOperationImpl(courseOperation);
+		ReportCardOperation gradeOperation = new ReportCardOperationImpl(courseOperation);
 		
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		

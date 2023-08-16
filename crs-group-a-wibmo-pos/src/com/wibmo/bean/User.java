@@ -6,11 +6,16 @@ package com.wibmo.bean;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
+/**
+ * Table name = "auth_creds"
+ */
 public class User {
 	
-	private Integer userId;							// user_id
-	private RegistrationStatus registrationStatus;	// reg_status
+	private Integer userId;							// user_id (PK)
 	private UserType userType;						// user_type
+	private RegistrationStatus registrationStatus;	// reg_status
+	
+	public User() {}
 	
 	public User(
 			Integer userId, 

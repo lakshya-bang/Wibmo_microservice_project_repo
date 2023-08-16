@@ -5,7 +5,7 @@ package com.wibmo.bean;
  */
 public class Student {
 
-	private Integer studentId;			// student_id
+	private Integer studentId;			// student_id (FK)
 	private String studentName;			// student_name
 	private Integer currentSemester;	// semester
 	
