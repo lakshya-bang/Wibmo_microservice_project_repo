@@ -1,10 +1,12 @@
 package com.wibmo.client;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
 import com.wibmo.bean.Admin;
+import com.wibmo.bean.Course;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.AdminOperation;
@@ -46,69 +48,80 @@ public class CRSAdminMenu {
 		
 		while(!logout) {
 			System.out.println("+-------------------------+"
-					+ "[1] Course Registration\n"
-					+ "[2] View Registered Courses\n"
-					+ "[3] Add Course\n"
-					+ "[4] Drop Course\n"
-					+ "[5] View Grades\n"
-					+ "[6] Logout\n"
+					+ "[1] LogIn\n"
+					+ "[2] Register Admin to CRS\n"
+					+ "[3] Approve Student Registration\n"
+					+ "[4] Add Course to Catalogue\n"
+					+ "[5] Drop Course from Catalogue\n"
+					+ "[6] Assign course to Professor\n"
+					+ "[7] Generate Report card\n"
 					+ "Enter your choice: ");
+					// Bill Functionality -> move
 			
 			ch = in.nextInt();
 			
 			switch(ch) {
 			
 			case 1:
-				System.out.println("*** COURSE CATALOGUE:- ***");
-				courseCatalogueOperation.viewCourseCatalogue();
-				Set<Long> selectedCourses = new HashSet<>();
-				// 4 Primary Courses to be selected:
-				System.out.println("Enter 4 Primary Course Ids: ");
-				for(int i = 1; i <= 4; i++) {
-					selectedCourses.add(in.nextLong());
-				}
-				// 2 Alternative Courses to be selected:
-				System.out.println("Enter 2 Alternative Course Ids: ");
-				for(int i = 1; i <= 2; i++) {
-					selectedCourses.add(in.nextLong());
-				}
-				try {
-					student.registerCourses(userId, selectedCourses);
-				} catch (StudentNotFoundException | CoursesNotAvailableForRegistrationException
-						| StudentAlreadyRegisteredForSemesterException e) {
-					System.out.println(e.getMessage());
-//					e.printStackTrace();
-				}
+				System.out.println("***LogIn***");
+				adminOperation.logIn();
 				break;
 				
-			case 2:
-				// TODO: Should be viewRegisteredCoursesBy...() instead
-				student.viewRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
+			case 2:System.out.println("***Register New Admin***");
+				System.out.println("Please enter new Admin email: ");
+				String email = in.next();
+				System.out.println("Please enter new Admin password: ");
+				String password = in.next();
+				System.out.println("Please enter the name : ");
+				String name = in.next();
+				adminOperation.registerAdmin(email, password, name);
 				break;
 				
 			case 3:
-				System.out.println("*** Course Catalogue:- ***");
-				courseCatalogueOperation.viewCourseCatalogue();
-				System.out.print("Enter Id of the course you wish to add: ");
-				courseId = in.nextLong();
-				student.addCourse(courseId, semOfStudy);
+				// System.out.println("*** Course Catalogue:- ***");
+				// courseCatalogueOperation.viewCourseCatalogue();
+				// System.out.print("Enter Id of the course you wish to add: ");
+				// courseId = in.nextLong();
+				// student.addCourse(courseId, semOfStudy);
 				break;
 				
 			case 4:
-				System.out.println("--- Registered Courses:- ---");
-				student.getRegisteredCourseIdsBySemOfStudy(userId, semOfStudy);
-				System.out.print("Enter Id of the course you wish to drop: ");
-				courseId = in.nextLong();
-				student.dropCourse(courseId, semOfStudy);
+				System.out.println("--- Add a new Course to catalog:- ---");
+				System.out.println("Please enter course name: ");
+				String courseName = in.next();
+				System.out.println("Please enter year of the course: ");
+				int courseYear = in.nextInt();
+				System.out.println("Please enter semester of the course: ");
+				int semester = in.nextInt();
+				System.out.println("Please enter department of the course: ");
+				String department = in.next();
+				System.out.println("Please enter type of the course: ");
+				String courseType = in.next();
+				
+				Course course = new Course();
+				course.setName(courseName);
+				course.setDepartment(department);
+				course.setYear(courseYear);
+				course.setSemester(semester);
+				course.setCourseType(courseType);
+				adminOperation.addCourseToCatalog(course);
 				break;
 				
 			case 5:
-				gradeOperation.viewGradesByStudentId(userId);
-				break;
+				System.out.println("--- Drop Course to catalog:- ---");
+				System.out.println("Please enter course name: ");
+				courseName = in.next();
+				adminOperation.dropCourseFromCatalog(courseName);
+			break;
 				
 			case 6:
-				logout = true;
-				break;
+				System.out.println("--- Assign course to professor:- ---");
+				System.out.println("Please enter the course name: ");
+				courseName = in.next();
+				System.out.println("Please enter Professor name: ");
+				String professorName = in.next();
+				adminOperation.assignCoursesToProfessor(courseName,professorName);
+			break;
 				
 			default:
 				System.out.println("Invalid choice! Try again.");
