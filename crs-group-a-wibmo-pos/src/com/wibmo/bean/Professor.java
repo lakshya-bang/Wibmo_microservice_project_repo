@@ -24,8 +24,6 @@ public class Professor {
 	public Professor(Integer professorId, String department) {
 		this.professorId = professorId;
 		this.department = department;
-		CourseDAO courseDao = new CourseDAOImpl();
-		this.coursesTaught = courseDao.findCourseByProfessorID(professorId);
 	}
 
 	/**
@@ -69,7 +67,8 @@ public class Professor {
 	 */
 
 	public void setCoursesTaught(ArrayList<Course> coursesTaught) {
-		this.coursesTaught = coursesTaught;
+		CourseDAO courseDao = new CourseDAOImpl();
+		this.coursesTaught = courseDao.findCourseByProfessorID(professorId);
 	}
 
 	@Override

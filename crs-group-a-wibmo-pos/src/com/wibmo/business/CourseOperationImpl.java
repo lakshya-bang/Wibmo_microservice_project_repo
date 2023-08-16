@@ -61,4 +61,10 @@ public class CourseOperationImpl implements CourseOperation {
 						Function.identity()));
 	}
 
+	@Override
+	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'viewCoursesTaughtByProfessorId'");
+	}
+
 }
