@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.User;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 public class ProfessorDAOImpl implements ProfessorDAO {
@@ -34,8 +35,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 	public List<Professor> findAllByIdIn(Set<Integer> ids) {
 		List<Professor> professors = new ArrayList<>();
 		
-		String sql = "SELECT * FROM professor "
-				+ "WHERE professor_id IN(?)";
+		String sql = SQLConstants.FIND_PROFESSOR_BY_IDS;
 		
 		Connection conn = DBUtils.getConnection();
 		try {

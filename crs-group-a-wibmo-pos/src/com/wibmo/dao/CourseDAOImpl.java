@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 public class CourseDAOImpl implements CourseDAO {
@@ -23,8 +24,7 @@ public class CourseDAOImpl implements CourseDAO {
 		Connection conn = DBUtils.getConnection();
 		try {
 			for(Integer courseId : courseIds){
-			String sql = "SELECT * FROM user.course "
-				+ "WHERE course_id = " + courseId;
+			String sql = SQLConstants.FETCH_COURSE_BY_ID + courseId;
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 			
@@ -41,8 +41,7 @@ public class CourseDAOImpl implements CourseDAO {
 
 	@Override
 	public List<Course> findAllBySemester(Integer semester) {
-		String sql = "SELECT * FROM user.course "
-				+ "WHERE semester = " + semester;
+		String sql = SQLConstants.FETCH_COURSE_BY_SEMESTER + semester;
 		List<Course> courses = new ArrayList<>();
 		
 		Connection conn = DBUtils.getConnection();
@@ -62,8 +61,7 @@ public class CourseDAOImpl implements CourseDAO {
 
 	@Override
 	public List<Course> findCourseByProfessorID(Integer professorID) {
-		String sql = "SELECT * FROM user.course "
-				+ "WHERE professor_id = " + professorID;
+		String sql =  SQLConstants.FETCH_COURSE_BY_PROFESSOR_ID+ professorID;
 		List<Course> courses = new ArrayList<>();
 		
 		Connection conn = DBUtils.getConnection();
@@ -80,6 +78,5 @@ public class CourseDAOImpl implements CourseDAO {
 		}
 		return courses;
 	}
-
 
 }

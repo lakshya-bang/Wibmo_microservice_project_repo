@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.wibmo.bean.Grade;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -65,8 +66,7 @@ public class GradeDAOImpl implements GradeDAO {
 
 	@Override
 	public Map<Integer, ArrayList<Grade>> findAllByStudentId(Integer studentId) {
-		String sql = "SELECT * from report_card"
-						+"WHERE student_id =?";
+		String sql = SQLConstants.FETCH_REPORT_CARD_BY_STUDENT_ID;
 		Connection conn = DBUtils.getConnection();
 		Map<Integer,ArrayList<Grade>> semesterToGrade = new HashMap<Integer,ArrayList<Grade>>();
 		try {
@@ -92,7 +92,7 @@ public class GradeDAOImpl implements GradeDAO {
 
 	@Override
 	public boolean checkGradeDetails(Grade grade) {
-		String sql = "SELECT * FROM user.report_card WHERE grade_id=" + grade.getGradeId();
+		String sql = SQLConstants.FETCH_REPORT_CARD_BY_GRADE_ID + grade.getGradeId();
 		Connection conn = com.wibmo.utils.DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -113,7 +113,7 @@ public class GradeDAOImpl implements GradeDAO {
 
 	@Override
 	public void updateByGradeId(Grade grade) {
-		String sql = "UPDATE user.report_card SET student_id = ? , course_id = ?, grade = ?, semester = ?, year = ? WHERE grade_id = ?";
+		String sql = SQLConstants.UPDATE_REPORT_CARD_BY_GRADE_ID;
 		Connection conn = DBUtils.getConnection();
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);

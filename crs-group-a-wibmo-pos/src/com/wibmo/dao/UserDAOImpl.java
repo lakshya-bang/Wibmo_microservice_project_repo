@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.User;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 public class UserDAOImpl implements UserDAO {
@@ -19,8 +20,7 @@ public class UserDAOImpl implements UserDAO {
 		
 		List<User> users = new ArrayList<>();
 		
-		String sql = "SELECT * FROM user"
-				+ "WHERE user_id IN(?)";
+		String sql = SQLConstants.FETCH_USER_BY_IDS;
 		
 		Connection conn = DBUtils.getConnection();
 		try {
