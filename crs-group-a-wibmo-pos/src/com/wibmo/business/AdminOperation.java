@@ -10,6 +10,13 @@ import com.wibmo.enums.RegistrationStatus;
 public interface AdminOperation {
 
 	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Admin getAdminById(Long id);
+	
+	/**
 	 * Fetches the Admins of the respective Ids
 	 * @param ids
 	 * @return

@@ -4,74 +4,112 @@
 package com.wibmo.bean;
 
 /**
- * 
+ * Table Name = grade_details
  */
 public class Grade {
-	int year;
-	char sem;
-	int courseID;
-	int studentId;
-	char grade;
-	/**
-	 * @return the year
-	 */
-	public int getYear() {
-		return year;
-	}
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(int year) {
+	
+	private Integer gradeId;			// grade_detail_id (PK)
+	private Integer studentId;			// student_id
+	private Integer courseId;			// course_id
+	private String grade;				// grade
+	private Integer semester;			// semester
+	private Integer year;				// year
+	
+	public Grade() {}
+	
+	
+	
+	public Grade(
+			Integer gradeId, 
+			Integer studentId, 
+			Integer courseId, 
+			String grade, 
+			Integer semester,
+			Integer year) {
+		super();
+		this.gradeId = gradeId;
+		this.studentId = studentId;
+		this.courseId = courseId;
+		this.grade = grade;
+		this.semester = semester;
 		this.year = year;
 	}
+
+
+
 	/**
-	 * @return the sem
+	 * @return the gradeDetailId
 	 */
-	public char getSem() {
-		return sem;
+	public Integer getGradeId() {
+		return gradeId;
 	}
 	/**
-	 * @param sem the sem to set
+	 * @param gradeDetailId the gradeDetailId to set
 	 */
-	public void setSem(char sem) {
-		this.sem = sem;
-	}
-	/**
-	 * @return the courseID
-	 */
-	public int getCourseID() {
-		return courseID;
-	}
-	/**
-	 * @param courseID the courseID to set
-	 */
-	public void setCourseID(int courseID) {
-		this.courseID = courseID;
+	public void setGradeId(Integer gradeId) {
+		this.gradeId = gradeId;
 	}
 	/**
 	 * @return the studentId
 	 */
-	public int getStudentId() {
+	public Integer getStudentId() {
 		return studentId;
 	}
 	/**
 	 * @param studentId the studentId to set
 	 */
-	public void setStudentId(int studentId) {
+	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
+	}
+	/**
+	 * @return the courseId
+	 */
+	public Integer getCourseId() {
+		return courseId;
+	}
+	/**
+	 * @param courseId the courseId to set
+	 */
+	public void setCourseId(Integer courseId) {
+		this.courseId = courseId;
 	}
 	/**
 	 * @return the grade
 	 */
-	public char getGrade() {
+	public String getGrade() {
 		return grade;
 	}
 	/**
 	 * @param grade the grade to set
 	 */
-	public void setGrade(char grade) {
+	public void setGrade(String grade) {
 		this.grade = grade;
 	}
+	/**
+	 * @return the semester
+	 */
+	public Integer getSemester() {
+		return semester;
+	}
+	/**
+	 * @param semeste the semester to set
+	 */
+	public void setSemester(Integer semester) {
+		this.semester = semester;
+	}
+	/**
+	 * @return the year
+	 */
+	public Integer getYear() {
+		return year;
+	}
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+	
 	
 	
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.constants;
+package com.wibmo.constant;
 
 /**
  * 
@@ -16,8 +16,4 @@ public class SQLConstants {
 	public static String COURSE_DROP = " DELETE FROM registered_courses where student_id=? AND courses=?";
 	public static String COURSE_VIEW = " SELECT c.name AS courseName, c.semester FROM course c JOIN registered_courses rc ON c.id = rc.courses where StudentId=?";
 	public static String GRADE_VIEW = "SELECT course_id, grade FROM report_card WHERE student_id = ?";
-	
 }
-
-
-//Student id

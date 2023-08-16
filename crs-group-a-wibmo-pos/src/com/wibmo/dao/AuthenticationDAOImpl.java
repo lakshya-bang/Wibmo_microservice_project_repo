@@ -9,24 +9,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.wibmo.bean.User;
-import com.wibmo.constants.SQLConstants;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 /**
  * 
  */
-public class AuthenticationDaoImpl implements AuthenticationDao{
+public class AuthenticationDAOImpl implements AuthenticationDAO{
 	
-	private static volatile AuthenticationDaoImpl instance = null;
-	private AuthenticationDaoImpl() {
-		
-	}
+	private static volatile AuthenticationDAOImpl instance = null;
 	
+	private AuthenticationDAOImpl() {}
 	
-	public static AuthenticationDaoImpl getInstance() {
+	public static AuthenticationDAOImpl getInstance() {
         if (instance == null) {
-            synchronized (AuthenticationDaoImpl.class) { //It's a synchronized object that will thread safe.
-                instance = new AuthenticationDaoImpl();
+            synchronized (AuthenticationDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new AuthenticationDAOImpl();
             }
         }
         return instance;
@@ -62,7 +60,7 @@ public class AuthenticationDaoImpl implements AuthenticationDao{
 	    ResultSet rs = stmt.executeQuery(SQLConstants.USER_DETAILS + "'" + user_name + "'");
 	   if(rs.next()) {
 		   System.out.println(rs.getLong(1));
-		   return new User(rs.getString("name"), (long) rs.getInt("user_id"), rs.getString("address"), rs.getString("email"), rs.getString("type"), (long) rs.getInt("number"));
+		   return new User(rs.getString("name"), rs.getInt("user_id"), rs.getString("address"), rs.getString("email"), rs.getString("type"), rs.getInt("number"));
 	   }
 	   else {
 		   return null;

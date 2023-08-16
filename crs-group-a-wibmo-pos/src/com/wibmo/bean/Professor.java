@@ -1,47 +1,81 @@
+/**
+ * 
+ */
 package com.wibmo.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.wibmo.dao.CourseDAO;
+import com.wibmo.dao.CourseDAOImpl;
+
+/**
+ * Table name = professor
+ * FOREIGN KEY(professor_id) REFERENCES User(user_id)
+ */
 public class Professor {
-	private String professorName;
-	private long professorID; 
-	private List<Integer> coursesTaught;
-	/**
-	 * @return the professorName
-	 */
-	public String getProfessorName() {
-		return professorName;
+
+	private Integer professorId;	// professor_id
+	private String department;		// department
+	private List<Course> coursesTaught; 
+
+	public Professor() {}
+	
+	public Professor(Integer professorId, String department) {
+		this.professorId = professorId;
+		this.department = department;
+		CourseDAO courseDao = new CourseDAOImpl();
+		this.coursesTaught = courseDao.findCourseByProfessorID(professorId);
 	}
+
 	/**
-	 * @param professorName the professorName to set
+	 * @return the professorId
 	 */
-	public void setProfessorName(String professorName) {
-		this.professorName = professorName;
+	public Integer getProfessorId() {
+		return professorId;
 	}
+
 	/**
-	 * @return the professorID
+	 * @param professorId the professorId to set
 	 */
-	public long getProfessorID() {
-		return professorID;
+	public void setProfessorId(Integer professorId) {
+		this.professorId = professorId;
 	}
+
 	/**
-	 * @param professorID the professorID to set
+	 * @return the department
 	 */
-	public void setProfessorID(long professorID) {
-		this.professorID = professorID;
+	public String getDepartment() {
+		return department;
 	}
+
 	/**
-	 * @return the coursesTaught
+	 * @param department the department to set
 	 */
-	public List<Integer> getCoursesTaught() {
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	/**
+	 * @return the list of Courses Taught
+	 */
+
+	public List<Course> getCoursesTaught() {
 		return coursesTaught;
 	}
+
 	/**
-	 * @param list the coursesTaught to set
+	 * @param ArrayList<Integer> coursesTaught 
 	 */
-	public void setCoursesTaught(List<Integer> list) {
-		this.coursesTaught = list;
+
+	public void setCoursesTaught(ArrayList<Course> coursesTaught) {
+		this.coursesTaught = coursesTaught;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Professor [professorId=" + professorId + ", department=" + department + "]";
+	}
+
 	
 }

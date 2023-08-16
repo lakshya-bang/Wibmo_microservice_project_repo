@@ -1,37 +1,53 @@
 package com.wibmo.business;
 
-import java.util.Set;
+import java.util.List;
 
-import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
-import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
-import com.wibmo.exception.StudentNotFoundException;
+import com.wibmo.bean.Student;
+import com.wibmo.enums.RegistrationStatus;
 
+/**
+ * 
+ */
 public interface CourseRegistrationOperation {
 
 	/**
 	 * 
-	 * @param studentId
-	 * @param courseIds
-	 * @return
-	 * 
-	 * // Admin will approve the relevant status of the registration
-	 * @throws StudentNotFoundException 
-	 * @throws CoursesNotAvailableForRegistrationException 
-	 * @throws StudentAlreadyRegisteredForSemesterException 
+	 * @param primaryCourses
+	 * @param alternativeCourses
+	 * @param student
 	 */
-	public void register(Long studentId, Set<Long> courseIds) throws StudentNotFoundException, CoursesNotAvailableForRegistrationException, StudentAlreadyRegisteredForSemesterException;
+	public void register(
+			List<Integer> primaryCourses, 
+			List<Integer> alternativeCourses, 
+			Student student);
 	
 	/**
 	 * 
 	 * @param studentId
 	 * @param semOfStudy
-	 * @return
 	 */
-	public Boolean getRegistrationStatusByStudentIdAndSemOfStudy(Long studentId, Integer semOfStudy);
+	public void viewRegisteredCoursesByStudent(Student student);
 	
 	/**
 	 * 
+	 * @param student
 	 * @return
 	 */
-	public Set<Long> getRegisteredCourseIdsByStudentIdAndSemOfStudy(Long studentId, Integer semOfStudy);
+	public RegistrationStatus getRegistrationStatusByStudent(Student student);
+	
+	/**
+	 * 
+	 * @param courseId
+	 * @param student
+	 */
+	public void addCourse(Integer courseId, Student student);
+	
+	/**
+	 * 
+	 * @param courseId
+	 * @param student
+	 */
+	public void dropCourse(Integer courseId, Student student);
+	
+	public void getRegisteredStudentsByCourseId(Integer courseId);
 }

@@ -4,17 +4,21 @@
 package com.wibmo.bean;
 
 /**
- * 
+ * Table Name = user_details
+ * Primary Key(userId) Auto Increment
  */
 public class User {
-	private String userName;
-	private Long userId;
-	private String userAddress;
-	private String userEmail;
-	private String userType;
-	private Long userNumber;
 	
-	public User(String name, Long id, String address, String email, String type, Long number) {
+	private Integer userId;			// user_id
+	private String userName;		// name
+	private String userAddress;		// address
+	private String userEmail;		// email
+	private String userType;		// type
+	private Integer userNumber;		// number
+	
+	public User() {}
+	
+	public User(String name, Integer id, String address, String email, String type, Integer number) {
 		this.userName = name;
 		this.userEmail = email;
 		this.userAddress = address;
@@ -33,7 +37,7 @@ public class User {
 	/**
 	 * @return the userNumber
 	 */
-	public Long getUserNumber() {
+	public Integer getUserNumber() {
 		return userNumber;
 	}
 
@@ -41,7 +45,7 @@ public class User {
 	/**
 	 * @param userNumber the userNumber to set
 	 */
-	public void setUserNumber(Long userNumber) {
+	public void setUserNumber(Integer userNumber) {
 		this.userNumber = userNumber;
 	}
 
@@ -55,13 +59,13 @@ public class User {
 	/**
 	 * @return the userId
 	 */
-	public Long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(Long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	/**
@@ -100,4 +104,12 @@ public class User {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+
+
+	@Override
+	public String toString() {
+		return "User [userName=" + userName + ", userId=" + userId + ", userAddress=" + userAddress + ", userEmail="
+				+ userEmail + ", userType=" + userType + "]";
+	}
+	
 }

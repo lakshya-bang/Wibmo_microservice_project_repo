@@ -1,24 +1,27 @@
 package com.wibmo.business;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.wibmo.bean.Course;
 
 public interface CourseOperation {
 
 	/**
 	 * 
+	 * @param currentSemester
+	 */
+	public void viewCourseDetailsBySemester(Integer currentSemester);
+	
+	/**
+	 * 
 	 * @param courseIds
 	 * @return
 	 */
-	public Map<Long, Integer> getCourseIdToVacantSeatsMapping(Set<Long> courseIds);
+	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds);
 	
-	/**
-	 * Reduces the available seat count for the given course ids
-	 * each by 1.
-	 * 
-	 * <b>NOTE</b>: This method should be synchronized
-	 * 
-	 * @param courseIds
-	 */
-	public void reduceSeatsBy1(Set<Long> courseIds);
+	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId);
+	
+	
 }
