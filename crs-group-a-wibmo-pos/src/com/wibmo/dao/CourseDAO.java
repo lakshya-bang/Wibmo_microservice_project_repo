@@ -12,12 +12,6 @@ public interface CourseDAO {
 
 	/**
 	 * 
-	 * @return
-	 */
-	public List<Course> findAll();
-	
-	/**
-	 * 
 	 * @param courseIds
 	 * @return
 	 */
