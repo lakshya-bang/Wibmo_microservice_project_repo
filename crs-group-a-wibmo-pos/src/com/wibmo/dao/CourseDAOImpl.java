@@ -50,7 +50,7 @@ public class CourseDAOImpl implements CourseDAO {
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
-				Course temp = new Course(rs.getInt("course_id"), rs.getInt("year"), rs.getInt("semester"),rs.getString("course_title"), rs.getString("department"), rs.getInt("professor_id"), rs.getBoolean("isCancelled"), rs.getInt("no_of_seats"));
+				Course temp = new Course(rs.getInt("course_id"), rs.getInt("year"), rs.getInt("semester"),rs.getString("course_title"), rs.getString("department"), rs.getInt("professor_id"), rs.getBoolean("is_cancelled"), rs.getInt("no_of_seats"));
 				courses.add(temp);
 			}
 		} catch (SQLException e) {
