@@ -2,10 +2,14 @@ package com.wibmo.client;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Scanner;
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;
+import com.wibmo.bean.*;
+import com.wibmo.business.*;
+import com.wibmo.dao.*;
 
 /**
  * 
@@ -40,6 +44,7 @@ public class CRSApplication {
 				
 			case 1:
 				
+				{
 				User user = authenticationService.login();
 				
 				if(user == null) {
@@ -47,6 +52,8 @@ public class CRSApplication {
 					break;
 				}
 				
+				NotificationOperation notificationOperation = new NotificationOperationImpl();
+				notificationOperation.retrieveMessages(user.getUserId()).forEach(notification -> System.out.println(notification.getNotificationMessage()));;
 				switch(user.getUserType()) {
 				
 				case STUDENT:
@@ -63,7 +70,8 @@ public class CRSApplication {
 				}
 				
 				break;
-				
+				}
+
 			case 2:
 				System.out.println("Missing Functionality");
 				break;

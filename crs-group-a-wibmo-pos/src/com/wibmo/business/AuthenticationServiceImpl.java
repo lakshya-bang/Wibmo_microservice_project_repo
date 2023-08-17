@@ -28,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 			System.out.println("Details fetched successfully....");
 			return user;
 		}
-		
+		in.close();
 		return null;
 	}
 

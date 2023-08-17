@@ -72,7 +72,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1,studentId);
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 			ReportCard tempReportCard = new ReportCard(
 					rs.getInt("report_id"),
 					rs.getInt("student_id"),
@@ -107,7 +107,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		Connection conn = com.wibmo.utils.DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 			
 			// TODO: Should use .equals() method instead.
 			if(rs.next() 

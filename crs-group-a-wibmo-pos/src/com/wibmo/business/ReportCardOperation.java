@@ -22,7 +22,7 @@ public interface ReportCardOperation {
 	 * @param courseId
 	 * @param studentIdToAssignedGradesMap
 	 */
-	public void uploadGrades(Integer courseId, Map<Integer, String> studentIdToAssignedGradesMap);
+	public void uploadGrades(ReportCard reportCard);
 	
 	/**
 	 * 
