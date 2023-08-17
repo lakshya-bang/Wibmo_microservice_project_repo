@@ -35,7 +35,7 @@ public class StudentDAOImpl implements StudentDAO {
 				student = new Student(
 						rs.getInt("student_id"),
 						rs.getString("student_name"),
-						rs.getInt("ssemester"));
+						rs.getInt("semester"));
 			}
 			
 		} catch (SQLException e) {

@@ -1,13 +1,8 @@
 package com.wibmo.client;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
-
 import com.wibmo.bean.Admin;
 import com.wibmo.bean.Course;
-import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.AdminOperation;
 import com.wibmo.business.AdminOperationImpl;
@@ -23,9 +18,6 @@ import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
-import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
-import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
-import com.wibmo.exception.StudentNotFoundException;
 
 /**
  * 
