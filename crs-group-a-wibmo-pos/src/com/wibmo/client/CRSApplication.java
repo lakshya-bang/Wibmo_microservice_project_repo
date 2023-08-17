@@ -2,14 +2,9 @@ package com.wibmo.client;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Scanner;
 import com.wibmo.bean.User;
-import com.wibmo.business.AuthenticationService;
-import com.wibmo.business.AuthenticationServiceImpl;
-import com.wibmo.bean.*;
 import com.wibmo.business.*;
-import com.wibmo.dao.*;
 
 /**
  * 
@@ -45,7 +40,11 @@ public class CRSApplication {
 			case 1:
 				
 				{
-				User user = authenticationService.login();
+					System.out.println("Please enter your email id: ");
+					String userName = input.next();
+					System.out.println("Please enter your password: ");
+					String password = input.next();
+					User user = authenticationService.login(userName,password);
 				
 				if(user == null) {
 					System.out.println("Login Failure");

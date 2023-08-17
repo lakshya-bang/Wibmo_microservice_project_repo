@@ -1,11 +1,6 @@
 package com.wibmo.business;
 
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
-
 import com.wibmo.bean.Admin;
-import com.wibmo.bean.Course;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.dao.AdminDAO;
 import com.wibmo.dao.AdminDAOImpl;

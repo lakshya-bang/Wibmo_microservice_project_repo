@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.wibmo.bean.CourseRegistration;
-import com.wibmo.constant.SQLConstants;
-import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.utils.DBUtils;
 
 /**

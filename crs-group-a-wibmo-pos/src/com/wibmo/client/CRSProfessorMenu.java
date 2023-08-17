@@ -4,16 +4,10 @@
 package com.wibmo.client;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.ReportCard;
-import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
@@ -27,9 +21,6 @@ import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
-import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
-import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
-import com.wibmo.exception.StudentNotFoundException;
 
 /**
  * 

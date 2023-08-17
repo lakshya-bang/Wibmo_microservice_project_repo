@@ -14,21 +14,16 @@ import com.wibmo.dao.AuthenticationDAOImpl;
 public class AuthenticationServiceImpl implements AuthenticationService{
 
 	@Override
-	public User login() {
-		Scanner in = new Scanner(System.in);
-		System.out.println("Please enter your email id: ");
-		String user_name = in.next();
-		System.out.println("Please enter your password: ");
-		String password = in.next();
-		if(AuthenticationDAOImpl.authenticate(user_name, password)) {
+	public User login(String userName, String password) {
+		
+		if(AuthenticationDAOImpl.authenticate(userName, password)) {
 			System.out.println("You have successfully logged in.....");
 			System.out.println("Please wait while we fetch your details.....");
 			System.out.println("====================================================");
-			User user = AuthenticationDAOImpl.getUserDetails(user_name);
+			User user = AuthenticationDAOImpl.getUserDetails(userName);
 			System.out.println("Details fetched successfully....");
 			return user;
 		}
-		in.close();
 		return null;
 	}
 

@@ -60,7 +60,6 @@ public class NotificationDAOImpl implements NotificationDAO{
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, userId);
-			System.out.println(stmt);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				Notification notification;

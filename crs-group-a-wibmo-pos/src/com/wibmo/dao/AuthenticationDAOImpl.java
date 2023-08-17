@@ -12,7 +12,6 @@ import com.wibmo.bean.User;
 import com.wibmo.constant.SQLConstants;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
-import com.wibmo.utils.DBUtils;
 
 /**
  * 
