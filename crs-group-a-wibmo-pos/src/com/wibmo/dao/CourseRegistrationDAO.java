@@ -70,6 +70,7 @@ public interface CourseRegistrationDAO {
 	 */
 	public Map<Integer, ArrayList<Integer>> getStudentsByCourseId(Professor professor);
 
+	public void viewCourseRegistrationStatus(RegistrationStatus regStatus);
 
 	public boolean approveRegistrationStatus(int courseRegId);
 	

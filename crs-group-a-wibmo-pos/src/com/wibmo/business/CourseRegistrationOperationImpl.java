@@ -11,7 +11,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
-import com.wibmo.bean.User;
+// import com.wibmo.bean.User;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.enums.RegistrationStatus;
@@ -158,10 +158,6 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
-		// if(regStatus.PENDING) {
-		// 	System.out.println("Your Registration is successful");
-		// }
-
 		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
 	}
 	public boolean approveRegistrationByRegistrationId(int courseRegId){
