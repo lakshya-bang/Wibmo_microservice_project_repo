@@ -1,9 +1,7 @@
 package com.wibmo.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.wibmo.bean.ReportCard;
 
@@ -12,11 +10,11 @@ import com.wibmo.bean.ReportCard;
  */
 public interface ReportCardDAO {
 
-	public void save(ReportCard grade);
+	public void save(ReportCard reportCard);
 
     public Map<Integer, ArrayList<ReportCard>> findAllByStudentId(Integer studentId);
 
-	public boolean checkGradeDetails(ReportCard grade);
+	public boolean checkGradeDetails(ReportCard reportCard);
 
-    public void updateByGradeId(ReportCard grade);
+    public void updateByReportId(ReportCard reportCard);
 }

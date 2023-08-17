@@ -15,16 +15,20 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
 	@Override
 	public User login() {
+		
 		Scanner in = new Scanner(System.in);
-		System.out.println("Please enter your email id: ");
-		String user_name = in.next();
-		System.out.println("Please enter your password: ");
+		
+		// TODO: Should add Validator for type
+		System.out.print("Enter User Id: ");
+		Integer userId = in.nextInt();
+		System.out.print("Enter Password: ");
 		String password = in.next();
-		if(AuthenticationDAOImpl.authenticate(user_name, password)) {
+		
+		if(AuthenticationDAOImpl.authenticate(userId, password)) {
 			System.out.println("You have successfully logged in.....");
 			System.out.println("Please wait while we fetch your details.....");
 			System.out.println("====================================================");
-			User user = AuthenticationDAOImpl.getUserDetails(user_name);
+			User user = AuthenticationDAOImpl.getUserDetails(userId);
 			System.out.println("Details fetched successfully....");
 			return user;
 		}

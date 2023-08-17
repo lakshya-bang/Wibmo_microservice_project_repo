@@ -32,19 +32,21 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
         return instance;
     }
 	
-	public static boolean authenticate(String user_name, String password) {
+	public static boolean authenticate(Integer userId, String password) {
+		
 		PreparedStatement stmt = null;
 		Connection conn = com.wibmo.utils.DBUtils.getConnection();
+		
 		try {
-		stmt = conn.prepareStatement(SQLConstants.AUTH_DETAILS + "'" + user_name + "'");
-	    ResultSet rs = stmt.executeQuery(SQLConstants.AUTH_DETAILS + "'" + user_name + "'");
+		stmt = conn.prepareStatement(SQLConstants.AUTH_DETAILS);
+		stmt.setInt(1, userId);
+		
+	    ResultSet rs = stmt.executeQuery();
+	    
 	   if(rs.next()) {
 		   if(password.equals(rs.getString("user_password"))) {
 			   return true;
 		   }
-	   }
-	   else {
-		   return false;
 	   }
 	   }catch(SQLException se) {
 	      se.printStackTrace();
@@ -54,14 +56,17 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
 		return false;
 	}
 	
-	public static User getUserDetails(String user_name) {
+	public static User getUserDetails(Integer userId) {
 		PreparedStatement stmt = null;
-		Connection conn = com.wibmo.utils.DBUtils.getConnection();
+		Connection conn = DBUtils.getConnection();
 		try {
-		stmt = conn.prepareStatement(SQLConstants.USER_DETAILS + "'" + user_name + "'");
-	    ResultSet rs = stmt.executeQuery(SQLConstants.USER_DETAILS + "'" + user_name + "'");
+		stmt = conn.prepareStatement(SQLConstants.USER_DETAILS);
+	    stmt.setInt(1, userId);
+		
+		ResultSet rs = stmt.executeQuery();
+	    
+	    
 	   if(rs.next()) {
-//		   System.out.println(rs.getLong(1));
 		   return new User(
 				   rs.getInt("user_id"),
 				   RegistrationStatus.valueOf(rs.getString("reg_status")),
