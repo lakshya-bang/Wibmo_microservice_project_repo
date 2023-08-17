@@ -12,7 +12,7 @@ import com.wibmo.bean.Professor;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.dao.GradeDAO;
-import com.wibmo.dao.GradeDAOImpl;
+import com.wibmo.dao.ReportCardDAOImpl;
 
 /**
  * 
@@ -33,7 +33,7 @@ public class ProfessorBusinessImpl implements ProfessorBusiness{
 
 	@Override
 	public void updateGradeDetails() {
-		GradeDAO gradesDao = GradeDAOImpl.getInstance();
+		GradeDAO gradesDao = ReportCardDAOImpl.getInstance();
 		Scanner in = new Scanner(System.in);
 		Grade grade = new Grade();
 		System.out.println("Please enter the studentId: ");

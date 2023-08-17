@@ -14,8 +14,6 @@ import com.wibmo.utils.DBUtils;
 
 public class AdminDAOImpl implements AdminDAO {
 
-	
-
 	@Override
 	public boolean deleteCourse(String courseName) {
 		// TODO Auto-generated method stub

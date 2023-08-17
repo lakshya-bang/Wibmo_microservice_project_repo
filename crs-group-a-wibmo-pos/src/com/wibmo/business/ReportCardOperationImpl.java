@@ -12,32 +12,32 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.wibmo.bean.Course;
-import com.wibmo.bean.Grade;
+import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
-import com.wibmo.dao.GradeDAO;
-import com.wibmo.dao.GradeDAOImpl;
+import com.wibmo.dao.ReportCardDAO;
+import com.wibmo.dao.ReportCardDAOImpl;
 
 /**
  * 
  */
-public class GradeOperationImpl implements GradeOperation {
+public class ReportCardOperationImpl implements ReportCardOperation {
 
 	private final CourseOperation courseOperation;
 	
-	private final GradeDAO gradeDAO;
+	private final ReportCardDAO gradeDAO;
 	
-	public GradeOperationImpl(CourseOperation courseOperation) {
+	public ReportCardOperationImpl(CourseOperation courseOperation) {
 		this.courseOperation = courseOperation;
-		gradeDAO = GradeDAOImpl.getInstance();
+		gradeDAO = ReportCardDAOImpl.getInstance();
 	}
 	
 	@Override
 	public void viewGradesByStudent(Student student) {
 		
-		Map<Integer, ArrayList<Grade>> semesterToGradeMap = getSemesterToGradeMapByStudentId(student.getStudentId());
+		Map<Integer, ArrayList<ReportCard>> semesterToGradeMap = getSemesterToReportCardMapByStudentId(student.getStudentId());
 		ArrayList<Integer> courseIds = new ArrayList<>();
-		for(ArrayList<Grade> temp : semesterToGradeMap.values()){
-			for(Grade grade : temp){
+		for(ArrayList<ReportCard> temp : semesterToGradeMap.values()){
+			for(ReportCard grade : temp){
 				courseIds.add(grade.getCourseId());
 			}
 		}
@@ -56,11 +56,11 @@ public class GradeOperationImpl implements GradeOperation {
 				
 				System.out.println(" CourseId    CourseTitle    Department    Grade ");
 				System.out.println("+----------------------------------------------+");
-				for(Grade grade : entry.getValue()){
+				for(ReportCard grade : entry.getValue()){
 						System.out.format("%5d%10s%10s%10s", 
 						grade.getCourseId(),
 						courseIdToCourseMap.get(
-								grade.getCourseId()).getName(),  // course title
+								grade.getCourseId()).getCourseTitle(),  // course title
 						courseIdToCourseMap.get(
 								grade.getCourseId()).getDepartment(),   // CSE, ECE 
 						grade.getGrade());    // "A"
@@ -70,23 +70,26 @@ public class GradeOperationImpl implements GradeOperation {
 	}
 
 	@Override
-	public void uploadGrade(Grade grade) {
-		if(hasEntry(grade)) {
-			gradeDAO.updateByGradeId(grade); //particular gradeID in DB.
+	public void uploadGrades(Integer courseId, Map<Integer, String> studentIdToAssignedGradesMap) {
+		
+		// TODO: Lakshya is doing
+		
+		if(hasEntry(reportCard)) {
+			gradeDAO.updateByGradeId(report_card_id); //particular gradeID in DB.
 		} else {
-			gradeDAO.save(grade);
+			gradeDAO.save(reportCard);
 		}
 	}
 	
 	@Override
-	public Map<Integer, ArrayList<Grade>> getSemesterToGradeMapByStudentId(Integer studentId) { //ArrayList of grades
+	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId) { //ArrayList of grades
 		return gradeDAO.findAllByStudentId(studentId);
 	
 	}
 	
-	private boolean hasEntry(Grade grade) {
-		if(grade.getGradeId()!=null){
-			return gradeDAO.checkGradeDetails(grade);
+	private boolean hasEntry(ReportCard reportCard) {
+		if(reportCard.getGradeId()!=null){
+			return gradeDAO.checkGradeDetails(reportCard);
 		}
 		else{
 			return false;

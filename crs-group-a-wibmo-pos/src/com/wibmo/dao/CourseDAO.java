@@ -12,6 +12,13 @@ public interface CourseDAO {
 
 	/**
 	 * 
+	 * @param semester
+	 * @return
+	 */
+	public List<Course> findAllBySemester(Integer semester);
+	
+	/**
+	 * 
 	 * @param courseIds
 	 * @return
 	 */
@@ -19,10 +26,8 @@ public interface CourseDAO {
 	
 	/**
 	 * 
-	 * @param semester
+	 * @param professorId
 	 * @return
 	 */
-	public List<Course> findAllBySemester(Integer semester);
-
-	public List<Course> findCourseByProfessorID(Integer professorID);
+	public List<Course> findAllByProfessorId(Integer professorId);
 }

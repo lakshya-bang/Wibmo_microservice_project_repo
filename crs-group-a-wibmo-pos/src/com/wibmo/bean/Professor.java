@@ -1,28 +1,22 @@
-/**
- * 
- */
 package com.wibmo.bean;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.wibmo.dao.CourseDAO;
-import com.wibmo.dao.CourseDAOImpl;
-
 /**
- * Table name = professor
- * FOREIGN KEY(professor_id) REFERENCES User(user_id)
+ *
  */
 public class Professor {
 
-	private Integer professorId;	// professor_id
+	private Integer professorId;	// professor_id (FK)
+	private String professorName;	// professor_name
 	private String department;		// department
-	private List<Course> coursesTaught; 
 
 	public Professor() {}
 	
-	public Professor(Integer professorId, String department) {
+	public Professor(
+			Integer professorId, 
+			String professorName,
+			String department) {
 		this.professorId = professorId;
+		this.professorName = professorName;
 		this.department = department;
 	}
 
@@ -41,6 +35,20 @@ public class Professor {
 	}
 
 	/**
+	 * @return the professorName
+	 */
+	public String getProfessorName() {
+		return professorName;
+	}
+
+	/**
+	 * @param professorName the professorName to set
+	 */
+	public void setProfessorName(String professorName) {
+		this.professorName = professorName;
+	}
+
+	/**
 	 * @return the department
 	 */
 	public String getDepartment() {
@@ -54,27 +62,9 @@ public class Professor {
 		this.department = department;
 	}
 
-	/**
-	 * @return the list of Courses Taught
-	 */
-
-	public List<Course> getCoursesTaught() {
-		return coursesTaught;
-	}
-
-	/**
-	 * @param ArrayList<Integer> coursesTaught 
-	 */
-
-	public void setCoursesTaught(ArrayList<Course> coursesTaught) {
-		CourseDAO courseDao = new CourseDAOImpl();
-		this.coursesTaught = courseDao.findCourseByProfessorID(professorId);
-	}
-
 	@Override
 	public String toString() {
-		return "Professor [professorId=" + professorId + ", department=" + department + "]";
+		return "Professor [professorId=" + professorId + ", professorName=" + professorName + ", department=" + department + "]";
 	}
-
 	
 }

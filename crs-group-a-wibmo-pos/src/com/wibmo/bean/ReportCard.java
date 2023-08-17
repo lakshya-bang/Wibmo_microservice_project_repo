@@ -6,28 +6,25 @@ package com.wibmo.bean;
 /**
  * Table Name = grade_details
  */
-public class Grade {
+public class ReportCard {
 	
-	private Integer gradeId;			// grade_detail_id (PK)
+	private Integer reportId;			// grade_detail_id (PK)
 	private Integer studentId;			// student_id
 	private Integer courseId;			// course_id
 	private String grade;				// grade
 	private Integer semester;			// semester
 	private Integer year;				// year
 	
-	public Grade() {}
+	public ReportCard() {}
 	
-	
-	
-	public Grade(
-			Integer gradeId, 
+	public ReportCard(
+			Integer reportId, 
 			Integer studentId, 
 			Integer courseId, 
 			String grade, 
 			Integer semester,
 			Integer year) {
-		super();
-		this.gradeId = gradeId;
+		this.reportId = reportId;
 		this.studentId = studentId;
 		this.courseId = courseId;
 		this.grade = grade;
@@ -35,19 +32,17 @@ public class Grade {
 		this.year = year;
 	}
 
-
-
 	/**
-	 * @return the gradeDetailId
+	 * @return the reportId
 	 */
-	public Integer getGradeId() {
-		return gradeId;
+	public Integer getReportId() {
+		return reportId;
 	}
 	/**
-	 * @param gradeDetailId the gradeDetailId to set
+	 * @param reportId the reportId to set
 	 */
-	public void setGradeId(Integer gradeId) {
-		this.gradeId = gradeId;
+	public void setReportId(Integer reportId) {
+		this.reportId = reportId;
 	}
 	/**
 	 * @return the studentId

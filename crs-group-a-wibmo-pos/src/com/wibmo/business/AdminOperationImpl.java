@@ -13,15 +13,7 @@ import com.wibmo.dao.AdminDAOImpl;
 public class AdminOperationImpl implements AdminOperation {
 
 	AdminDAO adminDAO = new AdminDAOImpl();
-	AuthenticationService authenticationServiceImpl=  new AuthenticationServiceImpl();
-
-	@Override
-	public boolean logIn() {
-		// TODO Auto-generated method stub
-		authenticationServiceImpl.login();
-		throw new UnsupportedOperationException("Unimplemented method 'logIn'");
-	}
-
+	
 	@Override
 	public boolean registerAdmin(String email, String password,String name) {
 		// TODO Auto-generated method stub
@@ -61,6 +53,12 @@ public class AdminOperationImpl implements AdminOperation {
 	public void generateReportCards() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'generateReportCards'");
+	}
+
+	@Override
+	public Admin getAdminById(Integer integer) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

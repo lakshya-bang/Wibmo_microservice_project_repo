@@ -1,20 +1,20 @@
 package com.wibmo.bean;
 
 /**
- * 
- * Table Name = admin
- * FOREIGN KEY(admin_id) REFERENCES user(user_id)
  */
 public class Admin {
 
-	private Integer adminId;	// admin_id
-	private String role;		// role
+	private Integer adminId;		// admin_id
+	private String adminName;		// admin_name
 	
 	public Admin() {}
 	
-	public Admin(Integer adminId, String role) {
+	public Admin(
+			Integer adminId, 
+			String adminName,
+			String adminEmail) {
 		this.adminId = adminId;
-		this.role = role;
+		this.adminName = adminName;
 	}
 
 	/**
@@ -32,22 +32,21 @@ public class Admin {
 	}
 
 	/**
-	 * @return the role
+	 * @return the adminName
 	 */
-	public String getRole() {
-		return role;
+	public String getAdminName() {
+		return adminName;
 	}
 
 	/**
-	 * @param role the role to set
+	 * @param adminName the adminName to set
 	 */
-	public void setRole(String role) {
-		this.role = role;
+	public void setAdminName(String adminName) {
+		this.adminName = adminName;
 	}
 
 	@Override
 	public String toString() {
-		return "Admin [adminId=" + adminId + ", role=" + role + "]";
+		return "Admin [adminId=" + adminId + ", adminName=" + adminName + "]";
 	}
-	
 }
