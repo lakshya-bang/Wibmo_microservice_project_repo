@@ -38,7 +38,7 @@ public class CourseOperationImpl implements CourseOperation {
 		System.out.println("CourseID    CourseTitle    AvailableSeats     ProfessorName   Department");
 		courses.forEach(
 				course -> System.out.format(
-						"%5d%10s%10d%10s%10s", 
+						"%5d%15s%16d%20s%13s\n", 
 							course.getCourseId(),
 							course.getCourseTitle(),
 							course.getNoOfSeats(),

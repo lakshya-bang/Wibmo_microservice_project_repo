@@ -90,11 +90,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			.stream()
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
-				System.out.format("%5d%10s%10s%10s%10s\n", 
+				System.out.format("%5d%15s%15s%15s\n", 
 						course.getCourseId(),
 						course.getCourseTitle(),
 						course.getDepartment(),
-						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());	
+						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());
+
 			});
 	}
 	

@@ -20,7 +20,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
-		String sql = "INSERT INTO registered_courses("
+		String sql = "INSERT INTO user.registered_courses("
 				+ "student_id, "
 				+ "semester,"
 				+ "year,"
@@ -61,7 +61,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		CourseRegistration courseRegistration = null;
 		
-		String sql = "SELECT * FROM registered_courses "
+		String sql = "SELECT * FROM user.registered_courses "
 				+ "WHERE student_id = ? "
 				+ "AND semester = ?";
 		
@@ -75,7 +75,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 			if(rs.next()) {
 				courseRegistration = new CourseRegistration(
-						rs.getInt("course_reg_id"),
+						rs.getInt("reg_id"),
 						rs.getInt("student_id"),
 						rs.getInt("semester"),
 						rs.getInt("year"),
@@ -102,7 +102,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		RegistrationStatus registrationStatus = null;
 		
-		String sql = "SELECT registration_status FROM registered_courses "
+		String sql = "SELECT registration_status FROM user.registered_courses "
 				+ "WHERE student_id = ? "
 				+ "AND semester = ?";
 		
@@ -133,7 +133,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		int row = 0;
 		
 		String sql = "SELECT COUNT(*) AS count "
-				+ "FROM registered_courses "
+				+ "FROM user.registered_courses "
 				+ "WHERE student_id = ?"
 				+ "AND semester = ?";
 		
@@ -158,7 +158,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		Set<Integer> studentIds = new HashSet<>();
 		
-		String sql = "SELECT student_id FROM registered_courses "
+		String sql = "SELECT student_id FROM user.registered_courses "
 				+ "WHERE primary_course_1_id = ? "
 				+ "OR primary_course_2_id = ? "
 				+ "OR primary_course_3_id = ? "
@@ -237,7 +237,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 
 		CourseRegistration courseRegistration = null;
 		
-		String sql = "SELECT * FROM registered_courses "
+		String sql = "SELECT * FROM user.registered_courses "
 				+ "WHERE semester = ? "
 				+ "AND year = ? "
 				+ "AND ("
@@ -288,7 +288,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	}
 
 	public void viewCourseRegistrationStatus(RegistrationStatus regStatus){
-		String sql = "SELECT * FROM registered_courses where regStatus=?";
+		String sql = "SELECT * FROM user.registered_courses where regStatus=?";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
@@ -321,7 +321,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	}
 
 	public boolean approveRegistrationStatus(int courseRegId){
-		String sql = "UPDATE registered_courses SET reg_status=? where reg_id = ?";
+		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
@@ -337,7 +337,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	}
 	
 	public boolean rejectRegistrationStatus(int courseRegId){
-		String sql = "UPDATE registered_courses SET reg_status=? where reg_id = ?";
+		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		try {

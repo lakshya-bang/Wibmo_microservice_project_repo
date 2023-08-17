@@ -66,9 +66,9 @@ public class CourseDAOImpl implements CourseDAO {
 						rs.getInt("year"),
 						rs.getString("department"), 
 						rs.getInt("professor_id"), 
-						rs.getInt("isCancelled") == 1, 
+						rs.getInt("is_Cancelled") == 1, 
 						rs.getInt("no_of_seats"),
-						CourseType.valueOf(rs.getString("coutse_type"))));
+						CourseType.valueOf(rs.getString("course_type"))));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,7 +82,7 @@ public class CourseDAOImpl implements CourseDAO {
 		
 		List<Course> courses = new ArrayList<>();
 		
-		String sql = "SELECT * FROM course "
+		String sql = "SELECT * FROM user.course "
 				+ "WHERE professor_id = ?";
 		
 		Connection conn = DBUtils.getConnection();
@@ -91,7 +91,6 @@ public class CourseDAOImpl implements CourseDAO {
 			stmt.setInt(1, professorId);
 			
 			ResultSet rs = stmt.executeQuery();
-			
 			while(rs.next()) {
 				courses.add(new Course(
 						rs.getInt("course_id"),

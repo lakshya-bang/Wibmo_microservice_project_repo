@@ -75,7 +75,7 @@ public class CRSProfessorMenu {
 				courseOperation
 					.getCoursesAssignedToProfessor(professor.getProfessorId())
 					.forEach(course -> System.out.format(
-							"%5d%10s%10s", 
+							"%5d%15s%15s\n", 
 								course.getCourseId(), 
 								course.getCourseTitle(),
 								course.getCourseType().toString()));

@@ -39,10 +39,14 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 		
 		Connection conn = DBUtils.getConnection();
 		try {
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			Array array = stmt.getConnection().createArrayOf("int", new Object[] {ids});
-			stmt.setArray(1, array);
 			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			String s = "";
+			for(Integer i : ids) {
+				s = s.concat(i + ",");
+			}
+			s = s.substring(0,s.length() - 1);
+			stmt.setString(1, s);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {

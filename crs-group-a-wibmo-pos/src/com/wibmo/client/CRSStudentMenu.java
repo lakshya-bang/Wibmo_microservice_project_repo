@@ -61,6 +61,7 @@ public class CRSStudentMenu {
 			case 0:
 				System.out.println("*** Course Catalogue:- ***");
 				courseOperation.viewCourseDetailsBySemester(student.getCurrentSemester());
+				break;
 				
 			case 1:
 				// TODO: Admin should enable registration first
