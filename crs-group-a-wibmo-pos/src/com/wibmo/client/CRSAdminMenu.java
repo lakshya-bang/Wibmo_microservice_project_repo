@@ -185,7 +185,7 @@ public class CRSAdminMenu {
 				System.out.print("Enter Department of the Course: ");
 				String department = input.next();
 				
-				CourseType courseType;
+				CourseType courseType=null;
 				
 				exit = false;
 				
