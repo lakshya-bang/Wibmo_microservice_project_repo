@@ -1,5 +1,7 @@
 package com.wibmo.bean;
 
+import com.wibmo.enums.NotificationStatus;
+
 public class Notification {
     /*
      * DB - 
@@ -10,10 +12,10 @@ public class Notification {
      */
    private Integer notificationId;      
    private Integer notificationUserId;
-   private String  notificationStatus;
+   private NotificationStatus  notificationStatus;
    private String notificationMessage;
 
-public Notification(Integer notificationId, Integer notificationUserId, String notificationStatus,
+public Notification(Integer notificationId, Integer notificationUserId, NotificationStatus notificationStatus,
         String notificationMessage) {
     this.notificationId = notificationId;
     this.notificationUserId = notificationUserId;
@@ -34,10 +36,10 @@ public Integer getNotificationUserId() {
 public void setNotificationUserId(Integer notificationUserId) {
     this.notificationUserId = notificationUserId;
 }
-public String getNotificationStatus() {
+public NotificationStatus getNotificationStatus() {
     return notificationStatus;
 }
-public void setNotificationStatus(String notificationStatus) {
+public void setNotificationStatus(NotificationStatus notificationStatus) {
     this.notificationStatus = notificationStatus;
 }
 public String getNotificationMessage() {

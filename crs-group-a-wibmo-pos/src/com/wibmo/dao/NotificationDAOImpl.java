@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.wibmo.bean.Notification;
 import com.wibmo.constant.SQLConstants;
+import com.wibmo.enums.NotificationStatus;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -41,7 +42,7 @@ public class NotificationDAOImpl implements NotificationDAO{
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, notification.getNotificationUserId());
 			stmt.setString(2, notification.getNotificationMessage());
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate();
 		}
 		catch(SQLException se){
 			se.printStackTrace();
@@ -59,12 +60,13 @@ public class NotificationDAOImpl implements NotificationDAO{
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, userId);
-			ResultSet rs = stmt.executeQuery(sql);
+			System.out.println(stmt);
+			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				Notification notification;
 				notification = new Notification(rs.getInt("notification_id"), 
 												rs.getInt("notification_to_user"),
-												rs.getString("notification_status"),
+												NotificationStatus.valueOf(rs.getString("notification_status")),
 												rs.getString("notification_message"));
 				notifications.add(notification);
 			}
