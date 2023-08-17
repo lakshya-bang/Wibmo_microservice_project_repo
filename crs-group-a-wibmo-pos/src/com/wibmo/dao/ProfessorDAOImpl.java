@@ -48,7 +48,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 			while(rs.next()) {
 				professors.add(new Professor(
 						rs.getInt("professor_id"),
-						rs.getString("professorName"),
+						rs.getString("professor_name"),
 						rs.getString("department")));
 			}
 		} catch (SQLException e) {

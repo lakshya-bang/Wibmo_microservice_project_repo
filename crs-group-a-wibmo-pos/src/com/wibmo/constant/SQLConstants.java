@@ -32,4 +32,7 @@ public class SQLConstants {
 	+ "WHERE student_id = ?";
 	public static String FETCH_USER_BY_IDS = "SELECT * FROM user"
 	+ "WHERE user_id IN(?)";
+	public static String NOTIFICATION_CREATE = "INSERT INTO user.notifications (notification_to_user,notification_message) VALUES (?,?)";
+	public static String NOTIFICATION_FETCH_BY_ID = "SELECT * FROM user.notifications WHERE notification_to_user = ?";
+	public static String NOTIFICATION_UPDATE_STATUS = "UPDATE user.notifications SET notification_status = ACKNOWLEDGED WHERE notification_is = ?";
 }
