@@ -13,6 +13,8 @@ import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
+import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -46,12 +48,26 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 	
 	@Override
-	public void register(List<Integer> primaryCourses, List<Integer> alternativeCourses, Student student) throws StudentAlreadyRegisteredForSemesterException {
+	public void register(List<Integer> primaryCourseIds, List<Integer> alternativeCourseIds, Student student)
+			throws 
+				StudentAlreadyRegisteredForSemesterException, 
+				CourseNotFoundException {
 		
 		// TODO: Check if Registration is Enabled by Admin
 
 		if(isStudentRegistered(student)) {
 			throw new StudentAlreadyRegisteredForSemesterException(student);
+		}
+		
+		for(Integer courseId : primaryCourseIds) {
+			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+				throw new CourseNotFoundException(courseId);
+			}
+		}
+		for(Integer courseId : alternativeCourseIds) {
+			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+				throw new CourseNotFoundException(courseId);
+			}
 		}
 		
 		CourseRegistration courseRegistration = new CourseRegistration();
@@ -61,12 +77,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		// TODO:
 		courseRegistration.setYear(2021);
 		
-		courseRegistration.setPrimaryCourse1Id(primaryCourses.get(0));
-		courseRegistration.setPrimaryCourse2Id(primaryCourses.get(1));
-		courseRegistration.setPrimaryCourse3Id(primaryCourses.get(2));
-		courseRegistration.setPrimaryCourse4Id(primaryCourses.get(3));
-		courseRegistration.setAlternativeCourse1Id(alternativeCourses.get(0));
-		courseRegistration.setAlternativeCourse2Id(alternativeCourses.get(1));
+		courseRegistration.setPrimaryCourse1Id(primaryCourseIds.get(0));
+		courseRegistration.setPrimaryCourse2Id(primaryCourseIds.get(1));
+		courseRegistration.setPrimaryCourse3Id(primaryCourseIds.get(2));
+		courseRegistration.setPrimaryCourse4Id(primaryCourseIds.get(3));
+		courseRegistration.setAlternativeCourse1Id(alternativeCourseIds.get(0));
+		courseRegistration.setAlternativeCourse2Id(alternativeCourseIds.get(1));
 		courseRegistration.setRegistrationStatus(RegistrationStatus.PENDING);
 		
 		courseRegistrationDAO.save(courseRegistration);
@@ -148,10 +164,15 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 				StudentNotRegisteredForSemesterException, 
 				StudentAlreadyRegisteredForCourseInSemesterException, 
 				StudentAlreadyRegisteredForAllAlternativeCoursesException, 
-				StudentAlreadyRegisteredForAllPrimaryCoursesException {
+				StudentAlreadyRegisteredForAllPrimaryCoursesException, 
+				CourseNotFoundException {
 
 		if(!isStudentRegistered(student)) {
 			throw new StudentNotRegisteredForSemesterException(student);
+		}
+		
+		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+			throw new CourseNotFoundException(courseId);
 		}
 		
 		// TODO: Improve dual DB call for same thing. Handle with index. 

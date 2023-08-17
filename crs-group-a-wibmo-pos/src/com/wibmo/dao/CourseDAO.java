@@ -38,4 +38,11 @@ public interface CourseDAO {
 	 * @return
 	 */
 	public CourseType findCourseTypeByCourseId(Integer courseId);
+
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean existsByCourseId(Integer courseId);
 }

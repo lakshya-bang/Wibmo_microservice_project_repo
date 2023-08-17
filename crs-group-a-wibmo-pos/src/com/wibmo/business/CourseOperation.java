@@ -36,4 +36,11 @@ public interface CourseOperation {
 	 */
 	public CourseType getCourseTypeByCourseId(Integer courseId);
 
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean isCourseExistsInCatalogue(Integer courseId);
+
 }

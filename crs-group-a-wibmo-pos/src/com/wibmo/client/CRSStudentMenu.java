@@ -16,6 +16,7 @@ import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -111,7 +112,8 @@ public class CRSStudentMenu {
 					
 					System.out.println("Successfully Registered!");
 					
-				} catch (StudentAlreadyRegisteredForSemesterException e) {
+				} catch (StudentAlreadyRegisteredForSemesterException 
+						| CourseNotFoundException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();
 				}
@@ -147,9 +149,10 @@ public class CRSStudentMenu {
 				} catch (StudentNotRegisteredForSemesterException 
 						| StudentAlreadyRegisteredForCourseInSemesterException
 						| StudentAlreadyRegisteredForAllAlternativeCoursesException
-						| StudentAlreadyRegisteredForAllPrimaryCoursesException e) {
+						| StudentAlreadyRegisteredForAllPrimaryCoursesException 
+						| CourseNotFoundException e) {
 					System.out.println(e.getMessage());
-//					e.printStackTrace();
+//					e.printStackTrace();z
 				}
 				break;
 

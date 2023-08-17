@@ -77,4 +77,10 @@ public class CourseOperationImpl implements CourseOperation {
 				.findCourseTypeByCourseId(courseId);
 	}
 
+	@Override
+	public Boolean isCourseExistsInCatalogue(Integer courseId) {
+		return courseDAO
+				.existsByCourseId(courseId);
+	}
+
 }

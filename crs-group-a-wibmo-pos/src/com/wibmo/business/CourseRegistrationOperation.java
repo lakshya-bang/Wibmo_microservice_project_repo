@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -23,12 +24,15 @@ public interface CourseRegistrationOperation {
 	 * @param alternativeCourses
 	 * @param student
 	 * @throws StudentAlreadyRegisteredForSemesterException 
+	 * @throws CourseNotFoundException 
 	 */
 	public void register(
 			List<Integer> primaryCourses, 
 			List<Integer> alternativeCourses, 
 			Student student) 
-					throws StudentAlreadyRegisteredForSemesterException;
+					throws 
+						StudentAlreadyRegisteredForSemesterException, 
+						CourseNotFoundException;
 	
 	/**
 	 * 
@@ -56,13 +60,15 @@ public interface CourseRegistrationOperation {
 	 * @throws StudentAlreadyRegisteredForCourseInSemesterException 
 	 * @throws StudentAlreadyRegisteredForAllAlternativeCoursesException 
 	 * @throws StudentAlreadyRegisteredForAllPrimaryCoursesException 
+	 * @throws CourseNotFoundException 
 	 */
 	public void addCourse(Integer courseId, Student student) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
 				StudentAlreadyRegisteredForCourseInSemesterException, 
 				StudentAlreadyRegisteredForAllAlternativeCoursesException,
-				StudentAlreadyRegisteredForAllPrimaryCoursesException;
+				StudentAlreadyRegisteredForAllPrimaryCoursesException,
+				CourseNotFoundException;
 	
 	/**
 	 * 
