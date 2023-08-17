@@ -17,6 +17,21 @@ public class Course {
 	private Integer noOfSeats;
 	private String courseType;
 	
+	
+
+	public Course(Integer courseId, Integer year, Integer semester, String name, String department, Integer professorId,
+			Boolean isCancelled, Integer noOfSeats, String courseType) {
+		this.courseId = courseId;
+		this.year = year;
+		this.semester = semester;
+		this.name = name;
+		this.department = department;
+		this.professorId = professorId;
+		this.isCancelled = isCancelled;
+		this.noOfSeats = noOfSeats;
+		this.courseType = courseType;
+	}
+
 	public String getCourseType() {
 		return courseType;
 	}
