@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import com.wibmo.bean.Professor;
+import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.CourseOperation;
@@ -53,11 +54,10 @@ public class CRSProfessorMenu {
 		
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
-		System.out.print("+......... Welcome Professor .........+\n");
-		System.out.println(professor);
+		System.out.print("+......... Welcome, " + professor.getProfessorName() +  ".........+\n");
 		
 		while(!logout) {
-			System.out.print("+-------------------------+"
+			System.out.print("+------------------------------------+\n"
 					+ "[0] View Courses Taught\n"
 					+ "[1] View Registered Students\n"
 					+ "[2] Upload Grades\n"
@@ -97,7 +97,7 @@ public class CRSProfessorMenu {
 				break;
 				
 			case 2:
-				// ask the user which course's grade he/she wants to upload
+				System.out.println("Enter the course ID for which you want to upload the Grades- ");
 				courseId = input.nextInt();
 				ProfessorBusiness professorBusiness = new ProfessorBusinessImpl();
 				// TODO: if wrong course selected, i.e.
@@ -118,7 +118,18 @@ public class CRSProfessorMenu {
 						studentIdToAssignedGradeMap.put(student.getStudentId(), grade);
 					});
 				for(Map.Entry<Integer,String> entry : studentIdToAssignedGradeMap.entrySet()){
-					professorBusiness.updateGradeDetails(entry.getKey(), courseId,entry.getValue());
+					ReportCard reportCard = new ReportCard();
+					ReportCardOperation reportCardOperation = new ReportCardOperationImpl(courseOperation);
+					reportCard.setStudentId(entry.getKey());
+					System.out.println("Please enter the semester: ");
+					Integer semester = input.nextInt();
+					reportCard.setSemester(semester);
+					System.out.println("Please enter the year: ");
+					Integer year = input.nextInt();
+					reportCard.setYear(year);
+					reportCard.setCourseId(courseId);
+					reportCard.setGrade(entry.getValue());
+					reportCardOperation.uploadGrades(reportCard);
 				}
 				break;
 				
@@ -131,7 +142,8 @@ public class CRSProfessorMenu {
 				
 			}
 		}
-		input.close();
+		//input.close(); Because of the extra closing of the input.
+
 		return Boolean.FALSE;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.wibmo.bean.Professor;
+import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.dao.ProfessorDAO;
@@ -17,7 +18,6 @@ public interface ProfessorBusiness {
 		return professor;
 	}
 	void viewEnrolledStudents(Professor professor);
-	
-	void updateGradeDetails(Integer studentId, Integer courseId, String grade);
+
 }
 

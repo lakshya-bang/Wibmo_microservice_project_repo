@@ -72,10 +72,8 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 	@Override
 	public void uploadGrades(ReportCard reportCard) {
 		
-		// TODO: Lakshya is doing
-		
 		if(hasEntry(reportCard)) {
-			gradeDAO.updateByGradeId(reportCard); //particular gradeID in DB.
+			gradeDAO.updateByGradeDetails(reportCard); //particular gradeID in DB.
 		} else {
 			gradeDAO.save(reportCard);
 		}

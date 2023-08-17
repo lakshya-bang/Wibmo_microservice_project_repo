@@ -31,21 +31,5 @@ public class ProfessorBusinessImpl implements ProfessorBusiness{
 		System.out.println("========================================================");
 	}
 
-	@Override
-	public void updateGradeDetails(Integer studentId, Integer courseId, String grade) {
-		ReportCardDAO reportCardDao = ReportCardDAOImpl.getInstance();
-		Scanner in = new Scanner(System.in);
-		ReportCard reportCard = new ReportCard();
-		reportCard.setStudentId(studentId);
-		System.out.println("Please enter the semester: ");
-		Integer semester = in.nextInt();
-		reportCard.setSemester(semester);
-		System.out.println("Please enter the year: ");
-		Integer year = in.nextInt();
-		reportCard.setYear(year);
-		reportCard.setCourseId(courseId);
-		reportCard.setGrade(grade);
-		reportCardDao.save(reportCard);
-	}
 	
 }

@@ -18,5 +18,5 @@ public interface ReportCardDAO {
 
 	public boolean checkGradeDetails(ReportCard grade);
 
-    public void updateByGradeId(ReportCard grade);
+    public void updateByGradeDetails(ReportCard grade);
 }
