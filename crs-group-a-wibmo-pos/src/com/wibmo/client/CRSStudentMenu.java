@@ -16,12 +16,20 @@ import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
+import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
+import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
+import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
+import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 
+/**
+ * Displays the Menu for Student
+ */
 public class CRSStudentMenu {
 
-	public static Boolean display(User user) {
-
-		Scanner input = new Scanner(System.in);
+	public static Boolean display(Scanner input, User user) {
+		
 		Integer courseId;
 		boolean logout = false;
 		int choice;
@@ -33,16 +41,17 @@ public class CRSStudentMenu {
 		CourseRegistrationOperation courseRegistrationOperation = 
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		ReportCardOperation gradeOperation = new ReportCardOperationImpl(courseOperation);
+		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(courseOperation);
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
 		System.out.print("+......... Welcome Student .........+\n");
-		System.out.println(user);
-		System.out.println(student);
+		System.out.println("Student Id : " + student.getStudentId());
+		System.out.println("Student Name : " + student.getStudentName());
+		System.out.println("Current Semester : " + student.getCurrentSemester());
 
 		while (!logout) {
-			System.out.println("+-------------------------+\n" 
+			System.out.print("+-------------------------+\n" 
 					+ "[0] View Course Catalogue\n"
 					+ "[1] Course Registration\n"
 					+ "[2] View Registered Courses\n"
@@ -53,7 +62,9 @@ public class CRSStudentMenu {
 					+ "[7] Pay Bill\n" 
 					+ "[8] Logout\n" 
 					+ "Enter your choice: ");
-
+			
+			while(!input.hasNextInt());
+			
 			choice = input.nextInt();
 
 			switch (choice) {
@@ -61,12 +72,13 @@ public class CRSStudentMenu {
 			case 0:
 				System.out.println("*** Course Catalogue:- ***");
 				courseOperation.viewCourseDetailsBySemester(student.getCurrentSemester());
+				break;
 				
 			case 1:
-				// TODO: Admin should enable registration first
 				
 				List<Integer> primaryCourses = new ArrayList<>();
 				List<Integer> alternativeCourses = new ArrayList<>();
+				
 				// 4 Primary Courses to be selected:
 				System.out.println("Enter 4 Primary Course Ids: ");
 				while(primaryCourses.size() != 4) {
@@ -91,61 +103,76 @@ public class CRSStudentMenu {
 				}
 				System.out.println("Alternative Courses Selected: " + alternativeCourses);
 				
-				courseRegistrationOperation.register(
-						primaryCourses, 
-						alternativeCourses,
-						student);
-				
-//				try {
-//					courseRegistrationOperation.register(
-//							primaryCourses, 
-//							alternativeCourses,
-//							student);
-//				} catch (StudentNotFoundException | CoursesNotAvailableForRegistrationException
-//						| StudentAlreadyRegisteredForSemesterException e) {
-//					System.out.println(e.getMessage());
-////					e.printStackTrace();
-//				}
+				try {
+					courseRegistrationOperation.register(
+							primaryCourses, 
+							alternativeCourses,
+							student);
+					
+					System.out.println("Successfully Registered!");
+					
+				} catch (StudentAlreadyRegisteredForSemesterException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				break;
 
 			case 2:
-				courseRegistrationOperation.viewRegisteredCoursesByStudent(student);
+				try {
+					courseRegistrationOperation
+						.viewRegisteredCoursesByStudent(student);
+				} catch (StudentNotRegisteredForSemesterException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				break;
 
 			case 3:
-				courseRegistrationOperation.getRegistrationStatusByStudent(student);
+				try {
+					System.out.println("Your Registration Status = " + 
+							courseRegistrationOperation
+								.getRegistrationStatusByStudent(student));
+				} catch (StudentNotRegisteredForSemesterException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				break;
 				
 			case 4:
-				// TODO
-//				System.out.println("*** Course Catalogue:- ***");
-//				courseOperation.viewCourseDetailsBySemester(student.getCurrentSemester());
-//				System.out.print("Enter Id of the course you wish to add: ");
-//				courseId = in.nextInt();
-//				
-//				// TODO: Throw Exception: Add check if student is full for this semester, they cannot add any more course.
-//				// TODO: Throw Exception: Add check so that student should not choose one of already registered courses.
-//				courseRegistrationOperation.addCourse(courseId, student);
-				
+				System.out.print("Enter Id of the course you wish to add: ");
+				courseId = input.nextInt();
+
+				try {
+					courseRegistrationOperation.addCourse(courseId, student);
+				} catch (StudentNotRegisteredForSemesterException 
+						| StudentAlreadyRegisteredForCourseInSemesterException
+						| StudentAlreadyRegisteredForAllAlternativeCoursesException
+						| StudentAlreadyRegisteredForAllPrimaryCoursesException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				break;
 
 			case 5:
-				// TODO
-//				System.out.print("Enter Id of the course you wish to drop: ");
-//				courseId = in.nextInt();
-//				
-//				// TODO: Throw Exception: Add check so that student should not choose a courseId that they have not even registered.
-//				courseRegistrationOperation.dropCourse(courseId, student);
+				System.out.print("Enter Id of the course you wish to drop: ");
+				courseId = input.nextInt();
+				
+				try {
+					courseRegistrationOperation.dropCourse(courseId, student);
+				} catch (StudentNotRegisteredForSemesterException
+						| StudentNotRegisteredForCourseInSemesterException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				
 				break;
 
 			case 6:
-				gradeOperation.viewGradesByStudent(student);
+				reportCardOperation.viewGradesByStudent(student);
 				break;
 
 			case 7:
-				// TODO
-//				billOperation.payBill(userId);
+				System.out.println("Missing Functionality :(");
 				break;
 
 			case 8:
@@ -158,7 +185,6 @@ public class CRSStudentMenu {
 			}
 		}
 		
-		input.close();
 		return Boolean.FALSE;
 	}
 }

@@ -1,5 +1,7 @@
 package com.wibmo.enums;
 
+import java.util.Set;
+
 /**
  * Defines the statuses a Student Registration can be at a time.
  * 
@@ -8,5 +10,8 @@ package com.wibmo.enums;
 public enum RegistrationStatus {
 	APPROVED,
 	REJECTED,
-	PENDING
+	PENDING;
+	
+	public static final Set<RegistrationStatus> 
+		INVALID_REGISTRATION_STATUSES = Set.of(PENDING, REJECTED);
 }

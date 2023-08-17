@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
+import com.wibmo.enums.CourseType;
 
 /**
  * 
@@ -30,4 +31,11 @@ public interface CourseDAO {
 	 * @return
 	 */
 	public List<Course> findAllByProfessorId(Integer professorId);
+
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public CourseType findCourseTypeByCourseId(Integer courseId);
 }

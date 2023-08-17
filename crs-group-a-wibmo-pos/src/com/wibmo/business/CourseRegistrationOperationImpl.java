@@ -2,6 +2,7 @@ package com.wibmo.business;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,8 +13,15 @@ import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
+import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
+import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
+import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
+import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
+import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
 public class CourseRegistrationOperationImpl implements CourseRegistrationOperation {
@@ -38,42 +46,67 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 	
 	@Override
-	public void register(List<Integer> primaryCourses, List<Integer> alternativeCourses, Student student) {
+	public void register(List<Integer> primaryCourses, List<Integer> alternativeCourses, Student student) throws StudentAlreadyRegisteredForSemesterException {
 		
 		// TODO: Check if Registration is Enabled by Admin
+
+		if(isStudentRegistered(student)) {
+			throw new StudentAlreadyRegisteredForSemesterException(student);
+		}
 		
 		CourseRegistration courseRegistration = new CourseRegistration();
 		courseRegistration.setStudentId(student.getStudentId());
 		courseRegistration.setSemester(student.getCurrentSemester());
+		
+		// TODO:
+		courseRegistration.setYear(2021);
+		
 		courseRegistration.setPrimaryCourse1Id(primaryCourses.get(0));
 		courseRegistration.setPrimaryCourse2Id(primaryCourses.get(1));
 		courseRegistration.setPrimaryCourse3Id(primaryCourses.get(2));
 		courseRegistration.setPrimaryCourse4Id(primaryCourses.get(3));
 		courseRegistration.setAlternativeCourse1Id(alternativeCourses.get(0));
 		courseRegistration.setAlternativeCourse2Id(alternativeCourses.get(1));
-		// Admin will approve / reject the registrations later
 		courseRegistration.setRegistrationStatus(RegistrationStatus.PENDING);
 		
 		courseRegistrationDAO.save(courseRegistration);
 		
+		System.out.println("Course Registration Request sent to Admin for Approval.");
+		
 	}
 
 	@Override
-	public void viewRegisteredCoursesByStudent(Student student) {
-		if(!hasRegistered(student)) {
-			// TODO: Move to Exception
-			System.out.println("Student Id: " + student.getStudentId() + " is not registered for semester: " + student.getCurrentSemester());
+	public void viewRegisteredCoursesByStudent(Student student) 
+			throws StudentNotRegisteredForSemesterException {
+		
+		if(!isStudentRegistered(student)) {
+			throw new StudentNotRegisteredForSemesterException(student);
 		}
 		
 		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
+		Set<Integer> courseIds = new HashSet<>();
+		Integer courseId;
+		// TODO: Move to Join Query to avoid redundant code
+		if(null != (courseId = courseRegistration.getPrimaryCourse1Id())) {
+			courseIds.add(courseId);
+		}
+		if(null != (courseId = courseRegistration.getPrimaryCourse2Id())) {
+			courseIds.add(courseId);
+		}
+		if(null != (courseId = courseRegistration.getPrimaryCourse3Id())) {
+			courseIds.add(courseId);
+		}
+		if(null != (courseId = courseRegistration.getPrimaryCourse4Id())) {
+			courseIds.add(courseId);
+		}
+		if(null != (courseId = courseRegistration.getAlternativeCourse1Id())) {
+			courseIds.add(courseId);
+		}
+		if(null != (courseId = courseRegistration.getAlternativeCourse2Id())) {
+			courseIds.add(courseId);
+		}
 		Map<Integer, Course> courseIdToCourseMap = courseOperation
-				.getCourseIdToCourseMap(Set.of(
-						courseRegistration.getPrimaryCourse1Id(),
-						courseRegistration.getPrimaryCourse2Id(),
-						courseRegistration.getPrimaryCourse3Id(),
-						courseRegistration.getPrimaryCourse4Id(),
-						courseRegistration.getAlternativeCourse1Id(),
-						courseRegistration.getAlternativeCourse2Id()));
+				.getCourseIdToCourseMap(courseIds);
 		Map<Integer, Professor> professorIdToProfessorMap = professorOperation.getProfessorIdToProfessorMap(
 				courseIdToCourseMap
 					.entrySet()
@@ -82,15 +115,15 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 					.collect(Collectors.toSet()));
 		
 		System.out.println("Here are registered courses for Student Id: " + student.getStudentId() + " and semester: " + student.getCurrentSemester());
-		System.out.println("+------------------------------------------------------+");
-		System.out.println(" CourseId    CourseTitle    Department    ProfessorName ");
-		System.out.println("+------------------------------------------------------+");
+		System.out.println("+---------------------------------------------------------------------------+");
+		System.out.println(" CourseId | CourseTitle \t| Department | ProfessorName ");
+		System.out.println("+---------------------------------------------------------------------------+");
 		courseIdToCourseMap
 			.entrySet()
 			.stream()
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
-				System.out.format("%5d%10s%10s%10s%10s\n", 
+				System.out.format("%5d\t| %10s\t| %7s    | %10s\n", 
 						course.getCourseId(),
 						course.getCourseTitle(),
 						course.getDepartment(),
@@ -99,37 +132,119 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 	
 	@Override
-	public RegistrationStatus getRegistrationStatusByStudent(Student student) {
-		if(!hasRegistered(student)) {
-			// TODO: Move to Exception
-			System.out.println("Student Id: " + student.getStudentId() + " is not registered for semester: " + student.getCurrentSemester());
+	public RegistrationStatus getRegistrationStatusByStudent(Student student) 
+			throws StudentNotRegisteredForSemesterException {
+		
+		if(!isStudentRegistered(student)) {
+			throw new StudentNotRegisteredForSemesterException(student);
 		}
+		
 		return courseRegistrationDAO.findRegistrationStatusByStudent(student);
 	}
 	
-
 	@Override
-	public void addCourse(Integer courseId, Student student) {
+	public void addCourse(Integer courseId, Student student) 
+			throws 
+				StudentNotRegisteredForSemesterException, 
+				StudentAlreadyRegisteredForCourseInSemesterException, 
+				StudentAlreadyRegisteredForAllAlternativeCoursesException, 
+				StudentAlreadyRegisteredForAllPrimaryCoursesException {
+
+		if(!isStudentRegistered(student)) {
+			throw new StudentNotRegisteredForSemesterException(student);
+		}
 		
-		// TODO: Check if Add / Drop is Enabled by Admin
+		// TODO: Improve dual DB call for same thing. Handle with index. 
+		if(isStudentRegisteredForCourse(student, courseId)) {
+			throw new StudentAlreadyRegisteredForCourseInSemesterException(student, courseId);
+		}
 		
-		throw new UnsupportedOperationException();
+		// TODO: CourseLite object can help avoid redundant DB access
+		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+				
+		switch(courseType) {
+		
+		case ALTERNATIVE:
+			if(isStudentRegisteredForAllAlternativeCourses(student)) {
+				throw new StudentAlreadyRegisteredForAllAlternativeCoursesException(student);
+			}
+			break;
+		case PRIMARY:
+			if(isStudentRegisteredForAllPrimaryCourses(student)) {
+				throw new StudentAlreadyRegisteredForAllPrimaryCoursesException(student);
+			}
+		}
+		
+		Integer courseRegistrationId = courseRegistrationDAO
+				.findCourseRegistrationIdByStudent(student);
+		
+		
+		switch(courseType) {
+			
+		case ALTERNATIVE:
+			courseRegistrationDAO
+				.setAlternativeCourseIdAsAtIndexByCourseRegistrationId(
+					courseId,
+					courseRegistrationDAO
+						.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
+							courseRegistrationId),
+					courseRegistrationId);
+			break;
+			
+		case PRIMARY:
+			courseRegistrationDAO
+				.setPrimaryCourseIdAsAtIndexByCourseRegistrationId(
+					courseId,
+					courseRegistrationDAO
+						.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
+							courseRegistrationId),
+					courseRegistrationId);
+		}
+		
+		System.out.println("Course Enrollment Success!");
 	}
 
 	@Override
-	public void dropCourse(Integer courseId, Student student) {
+	public void dropCourse(Integer courseId, Student student) 
+			throws 
+				StudentNotRegisteredForSemesterException, 
+				StudentNotRegisteredForCourseInSemesterException {
 		
-		// TODO: Check if Add / Drop is Enabled by Admin
+		if(!isStudentRegistered(student)) {
+			throw new StudentNotRegisteredForSemesterException(student);
+		}
 		
-		throw new UnsupportedOperationException();
-	}
-
-	private boolean hasRegistered(Student student) {
-		return courseRegistrationDAO.existsByStudent(student);
+		if(!isStudentRegisteredForCourse(student, courseId)) {
+			throw new StudentNotRegisteredForCourseInSemesterException(student, courseId);
+		}
+		
+		Integer courseRegistrationId = courseRegistrationDAO.findCourseRegistrationIdByStudent(student);
+		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		
+		switch(courseType) {
+		
+		case ALTERNATIVE:
+			courseRegistrationDAO
+				.setAlternativeCourseIdAsNullAtIndexByCourseRegistrationId(
+					courseRegistrationDAO
+						.findAlternativeCourseIdIndexByCourseRegistrationIdForCourse(
+							courseRegistrationId, courseId), 
+					courseRegistrationId);
+			break;
+		
+		case PRIMARY:
+			courseRegistrationDAO
+				.setPrimaryCourseIdAsNullAtIndexByCourseRegistrationId(
+					courseRegistrationDAO
+						.findPrimaryCourseIdIndexByCourseRegistrationIdForCourse(
+							courseRegistrationId, courseId),
+					courseRegistrationId);
+		}
+		
+		System.out.println("Course Drop Success!");
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) {
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
@@ -157,11 +272,28 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			});
 		return courseIdToRegisteredStudentsMap;
 	}
+
+	/*************************** Utility Methods ********************************/
 	
-=======
-	public void getRegisteredStudentsByCourseId(Integer courseId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getRegisteredStudentsByCourseId'");
+	private Boolean isStudentRegistered(Student student) {
+		return courseRegistrationDAO.existsByStudent(student);
 	}
->>>>>>> da2e123451beb658645848ce71b911e36de428ac
+	
+	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
+		return courseRegistrationDAO
+				.existsByStudentAndCourseId(student, courseId);
+	}
+	
+	private Boolean isStudentRegisteredForAllAlternativeCourses(Student student) {
+		return courseRegistrationDAO
+				.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
+					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+	}
+	
+	private Boolean isStudentRegisteredForAllPrimaryCourses(Student student) {
+		return courseRegistrationDAO
+				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
+					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+	}
+
 }

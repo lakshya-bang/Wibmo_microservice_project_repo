@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 				+ "primary_course_4_id,"
 				+ "alternative_course_1_id,"
 				+ "alternative_course_2_id,"
-				+ "is_approved) "
+				+ "reg_status) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		Connection conn = DBUtils.getConnection();
@@ -75,7 +76,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 			if(rs.next()) {
 				courseRegistration = new CourseRegistration(
-						rs.getInt("course_reg_id"),
+						rs.getInt("reg_id"),
 						rs.getInt("student_id"),
 						rs.getInt("semester"),
 						rs.getInt("year"),
@@ -86,7 +87,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 						rs.getInt("alternative_course_1_id"),
 						rs.getInt("alternative_course_2_id"),
 						RegistrationStatus.valueOf(
-								rs.getString("registration_status")));
+								rs.getString("reg_status")));
 			}
 			
 		} catch (SQLException e) {
@@ -102,7 +103,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		RegistrationStatus registrationStatus = null;
 		
-		String sql = "SELECT registration_status FROM registered_courses "
+		String sql = "SELECT reg_status FROM registered_courses "
 				+ "WHERE student_id = ? "
 				+ "AND semester = ?";
 		
@@ -116,7 +117,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 			if(rs.next()) {
 				registrationStatus = RegistrationStatus
-						.valueOf(rs.getString("registration_status"));
+						.valueOf(rs.getString("reg_status"));
 			}
 			
 		} catch (SQLException e) {
@@ -130,11 +131,11 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	@Override
 	public Boolean existsByStudent(Student student) {
 		
-		int row = 0;
+		int count = 0;
 		
 		String sql = "SELECT COUNT(*) AS count "
 				+ "FROM registered_courses "
-				+ "WHERE student_id = ?"
+				+ "WHERE student_id = ? "
 				+ "AND semester = ?";
 		
 		Connection conn = DBUtils.getConnection();
@@ -143,14 +144,59 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.setInt(1, student.getStudentId());
 			stmt.setInt(2, student.getCurrentSemester());
 			
-			row = stmt.executeUpdate();
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				count = rs.getInt("count");
+			}
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 //			e.printStackTrace();
 		}
 		
-		return row == 1;
+		return count == 1;
+	}
+	
+	@Override
+	public Boolean existsByStudentAndCourseId(Student student, Integer courseId) {
+		
+		int count = 0;
+		
+		String sql = "SELECT COUNT(*) AS count "
+				+ "FROM registered_courses "
+				+ "WHERE student_id = ? "
+				+ "AND semester = ? "
+				+ "AND ("
+				+ "primary_course_1_id = ? "
+				+ "OR primary_course_2_id = ? "
+				+ "OR primary_course_3_id = ? "
+				+ "OR primary_course_4_id = ? "
+				+ "OR alternative_course_1_id = ? "
+				+ "OR alternative_course_2_id = ?)";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, student.getStudentId());
+			stmt.setInt(2, student.getCurrentSemester());
+			
+			for(int i = 3; i <= 8; i++) {
+				stmt.setInt(i, courseId);
+			}
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				count = rs.getInt("count");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return count == 1;
 	}
 
 	@Override
@@ -280,11 +326,287 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		return courseRegistration;
 	}
+	
+	@Override
+	public Integer findCourseRegistrationIdByStudent(Student student) {
+		
+		Integer courseRegistrationId = -1;
+		
+		String sql = "SELECT reg_id FROM registered_courses "
+				+ "WHERE student_id = ? "
+				+ "AND semester = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, student.getStudentId());
+			stmt.setInt(2, student.getCurrentSemester());
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				courseRegistrationId = rs.getInt("reg_id");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return courseRegistrationId;
+	}
+
+	@Override
+	public Integer findAlternativeCourseIdIndexByCourseRegistrationIdForCourse(
+			Integer courseRegistrationId, Integer courseId) {
+		
+		String sql = "SELECT alternative_course_1_id "
+				+ "FROM registered_courses "
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				if(courseId == rs.getInt("alternative_course_1_id")) {
+					return 1;
+				} else {
+					return 2;
+				}
+			}
+			
+		} catch(SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+
+
+	@Override
+	public Integer findPrimaryCourseIdIndexByCourseRegistrationIdForCourse(
+			Integer courseRegistrationId,
+			Integer courseId) {
+		
+		String sql = "SELECT primary_course_1_id, "
+				+ "primary_course_2_id,"
+				+ "primary_course_3_id "
+				+ "FROM registered_courses "
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				if(courseId == rs.getInt("primary_course_1_id")) {
+					return 1;
+				}
+				if(courseId == rs.getInt("primary_course_2_id")) {
+					return 2;
+				}
+				if(courseId == rs.getInt("primary_course_3_id")) {
+					return 3;
+				}
+				return 4;
+			}
+			
+		} catch(SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return -1;
+		
+	}
+
+	@Override
+	public void setAlternativeCourseIdAsNullAtIndexByCourseRegistrationId(
+			Integer index, Integer courseRegistrationId) {
+		
+		String sql = "UPDATE registered_courses "
+				+ "SET alternative_course_" + index + "_id = NULL "
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void setPrimaryCourseIdAsNullAtIndexByCourseRegistrationId(
+			Integer index, Integer courseRegistrationId) {
+		
+		String sql = "UPDATE registered_courses "
+				+ "SET primary_course_" + index + "_id = NULL "
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public Map<Integer, ArrayList<Integer>> getStudentsByCourseId(Professor professor) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public Integer findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
+			Integer courseRegistrationId) {
+		
+		String sql = "SELECT alternative_course_1_id, "
+				+ "alternative_course_2_id "
+				+ "FROM registered_courses "
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				// expecting a null (SQL NULL)
+				if(null == rs.getObject("alternative_course_1_id")) {
+					return 1;
+				}
+				if(null == rs.getObject("alternative_course_2_id")) {
+					return 2;
+				}
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+
+	@Override
+	public Integer findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
+			Integer courseRegistrationId) {
+		
+		String sql;
+		Connection conn = DBUtils.getConnection();
+		PreparedStatement stmt;
+		ResultSet rs;
+		
+		try {
+			sql = "SELECT primary_course_1_id, "
+					+ "primary_course_2_id, "
+					+ "primary_course_3_id, "
+					+ "primary_course_4_id "
+					+ "FROM registered_courses "
+					+ "WHERE reg_id = ?";
+			
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseRegistrationId);
+			
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				// expecting a null (SQL NULL)
+				if(null == rs.getObject("primary_course_1_id")) {
+					return 1;
+				}
+				if(null == rs.getObject("primary_course_2_id")) {
+					return 2;
+				}
+				if(null == rs.getObject("primary_course_3_id")) {
+					return 3;
+				}
+				if(null == rs.getObject("primary_course_4_id")) {
+					return 4;
+				}
+			}
+			
+		} catch(SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+
+	@Override
+	public void setAlternativeCourseIdAsAtIndexByCourseRegistrationId(
+			Integer courseId,
+			Integer alternativeCourseIdIndex, 
+			Integer courseRegistrationId) {
+		
+		String sql = "UPDATE registered_courses "
+				+ "SET alternative_course_" + alternativeCourseIdIndex + "_id = ? " 
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseId);
+			stmt.setInt(2, courseRegistrationId);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void setPrimaryCourseIdAsAtIndexByCourseRegistrationId(
+			Integer courseId, 
+			Integer primaryCourseIdIndex,
+			Integer courseRegistrationId) {
+		
+		String sql = "UPDATE registered_courses "
+				+ "SET primary_course_" + primaryCourseIdIndex + "_id = ? " 
+				+ "WHERE reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseId);
+			stmt.setInt(2, courseRegistrationId);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+	}
+	
 }

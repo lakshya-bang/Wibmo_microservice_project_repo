@@ -1,6 +1,5 @@
 package com.wibmo.dao;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.bean.User;
 import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
@@ -35,20 +33,24 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 	public List<Professor> findAllByIdIn(Set<Integer> ids) {
 		List<Professor> professors = new ArrayList<>();
 		
-		String sql = SQLConstants.FIND_PROFESSOR_BY_IDS;
+		StringBuilder sql = new StringBuilder(
+				SQLConstants.FIND_PROFESSOR_BY_IDS);
+		
+		sql.append("(");
+		ids.forEach(id -> sql.append(id).append(","));
+		int idx = sql.lastIndexOf(",");
+		sql.replace(idx, idx + 1, ")");
 		
 		Connection conn = DBUtils.getConnection();
 		try {
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			Array array = stmt.getConnection().createArrayOf("int", new Object[] {ids});
-			stmt.setArray(1, array);
+			PreparedStatement stmt = conn.prepareStatement(sql.toString());
 			
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
 				professors.add(new Professor(
 						rs.getInt("professor_id"),
-						rs.getString("professorName"),
+						rs.getString("professor_name"),
 						rs.getString("department")));
 			}
 		} catch (SQLException e) {

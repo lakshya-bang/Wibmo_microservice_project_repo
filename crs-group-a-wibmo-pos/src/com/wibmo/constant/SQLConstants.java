@@ -22,7 +22,7 @@ public class SQLConstants {
 	public static String FETCH_COURSE_BY_ID = "SELECT * FROM user.course "
 	+ "WHERE course_id = ";
 	public static String FETCH_COURSE_BY_SEMESTER = "SELECT * FROM user.course "
-	+ "WHERE semester = ";
+	+ "WHERE semester = ?";
 	public static String FETCH_COURSE_BY_PROFESSOR_ID = "SELECT * FROM user.course "
 	+ "WHERE professor_id = ";
 	public static String FETCH_REPORT_CARD_BY_STUDENT_ID = "SELECT * from report_card"
@@ -30,7 +30,7 @@ public class SQLConstants {
 	public static String FETCH_REPORT_CARD_BY_REPORT_ID = "SELECT * FROM user.report_card WHERE report_id = ";
 	public static String UPDATE_REPORT_CARD_BY_REPORT_ID = "UPDATE user.report_card SET student_id = ? , course_id = ?, grade = ?, semester = ?, year = ? WHERE report_id = ?";
 	public static String FIND_PROFESSOR_BY_IDS = "SELECT * FROM professor "
-	+ "WHERE professor_id IN(?)";
+	+ "WHERE professor_id IN ";
 	public static String FETCH_STUDENT_BY_ID = "SELECT * FROM student "
 	+ "WHERE student_id = ?";
 	public static String FETCH_USER_BY_IDS = "SELECT * FROM user"

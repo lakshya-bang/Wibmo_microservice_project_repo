@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;
+import com.wibmo.enums.RegistrationStatus;
 
 /**
  * 
@@ -34,8 +35,10 @@ public class CRSApplication {
 				+ "[4] Exit\n"
 				+ "Enter your choice: ");
 		
+			while(!input.hasNextInt());
+			
 			choice = input.nextInt();
-		
+			
 			switch(choice) {
 				
 			case 1:
@@ -47,18 +50,25 @@ public class CRSApplication {
 					break;
 				}
 				
+				if(RegistrationStatus
+						.INVALID_REGISTRATION_STATUSES
+						.contains(user.getRegistrationStatus())) {
+					System.out.println("Login NOT Allowed. Your registration status is : " + user.getRegistrationStatus());
+					break;
+				}
+				
 				switch(user.getUserType()) {
 				
 				case STUDENT:
-					while(CRSStudentMenu.display(user));
+					while(CRSStudentMenu.display(input, user));
 					break;
 				
 				case PROFESSOR:
-					while(CRSProfessorMenu.display(user));
+					while(CRSProfessorMenu.display(input, user));
 					break;
 					
 				case ADMIN:
-					while(CRSAdminMenu.display(user));
+					while(CRSAdminMenu.display(input, user));
 					break;
 				}
 				
@@ -74,6 +84,7 @@ public class CRSApplication {
 				
 			case 4:
 				exit = true;
+				break;
 				
 			default:
 				System.out.println("Invalid choice! Try again.");
@@ -82,6 +93,7 @@ public class CRSApplication {
 		}
 		
 		input.close();
+		System.out.println("Good Bye!");
 	}
 	
 }

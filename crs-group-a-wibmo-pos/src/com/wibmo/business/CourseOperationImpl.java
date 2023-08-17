@@ -10,6 +10,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Professor;
 import com.wibmo.dao.CourseDAO;
 import com.wibmo.dao.CourseDAOImpl;
+import com.wibmo.enums.CourseType;
 
 public class CourseOperationImpl implements CourseOperation {
 
@@ -32,18 +33,26 @@ public class CourseOperationImpl implements CourseOperation {
 						courses
 							.stream()
 							.map(course -> course.getProfessorId())
+							.filter(professorId -> professorId != null)
 							.collect(Collectors.toSet()));
 		
 		System.out.println("List of applicable Courses for Semeseter: " + currentSemester);
-		System.out.println("CourseID    CourseTitle    AvailableSeats     ProfessorName   Department");
-		courses.forEach(
+		System.out.println(" CourseID  | \t CourseTitle \t|  Course Type  | Seats |   \t   ProfessorName   \t| \tDepartment ");
+		System.out.println("+----------------------------------------------------------------------------------------------------------------------------+");
+		courses
+			.forEach(
 				course -> System.out.format(
-						"%5d%10s%10d%10s%10s", 
+						"|    %d\t| %s\t| %s\t| %d\t| %s \t| %s |\n", 
 							course.getCourseId(),
 							course.getCourseTitle(),
+							course.getCourseType().toString(),
 							course.getNoOfSeats(),
-							professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName(),
-							professorIdToProfessorMap.get(course.getProfessorId()).getDepartment()));
+							null != course.getProfessorId()
+								? professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()
+								: "NULL",
+							null != course.getProfessorId()
+								? professorIdToProfessorMap.get(course.getProfessorId()).getDepartment()
+								: "NULL"));
 	}
 
 	@Override
@@ -57,15 +66,15 @@ public class CourseOperationImpl implements CourseOperation {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId) {
 		return courseDAO
 				.findAllByProfessorId(professorId);
-=======
-	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'viewCoursesTaughtByProfessorId'");
->>>>>>> da2e123451beb658645848ce71b911e36de428ac
+	}
+	
+	@Override
+	public CourseType getCourseTypeByCourseId(Integer courseId) {
+		return courseDAO
+				.findCourseTypeByCourseId(courseId);
 	}
 
 }

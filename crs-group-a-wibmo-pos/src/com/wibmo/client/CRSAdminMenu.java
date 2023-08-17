@@ -30,9 +30,8 @@ import com.wibmo.exception.StudentNotFoundException;
  */
 public class CRSAdminMenu {
 
-	public static Boolean display(User user) {
+	public static Boolean display(Scanner input, User user) {
 		
-		Scanner input = new Scanner(System.in);
 		Integer userId, courseId;
 		boolean logout = false, exit = false;
 		int choice;
@@ -269,7 +268,6 @@ public class CRSAdminMenu {
 			}
 		}
 		
-		input.close();
 		return Boolean.FALSE;
 	}
 	

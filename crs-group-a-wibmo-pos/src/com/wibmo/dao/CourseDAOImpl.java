@@ -49,13 +49,14 @@ public class CourseDAOImpl implements CourseDAO {
 	@Override
 	public List<Course> findAllBySemester(Integer semester) {
 		
-		String sql = SQLConstants.FETCH_COURSE_BY_SEMESTER + semester;
+		String sql = SQLConstants.FETCH_COURSE_BY_SEMESTER;
 		
 		List<Course> courses = new ArrayList<>();
 		
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, semester);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
@@ -66,9 +67,9 @@ public class CourseDAOImpl implements CourseDAO {
 						rs.getInt("year"),
 						rs.getString("department"), 
 						rs.getInt("professor_id"), 
-						rs.getInt("isCancelled") == 1, 
+						rs.getInt("is_cancelled") == 1, 
 						rs.getInt("no_of_seats"),
-						CourseType.valueOf(rs.getString("coutse_type"))));
+						CourseType.valueOf(rs.getString("course_type"))));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,4 +114,31 @@ public class CourseDAOImpl implements CourseDAO {
 		return courses;
 	}
 
+	@Override
+	public CourseType findCourseTypeByCourseId(Integer courseId) {
+		
+		CourseType courseType = null;
+		
+		String sql = "SELECT course_type FROM course "
+				+ "WHERE course_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				courseType = CourseType.valueOf(rs.getString("course_type"));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//				e.printStackTrace();
+		}
+	
+		return courseType;
+	}
 }

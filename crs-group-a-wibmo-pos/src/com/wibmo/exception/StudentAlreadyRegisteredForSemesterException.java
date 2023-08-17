@@ -3,21 +3,21 @@
  */
 package com.wibmo.exception;
 
+import com.wibmo.bean.Student;
+
 /**
  * 
  */
 public class StudentAlreadyRegisteredForSemesterException extends Exception {
-
-	private Long studentId;
-	private Integer semOfStudy;
 	
-	public StudentAlreadyRegisteredForSemesterException(Long studentId, Integer semOfStudy) {
-		this.studentId = studentId;
-		this.semOfStudy = semOfStudy;
+	private Student student;
+	
+	public StudentAlreadyRegisteredForSemesterException(Student student) {
+		this.student = student;
 	}
 	
 	@Override
 	public String getMessage() {
-		return "Student Id: " + studentId + " already registered for Sem: " + semOfStudy;
+		return "Student Id: " + student.getStudentId() + " already registered for Sem: " + student.getCurrentSemester();
 	}
 }

@@ -35,7 +35,7 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
 	public static boolean authenticate(Integer userId, String password) {
 		
 		PreparedStatement stmt = null;
-		Connection conn = com.wibmo.utils.DBUtils.getConnection();
+		Connection conn = DBUtils.getConnection();
 		
 		try {
 		stmt = conn.prepareStatement(SQLConstants.AUTH_DETAILS);
