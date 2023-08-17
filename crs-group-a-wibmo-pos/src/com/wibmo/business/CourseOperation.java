@@ -27,4 +27,13 @@ public interface CourseOperation {
 	 * @return
 	 */
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId);
+
+	/**
+	 * To add
+	 */
+	public void viewAllCourses();
+	public boolean addCourse(Course course);
+	public boolean removeCourseById(int courseId);
+	public void assignCourseToProfessor(int courseId, int professorId);
+
 }

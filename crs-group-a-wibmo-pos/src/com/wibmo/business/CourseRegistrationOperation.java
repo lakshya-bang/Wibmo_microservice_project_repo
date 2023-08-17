@@ -3,6 +3,8 @@ package com.wibmo.business;
 import java.util.List;
 import java.util.Map;
 
+import com.wibmo.bean.Course;
+import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
 
@@ -62,4 +64,11 @@ public interface CourseRegistrationOperation {
 	 * @return
 	 */
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
+
+	/**
+	 * To add
+	 */
+	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus);
+	public boolean approveRegistrationByRegistrationId(int courseRegId);
+	public boolean rejectRegistrationByRegistrationId(int courseRegId);
 }

@@ -129,7 +129,6 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) {
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
@@ -157,11 +156,19 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			});
 		return courseIdToRegisteredStudentsMap;
 	}
-	
-=======
-	public void getRegisteredStudentsByCourseId(Integer courseId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getRegisteredStudentsByCourseId'");
+
+	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
+		// if(regStatus.PENDING) {
+		// 	System.out.println("Your Registration is successful");
+		// }
+
+		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
 	}
->>>>>>> da2e123451beb658645848ce71b911e36de428ac
+	public boolean approveRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.approveRegistrationStatus(courseRegId);
+	}
+	public boolean rejectRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
+	}
+	
 }

@@ -57,15 +57,33 @@ public class CourseOperationImpl implements CourseOperation {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId) {
 		return courseDAO
 				.findAllByProfessorId(professorId);
-=======
-	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'viewCoursesTaughtByProfessorId'");
->>>>>>> da2e123451beb658645848ce71b911e36de428ac
+	}
+
+
+	/*
+	 * added crs admin menu method
+	 */
+	@Override
+	public void viewAllCourses() {
+		courseDAO.viewAllCourse();
+	}
+
+	@Override
+	public boolean addCourse(Course course) {
+		return courseDAO.saveCourse(course); 
+	}
+
+	@Override
+	public boolean removeCourseById(int courseId) {
+		return courseDAO.deleteCourse(courseId);
+	}
+
+	@Override
+	public void assignCourseToProfessor(int courseId, int professorId) {
+		courseDAO.assignCoursesToProfessor(courseId, professorId);
 	}
 
 }
