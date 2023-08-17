@@ -14,11 +14,9 @@ public class CRSApplication {
 	
 	public static void main(String[] args) {
 		
-		Scanner in = new Scanner(System.in);
-		Long courseId;
+		Scanner input = new Scanner(System.in);
 		boolean exit = false;
-		boolean response;
-		int ch;
+		int choice;
 		
 		AuthenticationService authenticationService = new AuthenticationServiceImpl();
 		
@@ -36,9 +34,9 @@ public class CRSApplication {
 				+ "[4] Exit\n"
 				+ "Enter your choice: ");
 		
-			ch = in.nextInt();
+			choice = input.nextInt();
 		
-			switch(ch) {
+			switch(choice) {
 				
 			case 1:
 				
@@ -49,20 +47,18 @@ public class CRSApplication {
 					break;
 				}
 				
-				String userType = user.getUserType();
+				switch(user.getUserType()) {
 				
-				switch(userType) {
-				
-				case "Student":
+				case STUDENT:
 					while(CRSStudentMenu.display(user));
 					break;
 				
-				case "Professor":
+				case PROFESSOR:
 					while(CRSProfessorMenu.display(user));
 					break;
 					
-				case "Admin":
-//					while(CRSAdminMenu.display(user));
+				case ADMIN:
+					while(CRSAdminMenu.display(user));
 					break;
 				}
 				
@@ -84,6 +80,8 @@ public class CRSApplication {
 				
 			}
 		}
+		
+		input.close();
 	}
 	
 }

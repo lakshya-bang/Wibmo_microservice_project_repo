@@ -1,48 +1,53 @@
 package com.wibmo.bean;
 
 /**
- * Table name = student
- * FOREIGN KEY(student_idd) REFERENCES User(user_id)
+ *
  */
 public class Student {
 
-	private Integer studentId;
-	private Integer currentSemester;
+	private Integer studentId;			// student_id (FK)
+	private String studentName;			// student_name
+	private Integer currentSemester;	// semester
 	
-	public Student(Integer studentId, Integer currentSemester) {
+	public Student() {}
+	
+	public Student(
+			Integer studentId, 
+			String studentName,
+			Integer currentSemester) {
 		this.studentId = studentId;
+		this.studentName = studentName;
 		this.currentSemester = currentSemester;
 	}
-	
-	/**
-	 * @return the studentId
-	 */
+
 	public Integer getStudentId() {
 		return studentId;
 	}
-	/**
-	 * @param studentId the studentId to set
-	 */
+
 	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
 	}
-	/**
-	 * @return the currentSemester
-	 */
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
 	public Integer getCurrentSemester() {
 		return currentSemester;
 	}
-	/**
-	 * @param currentSemester the currentSemester to set
-	 */
+
 	public void setCurrentSemester(Integer currentSemester) {
 		this.currentSemester = currentSemester;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Student [studentId=" + studentId + ", currentSemester=" + currentSemester + "]";
+		return "Student [studentId=" + studentId + ", studentName=" + studentName + ", currentSemester="
+				+ currentSemester + "]";
 	}
-
 	
 }

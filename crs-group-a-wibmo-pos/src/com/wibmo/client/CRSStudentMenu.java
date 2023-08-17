@@ -10,40 +10,32 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
-import com.wibmo.business.GradeOperation;
-import com.wibmo.business.GradeOperationImpl;
+import com.wibmo.business.ReportCardOperation;
+import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
-import com.wibmo.business.UserOperation;
-import com.wibmo.business.UserOperationImpl;
 
 public class CRSStudentMenu {
 
-	private static final int List = 0;
-
 	public static Boolean display(User user) {
 
-		Scanner in = new Scanner(System.in);
+		Scanner input = new Scanner(System.in);
 		Integer courseId;
-		boolean exit = false;
-		boolean response;
-		int ch;
+		boolean logout = false;
+		int choice;
 
-		UserOperation userOperation = new UserOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
-				userOperation, professorOperation);
+				professorOperation);
 		StudentOperation studentOperation = new StudentOperationImpl();
 		CourseRegistrationOperation courseRegistrationOperation = 
 				new CourseRegistrationOperationImpl(
-						userOperation, courseOperation);
-		GradeOperation gradeOperation = new GradeOperationImpl(courseOperation);
+						studentOperation, professorOperation, courseOperation);
+		ReportCardOperation gradeOperation = new ReportCardOperationImpl(courseOperation);
 
 		Student student = studentOperation.getStudentById(user.getUserId());
-
-		boolean logout = false;
 
 		System.out.print("+......... Welcome Student .........+\n");
 		System.out.println(user);
@@ -62,9 +54,9 @@ public class CRSStudentMenu {
 					+ "[8] Logout\n" 
 					+ "Enter your choice: ");
 
-			ch = in.nextInt();
+			choice = input.nextInt();
 
-			switch (ch) {
+			switch (choice) {
 
 			case 0:
 				System.out.println("*** Course Catalogue:- ***");
@@ -78,7 +70,7 @@ public class CRSStudentMenu {
 				// 4 Primary Courses to be selected:
 				System.out.println("Enter 4 Primary Course Ids: ");
 				while(primaryCourses.size() != 4) {
-					courseId = in.nextInt();
+					courseId = input.nextInt();
 					if(primaryCourses.contains(courseId)) {
 						System.out.println("Already selected, choose another.");
 					} else {
@@ -90,7 +82,7 @@ public class CRSStudentMenu {
 				// 2 Alternative Courses to be selected:
 				System.out.println("Enter 2 Alternative Course Ids: ");
 				while(alternativeCourses.size() != 2) {
-					courseId = in.nextInt();
+					courseId = input.nextInt();
 					if(alternativeCourses.contains(courseId)) {
 						System.out.println("Already selected, choose another.");
 					} else {
@@ -165,6 +157,8 @@ public class CRSStudentMenu {
 
 			}
 		}
+		
+		input.close();
 		return Boolean.FALSE;
 	}
 }

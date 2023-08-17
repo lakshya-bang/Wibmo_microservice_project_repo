@@ -1,5 +1,7 @@
 package com.wibmo.business;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.dao.CourseRegistrationDAO;
@@ -14,17 +17,22 @@ import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.enums.RegistrationStatus;
 
 public class CourseRegistrationOperationImpl implements CourseRegistrationOperation {
-
-	private final UserOperation userOperation;
+	
+	private final StudentOperation studentOperation;
+	
+	private final ProfessorOperation professorOperation;
 	
 	private final CourseOperation courseOperation;
 	
 	private final CourseRegistrationDAO courseRegistrationDAO;
 	
 	public CourseRegistrationOperationImpl(
-			UserOperation userOperation,
+			StudentOperation studentOperation,
+			ProfessorOperation professorOperation,
 			CourseOperation courseOperation) {
-		this.userOperation = userOperation;
+		
+		this.studentOperation = studentOperation;
+		this.professorOperation = professorOperation;
 		this.courseOperation = courseOperation;
 		courseRegistrationDAO = new CourseRegistrationDAOImpl();
 	}
@@ -66,7 +74,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 						courseRegistration.getPrimaryCourse4Id(),
 						courseRegistration.getAlternativeCourse1Id(),
 						courseRegistration.getAlternativeCourse2Id()));
-		Map<Integer, User> userIdToUserMap = userOperation.getUserIdToUserMap(
+		Map<Integer, Professor> professorIdToProfessorMap = professorOperation.getProfessorIdToProfessorMap(
 				courseIdToCourseMap
 					.entrySet()
 					.stream()
@@ -74,9 +82,9 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 					.collect(Collectors.toSet()));
 		
 		System.out.println("Here are registered courses for Student Id: " + student.getStudentId() + " and semester: " + student.getCurrentSemester());
-		System.out.println("+------------------------------------------------------------------------+");
-		System.out.println(" CourseId    CourseTitle    Department    ProfessorName    ProfessorEmail");
-		System.out.println("+------------------------------------------------------------------------+");
+		System.out.println("+------------------------------------------------------+");
+		System.out.println(" CourseId    CourseTitle    Department    ProfessorName ");
+		System.out.println("+------------------------------------------------------+");
 		courseIdToCourseMap
 			.entrySet()
 			.stream()
@@ -84,10 +92,9 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			.forEach(course -> {
 				System.out.format("%5d%10s%10s%10s%10s\n", 
 						course.getCourseId(),
-						course.getName(),
+						course.getCourseTitle(),
 						course.getDepartment(),
-						userIdToUserMap.get(course.getProfessorId()).getUserName(),
-						userIdToUserMap.get(course.getProfessorId()).getUserEmail());	
+						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());	
 			});
 	}
 	
@@ -97,7 +104,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			// TODO: Move to Exception
 			System.out.println("Student Id: " + student.getStudentId() + " is not registered for semester: " + student.getCurrentSemester());
 		}
-		return RegistrationStatus.valueOf(courseRegistrationDAO.findRegistrationStatusByStudent(student));
+		return courseRegistrationDAO.findRegistrationStatusByStudent(student);
 	}
 	
 
@@ -122,8 +129,39 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
+<<<<<<< HEAD
+	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) {
+		return courseRegistrationDAO
+					.findAllStudentIdsByCourseId(courseId)
+					.stream()
+					.map(studentId -> studentOperation.getStudentById(studentId))
+					.collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId) {
+		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
+		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
+		courses
+			.forEach(course -> {
+				CourseRegistration courseRegistration = courseRegistrationDAO
+						.findByCourseIdAndSemesterAndYear(
+								course.getCourseId(), 
+								course.getSemester(),
+								course.getYear());
+				Student student = studentOperation.getStudentById(courseRegistration.getStudentId());
+				if(!courseIdToRegisteredStudentsMap.containsKey(course.getCourseId())) {
+					courseIdToRegisteredStudentsMap.put(course.getCourseId(), new ArrayList<>());
+				}
+				courseIdToRegisteredStudentsMap.get(course.getCourseId()).add(student);
+			});
+		return courseIdToRegisteredStudentsMap;
+	}
+	
+=======
 	public void getRegisteredStudentsByCourseId(Integer courseId) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getRegisteredStudentsByCourseId'");
 	}
+>>>>>>> da2e123451beb658645848ce71b911e36de428ac
 }

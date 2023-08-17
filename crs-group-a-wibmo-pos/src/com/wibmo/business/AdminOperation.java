@@ -1,21 +1,17 @@
 package com.wibmo.business;
 
-import java.util.List;
-import java.util.Set;
-
 import com.wibmo.bean.Admin;
 import com.wibmo.bean.Course;
 import com.wibmo.enums.RegistrationStatus;
 
 public interface AdminOperation {
-
-	public boolean logIn();
+	
 	/**
 	 * 
-	 * @param id
+	 * @param integer
 	 * @return
 	 */
-	// public Admin getAdminById(Long id);
+	public Admin getAdminById(Integer integer);
 	
 	/**
 	 * Fetches the Admins of the respective Ids
@@ -48,6 +44,7 @@ public interface AdminOperation {
 	public boolean addCourseToCatalog(Course course);
 	
 	public boolean dropCourseFromCatalog(String courseName);
+	
 	/**
 	 * 
 	 */

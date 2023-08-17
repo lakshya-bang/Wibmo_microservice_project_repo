@@ -1,6 +1,7 @@
 package com.wibmo.business;
 
 import java.util.List;
+import java.util.Map;
 
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
@@ -49,5 +50,16 @@ public interface CourseRegistrationOperation {
 	 */
 	public void dropCourse(Integer courseId, Student student);
 	
-	public void getRegisteredStudentsByCourseId(Integer courseId);
+	/**
+	 * 
+	 * @param courseId
+	 */
+	public List<Student> getRegisteredStudentsByCourseId(Integer courseId);
+	
+	/**
+	 * 
+	 * @param professorId
+	 * @return
+	 */
+	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
 }
