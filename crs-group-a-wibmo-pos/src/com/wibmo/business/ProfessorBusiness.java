@@ -18,6 +18,6 @@ public interface ProfessorBusiness {
 	}
 	void viewEnrolledStudents(Professor professor);
 	
-	void updateGradeDetails();
+	void updateGradeDetails(Integer studentId, Integer courseId, String grade);
 }
 

@@ -70,12 +70,12 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 	}
 
 	@Override
-	public void uploadGrades(Integer courseId, Map<Integer, String> studentIdToAssignedGradesMap) {
+	public void uploadGrades(ReportCard reportCard) {
 		
 		// TODO: Lakshya is doing
 		
 		if(hasEntry(reportCard)) {
-			gradeDAO.updateByGradeId(report_card_id); //particular gradeID in DB.
+			gradeDAO.updateByGradeId(reportCard); //particular gradeID in DB.
 		} else {
 			gradeDAO.save(reportCard);
 		}
@@ -84,11 +84,11 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 	@Override
 	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId) { //ArrayList of grades
 		return gradeDAO.findAllByStudentId(studentId);
-	
+
 	}
 	
 	private boolean hasEntry(ReportCard reportCard) {
-		if(reportCard.getGradeId()!=null){
+		if(reportCard.getCourseId()!=null){
 			return gradeDAO.checkGradeDetails(reportCard);
 		}
 		else{

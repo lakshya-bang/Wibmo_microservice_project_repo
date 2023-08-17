@@ -129,7 +129,6 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) {
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
@@ -158,10 +157,4 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		return courseIdToRegisteredStudentsMap;
 	}
 	
-=======
-	public void getRegisteredStudentsByCourseId(Integer courseId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getRegisteredStudentsByCourseId'");
-	}
->>>>>>> da2e123451beb658645848ce71b911e36de428ac
 }

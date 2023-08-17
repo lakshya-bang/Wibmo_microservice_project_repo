@@ -18,6 +18,8 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
+import com.wibmo.business.ProfessorBusiness;
+import com.wibmo.business.ProfessorBusinessImpl;
 import com.wibmo.business.ReportCardOperation;
 import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.StudentOperation;
@@ -97,7 +99,7 @@ public class CRSProfessorMenu {
 			case 2:
 				// ask the user which course's grade he/she wants to upload
 				courseId = input.nextInt();
-				
+				ProfessorBusiness professorBusiness = new ProfessorBusinessImpl();
 				// TODO: if wrong course selected, i.e.
 				// this professor does not teaches any of his assigned courses
 				// show message, and break
@@ -115,8 +117,9 @@ public class CRSProfessorMenu {
 						} while(!grade.matches("[ABCDEf|abcdef]"));
 						studentIdToAssignedGradeMap.put(student.getStudentId(), grade);
 					});
-				
-				gradeOperation.uploadGrades(courseId, studentIdToAssignedGradeMap);
+				for(Map.Entry<Integer,String> entry : studentIdToAssignedGradeMap.entrySet()){
+					professorBusiness.updateGradeDetails(entry.getKey(), courseId,entry.getValue());
+				}
 				break;
 				
 			case 3:

@@ -110,7 +110,7 @@ public class AdminDAOImpl implements AdminDAO {
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, course.getName());
+			stmt.setString(1, course.getCourseTitle());
 			stmt.setString(2, course.getDepartment());
 			stmt.setInt(3, course.getYear());
 			stmt.setInt(4, course.getSemester());
