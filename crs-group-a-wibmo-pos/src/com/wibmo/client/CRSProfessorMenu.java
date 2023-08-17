@@ -46,10 +46,9 @@ public class CRSProfessorMenu {
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
 		System.out.print("+......... Welcome, " + professor.getProfessorName() +  ".........+\n");
-		
+		System.out.println("+------------------------------------+");
 		while(!logout) {
-			System.out.print("+------------------------------------+\n"
-					+ "[0] View Courses Taught\n"
+			System.out.println( "[0] View Courses Taught\n"
 					+ "[1] View Registered Students\n"
 					+ "[2] Upload Grades\n"
 					+ "[3] Logout\n"
@@ -60,7 +59,7 @@ public class CRSProfessorMenu {
 			switch(choice) {
 			
 			case 0:
-				System.out.println("*** List of Courses Taught:- ***");
+				System.out.println("*** List of Courses Taught:- ***\n");
 				System.out.println(" CourseId    CourseTitle    CourseType ");
 				System.out.println("+------------------------------------+");
 				courseOperation
@@ -70,21 +69,23 @@ public class CRSProfessorMenu {
 								course.getCourseId(), 
 								course.getCourseTitle(),
 								course.getCourseType().toString()));
+				System.out.println("+------------------------------------+\n");
 				break;
 			
 			case 1:
 				System.out.println("Enter the courseId to view registered students: ");
 				// TODO: Should check if this professor is teaching this course
 				courseId = input.nextInt();
-				System.out.println("*** List of Registered Students:- ***");
+				System.out.println("*** List of Registered Students:- ***\n");
 				System.out.println(" StudentId    StudentName ");
 				System.out.println("+------------------------+");
 				courseRegistrationOperation
 					.getRegisteredStudentsByCourseId(courseId)
 					.forEach(student -> System.out.format(
-							"%5s%10s", 
+							"%5s%20s\n", 
 								student.getStudentId(), 
 								student.getStudentName()));
+				System.out.println("+------------------------+\n");
 				break;
 				
 			case 2:
