@@ -38,7 +38,7 @@ public class CRSAdminMenu {
 		Integer userId, courseId;
 		boolean logout = false, exit = false;
 		int choice;
-		
+
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
 		UserOperation userOperation  =new UserOperationimpl();

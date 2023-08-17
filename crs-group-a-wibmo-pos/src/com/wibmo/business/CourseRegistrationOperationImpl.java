@@ -11,7 +11,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
-import com.wibmo.bean.User;
+// import com.wibmo.bean.User;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.enums.RegistrationStatus;
@@ -155,6 +155,16 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 				courseIdToRegisteredStudentsMap.get(course.getCourseId()).add(student);
 			});
 		return courseIdToRegisteredStudentsMap;
+	}
+
+	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
+		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
+	}
+	public boolean approveRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.approveRegistrationStatus(courseRegId);
+	}
+	public boolean rejectRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
 	}
 	
 }

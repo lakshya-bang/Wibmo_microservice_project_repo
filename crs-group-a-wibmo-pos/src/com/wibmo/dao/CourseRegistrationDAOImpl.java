@@ -287,4 +287,69 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		return null;
 	}
 
+	public void viewCourseRegistrationStatus(RegistrationStatus regStatus){
+		String sql = "SELECT * FROM registered_courses where regStatus=?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setObject(1, regStatus);
+
+			ResultSet rs = stmt.executeQuery();
+			String regId = "Registration Id", studentId = "Student Id", sem="Semester", year="year", pCourse1="Primary Course 1", pCourse2="Primary Course 2", pCourse3="Primary Course 3", pCourse4="Primary Course 4", aCourse1="Alternate Course 1", aCourse2="Alternate Course 2", regSt="reg_status";
+		    System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId, studentId, sem, year, pCourse1, pCourse2, pCourse3, pCourse4, aCourse1, aCourse2, regSt+ "\n");
+		    while(rs.next()){
+		         int regId1  = rs.getInt("reg_id");
+				 int sid  = rs.getInt("student_id");
+		         int sem1 = rs.getInt("semester");
+				 int year1  = rs.getInt("year");
+				 int prCourse1 = rs.getInt("primary_course_1_id");
+				 int prCourse2 = rs.getInt("primary_course_2_id");
+				 int prCourse3 = rs.getInt("primary_course_3_id");
+				 int prCourse4 = rs.getInt("primary_course_4_id");
+				 int alCourse1 = rs.getInt("alternate_course_1_id");
+				 int alCourse2= rs.getInt("alternate_course_2_id");
+		         String regSt1 = rs.getString("reg_status");
+		    
+
+		         System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId1, sid, sem1, year1, prCourse1, prCourse2, prCourse3, prCourse4, alCourse1, alCourse2, regSt1+ "\n");
+		     }
+
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public boolean approveRegistrationStatus(int courseRegId){
+		String sql = "UPDATE registered_courses SET reg_status=? where reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "APPROVED");
+			stmt.setInt(2, courseRegId);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+	
+	public boolean rejectRegistrationStatus(int courseRegId){
+		String sql = "UPDATE registered_courses SET reg_status=? where reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "REJECTED");
+			stmt.setInt(2, courseRegId);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+
 }

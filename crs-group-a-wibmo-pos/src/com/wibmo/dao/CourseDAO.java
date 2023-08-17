@@ -30,4 +30,11 @@ public interface CourseDAO {
 	 * @return
 	 */
 	public List<Course> findAllByProfessorId(Integer professorId);
+
+	// add admin dao method to course dao
+	public void viewAllCourse();
+	public boolean saveCourse(Course course);
+	public boolean deleteCourse(int courseId);
+	public boolean assignCoursesToProfessor(int courseId, int professorId);
+	
 }
