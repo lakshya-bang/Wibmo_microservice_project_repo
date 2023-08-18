@@ -2,7 +2,6 @@ package com.wibmo.dao;
 
 import java.util.ArrayList;
 import java.util.Map;
-
 import com.wibmo.bean.ReportCard;
 
 /**
@@ -14,7 +13,10 @@ public interface ReportCardDAO {
 
     public Map<Integer, ArrayList<ReportCard>> findAllByStudentId(Integer studentId);
 
+    // TODO: Remove to checkReportCardDetails()
+    // TODO: Redundant Functionality ----> move to Business instead
 	public boolean checkGradeDetails(ReportCard reportCard);
 
-    public void updateByReportId(ReportCard reportCard);
+    // TODO: Rename to updateByReportCard()
+    public void updateByGradeDetails(ReportCard reportCard);
 }

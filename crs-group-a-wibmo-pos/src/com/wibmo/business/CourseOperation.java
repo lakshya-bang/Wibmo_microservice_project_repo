@@ -43,4 +43,12 @@ public interface CourseOperation {
 	 */
 	public Boolean isCourseExistsInCatalogue(Integer courseId);
 
+	/**
+	 * To add
+	 */
+	public void viewAllCourses();
+	public boolean addCourse(Course course);
+	public boolean removeCourseById(int courseId);
+	public void assignCourseToProfessor(int courseId, int professorId);
+
 }

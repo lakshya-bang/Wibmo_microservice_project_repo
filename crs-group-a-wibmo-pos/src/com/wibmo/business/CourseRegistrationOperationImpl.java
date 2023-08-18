@@ -12,7 +12,6 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
-import com.wibmo.bean.User;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
@@ -140,10 +139,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
 				System.out.format("%5d\t| %10s\t| %7s    | %10s\n", 
+				// System.out.format("%5d%15s%15s%15s\n", 
 						course.getCourseId(),
 						course.getCourseTitle(),
 						course.getDepartment(),
-						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());	
+						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());
+
 			});
 	}
 	
@@ -317,4 +318,14 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
 	}
 
+	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
+		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
+	}
+	public boolean approveRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.approveRegistrationStatus(courseRegId);
+	}
+	public boolean rejectRegistrationByRegistrationId(int courseRegId){
+		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
+	}
+	
 }

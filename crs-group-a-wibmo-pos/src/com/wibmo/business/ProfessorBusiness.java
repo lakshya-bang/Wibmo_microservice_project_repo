@@ -12,7 +12,6 @@ public interface ProfessorBusiness {
 	}
 	
 	void viewEnrolledStudents(Professor professor);
-	
-	void updateGradeDetails();
+
 }
 

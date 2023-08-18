@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.business.CourseOperation;
@@ -16,6 +18,7 @@ import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.dao.AuthenticationDAOImpl;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
@@ -29,6 +32,9 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
  */
 public class CRSStudentMenu {
 
+	// Plug Logger in CRSStudentMenu logger injection
+	private static final Logger logger = Logger.getLogger(CRSProfessorMenu.class);
+	
 	public static Boolean display(Scanner input, User user) {
 		
 		Integer courseId;
@@ -46,11 +52,13 @@ public class CRSStudentMenu {
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
-		System.out.print("+......... Welcome Student .........+\n");
-		System.out.println("Student Id : " + student.getStudentId());
-		System.out.println("Student Name : " + student.getStudentName());
-		System.out.println("Current Semester : " + student.getCurrentSemester());
-
+//		System.out.print("+......... Welcome Student .........+\n");
+//		System.out.println("Student Id : " + student.getStudentId());
+//		System.out.println("Student Name : " + student.getStudentName());
+//		System.out.println("Current Semester : " + student.getCurrentSemester());
+			
+		logger.info("+......... Welcome Student .........+\\n");
+		
 		while (!logout) {
 			System.out.print("+-------------------------+\n" 
 					+ "[0] View Course Catalogue\n"

@@ -1,7 +1,6 @@
 package com.wibmo.business;
 
 import com.wibmo.bean.Admin;
-import com.wibmo.bean.Course;
 import com.wibmo.enums.RegistrationStatus;
 
 public interface AdminOperation {
@@ -41,16 +40,16 @@ public interface AdminOperation {
 	 * Allows the Admin to add the given course to the Course Catalog
 	 * @param course
 	 */
-	public boolean addCourseToCatalog(Course course);
+	// public boolean addCourseToCatalog(Course course);
 	
-	public boolean dropCourseFromCatalog(String courseName);
+	// public boolean dropCourseFromCatalog(String courseName);
 	
 	/**
 	 * 
 	 */
-	public void assignCoursesToProfessor(String courseName,String professorName);
+	// public void assignCoursesToProfessor(String courseName,String professorName);
 	
-	public void generateReportCards();
+	// public void generateReportCards();
 	
 	// public void generateBills();
 	

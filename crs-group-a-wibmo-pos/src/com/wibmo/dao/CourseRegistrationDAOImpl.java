@@ -21,7 +21,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
-		String sql = "INSERT INTO registered_courses("
+		String sql = "INSERT INTO user.registered_courses("
 				+ "student_id, "
 				+ "semester,"
 				+ "year,"
@@ -62,7 +62,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		CourseRegistration courseRegistration = null;
 		
-		String sql = "SELECT * FROM registered_courses "
+		String sql = "SELECT * FROM user.registered_courses "
 				+ "WHERE student_id = ? "
 				+ "AND semester = ?";
 		
@@ -204,7 +204,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		Set<Integer> studentIds = new HashSet<>();
 		
-		String sql = "SELECT student_id FROM registered_courses "
+		String sql = "SELECT student_id FROM user.registered_courses "
 				+ "WHERE primary_course_1_id = ? "
 				+ "OR primary_course_2_id = ? "
 				+ "OR primary_course_3_id = ? "
@@ -283,7 +283,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 
 		CourseRegistration courseRegistration = null;
 		
-		String sql = "SELECT * FROM registered_courses "
+		String sql = "SELECT * FROM user.registered_courses "
 				+ "WHERE semester = ? "
 				+ "AND year = ? "
 				+ "AND ("
@@ -487,7 +487,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 				+ "alternative_course_2_id "
 				+ "FROM registered_courses "
 				+ "WHERE reg_id = ?";
-		
+
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -511,7 +511,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		}
 		
 		return -1;
-	}
+	}	
 
 	@Override
 	public Integer findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
@@ -568,7 +568,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		String sql = "UPDATE registered_courses "
 				+ "SET alternative_course_" + alternativeCourseIdIndex + "_id = ? " 
 				+ "WHERE reg_id = ?";
-		
+
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -581,7 +581,24 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			System.out.println(e.getMessage());
 //			e.printStackTrace();
 		}
+	}
+
+	@Overide
+	public boolean approveRegistrationStatus(int courseRegId) {
+
+		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
 		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "APPROVED");
+			stmt.setInt(2, courseRegId);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
@@ -606,7 +623,51 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			System.out.println(e.getMessage());
 //			e.printStackTrace();
 		}
-		
 	}
 	
+	public boolean rejectRegistrationStatus(int courseRegId){
+		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "REJECTED");
+			stmt.setInt(2, courseRegId);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+
+	// TODO: Will have to shift view to Business instead
+	public void viewCourseRegistrationStatus(RegistrationStatus regStatus) {
+		String sql = "SELECT * FROM user.registered_courses where regStatus=?";
+		stmt.setObject(1, regStatus);
+
+		ResultSet rs = stmt.executeQuery();
+		String regId = "Registration Id", studentId = "Student Id", sem="Semester", year="year", pCourse1="Primary Course 1", pCourse2="Primary Course 2", pCourse3="Primary Course 3", pCourse4="Primary Course 4", aCourse1="Alternate Course 1", aCourse2="Alternate Course 2", regSt="reg_status";
+		System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId, studentId, sem, year, pCourse1, pCourse2, pCourse3, pCourse4, aCourse1, aCourse2, regSt+ "\n");
+		while(rs.next()){
+				int regId1  = rs.getInt("reg_id");
+				int sid  = rs.getInt("student_id");
+				int sem1 = rs.getInt("semester");
+				int year1  = rs.getInt("year");
+				int prCourse1 = rs.getInt("primary_course_1_id");
+				int prCourse2 = rs.getInt("primary_course_2_id");
+				int prCourse3 = rs.getInt("primary_course_3_id");
+				int prCourse4 = rs.getInt("primary_course_4_id");
+				int alCourse1 = rs.getInt("alternate_course_1_id");
+				int alCourse2= rs.getInt("alternate_course_2_id");
+				String regSt1 = rs.getString("reg_status");
+		
+
+				System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId1, sid, sem1, year1, prCourse1, prCourse2, prCourse3, prCourse4, alCourse1, alCourse2, regSt1+ "\n");
+			}
+
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 }

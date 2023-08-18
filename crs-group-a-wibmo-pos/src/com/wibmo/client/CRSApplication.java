@@ -44,7 +44,7 @@ public class CRSApplication {
 			case 1:
 				
 				User user = authenticationService.login();
-				
+
 				if(user == null) {
 					System.out.println("Login Failure");
 					break;
@@ -57,6 +57,8 @@ public class CRSApplication {
 					break;
 				}
 				
+				// NotificationOperation notificationOperation = new NotificationOperationImpl();
+				// notificationOperation.retrieveMessages(user.getUserId()).forEach(notification -> System.out.println(notification.getNotificationMessage()));;
 				switch(user.getUserType()) {
 				
 				case STUDENT:
@@ -73,7 +75,8 @@ public class CRSApplication {
 				}
 				
 				break;
-				
+				}
+
 			case 2:
 				System.out.println("Missing Functionality");
 				break;

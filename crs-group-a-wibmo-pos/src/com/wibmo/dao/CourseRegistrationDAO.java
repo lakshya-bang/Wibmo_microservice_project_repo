@@ -151,4 +151,10 @@ public interface CourseRegistrationDAO {
 			Integer primaryCourseIdIndex, 
 			Integer courseRegistrationId);
 	
+	public void viewCourseRegistrationStatus(RegistrationStatus regStatus);
+
+	public boolean approveRegistrationStatus(int courseRegId);
+	
+	public boolean rejectRegistrationStatus(int courseRegId);
+
 }

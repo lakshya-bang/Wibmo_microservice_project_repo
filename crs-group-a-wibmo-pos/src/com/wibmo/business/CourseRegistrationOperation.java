@@ -95,4 +95,10 @@ public interface CourseRegistrationOperation {
 	 */
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
 
+	/**
+	 * To add
+	 */
+	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus);
+	public boolean approveRegistrationByRegistrationId(int courseRegId);
+	public boolean rejectRegistrationByRegistrationId(int courseRegId);
 }

@@ -72,7 +72,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1,studentId);
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 			ReportCard tempReportCard = new ReportCard(
 					rs.getInt("report_id"),
 					rs.getInt("student_id"),
@@ -100,21 +100,23 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		return semesterToReportCardsMap;	
 	}
 
-	// TODO: rename to checkReportCardDetails
+	// TODO: Invalid renaming and redundant functionality
 	@Override
 	public boolean checkGradeDetails(ReportCard reportCard) {
-		String sql = SQLConstants.FETCH_REPORT_CARD_BY_REPORT_ID + reportCard.getReportId();
+		String sql = SQLConstants.FETCH_REPORT_CARD_BY_REPORT_DETAILS;
 		Connection conn = com.wibmo.utils.DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt.setInt(1,reportCard.getStudentId());
+			stmt.setInt(2,reportCard.getCourseId());
+			stmt.setInt(3, reportCard.getSemester());
+			stmt.setInt(4, reportCard.getYear());
+			ResultSet rs = stmt.executeQuery();
 			
 			// TODO: Should use .equals() method instead.
 			if(rs.next() 
-					&& (rs.getInt("report_id") == reportCard.getReportId() 
-						&& rs.getInt("student_id") == reportCard.getStudentId() 
-						&& rs.getInt("course_id") == reportCard.getCourseId() 
-						&& rs.getString("grade").equals(reportCard.getGrade()) 
+					&& (rs.getInt("student_id") == reportCard.getStudentId() 
+						&& rs.getInt("course_id") == reportCard.getCourseId()  
 						&& rs.getInt("semester") == reportCard.getSemester() 
 						&& rs.getInt("year") == reportCard.getYear())){
 				return true;
@@ -128,18 +130,18 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		return false;
 	}
 
+	// TODO: Rename to updateByReportCardDetails
 	@Override
-	public void updateByGradeId(ReportCard reportCard) {
+	public void updateByGradeDetails(ReportCard reportCard) {
 		String sql = SQLConstants.UPDATE_REPORT_CARD_BY_REPORT_ID;
 		Connection conn = DBUtils.getConnection();
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, reportCard.getStudentId());
-			stmt.setInt(2, reportCard.getCourseId());
-			stmt.setString(3, reportCard.getGrade());
+			stmt.setInt(2, reportCard.getStudentId());
+			stmt.setInt(3, reportCard.getCourseId());
+			stmt.setString(1, reportCard.getGrade());
 			stmt.setInt(4, reportCard.getSemester());
 			stmt.setInt(5, reportCard.getYear());
-			stmt.setInt(6, reportCard.getReportId());
 			stmt.executeUpdate();
 		}
 		catch(SQLException se){

@@ -43,6 +43,7 @@ public class CourseOperationImpl implements CourseOperation {
 			.forEach(
 				course -> System.out.format(
 						"|    %d\t| %s\t| %s\t| %d\t| %s \t| %s |\n", 
+						// "%5d%15s%16d%20s%13s\n", 
 							course.getCourseId(),
 							course.getCourseTitle(),
 							course.getCourseType().toString(),
@@ -81,6 +82,29 @@ public class CourseOperationImpl implements CourseOperation {
 	public Boolean isCourseExistsInCatalogue(Integer courseId) {
 		return courseDAO
 				.existsByCourseId(courseId);
+
+
+	/*
+	 * added crs admin menu method
+	 */
+	@Override
+	public void viewAllCourses() {
+		courseDAO.viewAllCourse();
+	}
+
+	@Override
+	public boolean addCourse(Course course) {
+		return courseDAO.saveCourse(course); 
+	}
+
+	@Override
+	public boolean removeCourseById(int courseId) {
+		return courseDAO.deleteCourse(courseId);
+	}
+
+	@Override
+	public void assignCourseToProfessor(int courseId, int professorId) {
+		courseDAO.assignCoursesToProfessor(courseId, professorId);
 	}
 
 }
