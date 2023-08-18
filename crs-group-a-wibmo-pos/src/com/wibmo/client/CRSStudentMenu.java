@@ -52,12 +52,10 @@ public class CRSStudentMenu {
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
-//		System.out.print("+......... Welcome Student .........+\n");
-//		System.out.println("Student Id : " + student.getStudentId());
-//		System.out.println("Student Name : " + student.getStudentName());
-//		System.out.println("Current Semester : " + student.getCurrentSemester());
-			
-		logger.info("+......... Welcome Student .........+\\n");
+		logger.info("+......... Welcome Student .........+\n"
+				+ "Student Id : " + student.getStudentId() + "\n"
+				+ "Student Name : " + student.getStudentName() + "\n"
+				+ "Current Semester : " + student.getCurrentSemester());
 		
 		while (!logout) {
 			System.out.print("+-------------------------+\n" 
@@ -87,6 +85,8 @@ public class CRSStudentMenu {
 				
 				List<Integer> primaryCourses = new ArrayList<>();
 				List<Integer> alternativeCourses = new ArrayList<>();
+				
+				// TODO: Move to Validator
 				
 				// 4 Primary Courses to be selected:
 				System.out.println("Enter 4 Primary Course Ids: ");

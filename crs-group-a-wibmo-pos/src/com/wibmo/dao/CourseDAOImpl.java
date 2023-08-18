@@ -147,14 +147,17 @@ public class CourseDAOImpl implements CourseDAO {
 		String sql = "SELECT course_id FROM course "
 				+ "WHERE course_id = ?";
 		
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, courseId);
-		
-		ResultSet rs = stmt.executeQuery();
-		
-		if(rs.next()) {
-			return Boolean.TRUE;
-		}
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			stmt.setInt(1, courseId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return Boolean.TRUE;
+			}
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

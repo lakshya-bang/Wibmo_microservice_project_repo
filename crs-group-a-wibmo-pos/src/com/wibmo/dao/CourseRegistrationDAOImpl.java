@@ -583,7 +583,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		}
 	}
 
-	@Overide
+	@Override
 	public boolean approveRegistrationStatus(int courseRegId) {
 
 		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
@@ -644,12 +644,19 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	// TODO: Will have to shift view to Business instead
 	public void viewCourseRegistrationStatus(RegistrationStatus regStatus) {
 		String sql = "SELECT * FROM user.registered_courses where regStatus=?";
-		stmt.setObject(1, regStatus);
-
-		ResultSet rs = stmt.executeQuery();
-		String regId = "Registration Id", studentId = "Student Id", sem="Semester", year="year", pCourse1="Primary Course 1", pCourse2="Primary Course 2", pCourse3="Primary Course 3", pCourse4="Primary Course 4", aCourse1="Alternate Course 1", aCourse2="Alternate Course 2", regSt="reg_status";
-		System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId, studentId, sem, year, pCourse1, pCourse2, pCourse3, pCourse4, aCourse1, aCourse2, regSt+ "\n");
-		while(rs.next()){
+		
+		Connection conn = DBUtils.getConnection();
+		
+		try {
+		
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			stmt.setObject(1, regStatus);
+	
+			ResultSet rs = stmt.executeQuery();
+			String regId = "Registration Id", studentId = "Student Id", sem="Semester", year="year", pCourse1="Primary Course 1", pCourse2="Primary Course 2", pCourse3="Primary Course 3", pCourse4="Primary Course 4", aCourse1="Alternate Course 1", aCourse2="Alternate Course 2", regSt="reg_status";
+			System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId, studentId, sem, year, pCourse1, pCourse2, pCourse3, pCourse4, aCourse1, aCourse2, regSt+ "\n");
+			while(rs.next()){
 				int regId1  = rs.getInt("reg_id");
 				int sid  = rs.getInt("student_id");
 				int sem1 = rs.getInt("semester");

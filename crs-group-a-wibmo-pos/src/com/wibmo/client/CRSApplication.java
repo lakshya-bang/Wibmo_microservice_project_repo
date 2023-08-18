@@ -75,7 +75,6 @@ public class CRSApplication {
 				}
 				
 				break;
-				}
 
 			case 2:
 				System.out.println("Missing Functionality");

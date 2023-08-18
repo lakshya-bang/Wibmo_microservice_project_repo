@@ -82,7 +82,7 @@ public class CourseOperationImpl implements CourseOperation {
 	public Boolean isCourseExistsInCatalogue(Integer courseId) {
 		return courseDAO
 				.existsByCourseId(courseId);
-
+	}
 
 	/*
 	 * added crs admin menu method
