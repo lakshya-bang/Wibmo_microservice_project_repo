@@ -1,6 +1,7 @@
 package com.wibmo.business;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.wibmo.bean.ReportCard;
@@ -15,14 +16,17 @@ public interface ReportCardOperation {
 	 * 
 	 * @param student
 	 */
-	public void viewGradesByStudent(Student student);
+	public void viewReportCardByStudent(Student student);
 	
 	/**
+	 * Uploads the given list of grade cards into the Database.
+	 * 
+	 * <b>Note</b>: This is a general method for both save and update functionality.
 	 * 
 	 * @param courseId
 	 * @param studentIdToAssignedGradesMap
 	 */
-	public void uploadGrades(ReportCard reportCard);
+	public void uploadReportCards(List<ReportCard> reportCards);
 	
 	/**
 	 * 
@@ -30,4 +34,5 @@ public interface ReportCardOperation {
 	 * @return
 	 */
 	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId);
+
 }

@@ -16,4 +16,11 @@ public interface ProfessorDAO {
 	 * @return
 	 */
 	public List<Professor> findAllByIdIn(Set<Integer> professorIds);
+
+	/**
+	 * 
+	 * @param professorId
+	 * @return
+	 */
+	public Boolean existsById(Integer professorId);
 }

@@ -3,9 +3,14 @@
  */
 package com.wibmo.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.User;
@@ -13,12 +18,13 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.CourseRegistrationOperationImpl;
-import com.wibmo.business.ProfessorBusiness;
-import com.wibmo.business.ProfessorBusinessImpl;
 import com.wibmo.business.ReportCardOperation;
 import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotExistsInSystemException;
+import com.wibmo.utils.CRSProfessorMenuUtil;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 
@@ -26,6 +32,9 @@ import com.wibmo.business.ProfessorOperationImpl;
  * 
  */
 public class CRSProfessorMenu {
+	
+	// Plug Logger in CRSStudentMenu logger injection
+	private static final Logger LOG = Logger.getLogger(CRSProfessorMenu.class);	
 	
 	public static Boolean display(Scanner input, User user) {
 		
@@ -40,14 +49,18 @@ public class CRSProfessorMenu {
 		CourseRegistrationOperation courseRegistrationOperation =
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		ReportCardOperation gradeOperation = new ReportCardOperationImpl(courseOperation);
+		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(studentOperation, courseOperation);
 		
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
-		System.out.print("+......... Welcome, " + professor.getProfessorName() +  ".........+\n");
-		System.out.println("+------------------------------------+");
+		LOG.info("+......... Welcome Professor .........+\n"
+				+ "Professor Id : " + professor.getProfessorId() + "\n"
+				+ "Professor Name : " + professor.getProfessorName() + "\n"
+				+ "Professor Email : " + professor.getProfessorEmail());
+		
 		while(!logout) {
-			System.out.println( "[0] View Courses Taught\n"
+			System.out.print("+-----------------------------------+\n"
+					+ "[0] View Courses Taught\n"
 					+ "[1] View Registered Students\n"
 					+ "[2] Upload Grades\n"
 					+ "[3] Logout\n"
@@ -58,70 +71,33 @@ public class CRSProfessorMenu {
 			switch(choice) {
 			
 			case 0:
-				System.out.println("*** List of Courses Taught:- ***\n");
-				System.out.println(" CourseId    CourseTitle    CourseType ");
-				System.out.println("+------------------------------------+");
-				courseOperation
-					.getCoursesAssignedToProfessor(professor.getProfessorId())
-					.forEach(course -> System.out.format(
-							"%5d%15s%15s\n", 
-								course.getCourseId(), 
-								course.getCourseTitle(),
-								course.getCourseType().toString()));
-				System.out.println("+------------------------------------+\n");
+				courseOperation.viewCoursesTaughtByProfessor(professor);
 				break;
 			
 			case 1:
-				System.out.println("Enter the courseId to view registered students: ");
-				// TODO: Should check if this professor is teaching this course
+				System.out.print("Enter the Course Id: ");
 				courseId = input.nextInt();
-				System.out.println("*** List of Registered Students:- ***\n");
-				System.out.println(" StudentId    StudentName ");
-				System.out.println("+------------------------+");
-				courseRegistrationOperation
-					.getRegisteredStudentsByCourseId(courseId)
-					.forEach(student -> System.out.format(
-							"%5s%20s\n", 
-								student.getStudentId(), 
-								student.getStudentName()));
-				System.out.println("+------------------------+\n");
+				
+				try {
+					courseRegistrationOperation
+						.viewRegisteredStudentsByProfessorIdAndCourseId(
+							professor.getProfessorId(), courseId);
+				} catch (CourseNotExistsInCatalogException 
+						| ProfessorNotExistsInSystemException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				break;
 				
 			case 2:
-				System.out.println("Enter the course ID for which you want to upload the Grades- ");
+				System.out.print("Enter the Course Id: ");
 				courseId = input.nextInt();
-				ProfessorBusiness professorBusiness = new ProfessorBusinessImpl();
-				// TODO: if wrong course selected, i.e.
-				// this professor does not teaches any of his assigned courses
-				// show message, and break
 				
-				Map<Integer, String> studentIdToAssignedGradeMap = new HashMap<>();
+				reportCardOperation.uploadReportCards(
+					CRSProfessorMenuUtil
+						.viewReportCardEntryMenu(
+							input, courseId, courseRegistrationOperation));
 				
-				// loop over each student one by one and ask the user to enter the grades.
-				courseRegistrationOperation
-					.getRegisteredStudentsByCourseId(courseId)
-					.forEach(student -> {
-						String grade = null;
-						do {
-							System.out.print("StudentId: " + student.getStudentId() + ", StudentName: " + student.getStudentName() + ", Enter Grade: ");
-							grade = input.next();
-						} while(!grade.matches("[ABCDEf|abcdef]"));
-						studentIdToAssignedGradeMap.put(student.getStudentId(), grade);
-					});
-				for(Map.Entry<Integer,String> entry : studentIdToAssignedGradeMap.entrySet()){
-					ReportCard reportCard = new ReportCard();
-					ReportCardOperation reportCardOperation = new ReportCardOperationImpl(courseOperation);
-					reportCard.setStudentId(entry.getKey());
-					System.out.println("Please enter the semester: ");
-					Integer semester = input.nextInt();
-					reportCard.setSemester(semester);
-					System.out.println("Please enter the year: ");
-					Integer year = input.nextInt();
-					reportCard.setYear(year);
-					reportCard.setCourseId(courseId);
-					reportCard.setGrade(entry.getValue());
-					reportCardOperation.uploadGrades(reportCard);
-				}
 				break;
 				
 			case 3:

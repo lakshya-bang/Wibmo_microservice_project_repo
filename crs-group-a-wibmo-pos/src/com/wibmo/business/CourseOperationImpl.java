@@ -107,4 +107,24 @@ public class CourseOperationImpl implements CourseOperation {
 		courseDAO.assignCoursesToProfessor(courseId, professorId);
 	}
 
+	@Override
+	public void viewCoursesTaughtByProfessor(Professor professor) {
+		
+		if(null == professor) {
+			return;
+		}
+		
+		System.out.println("*** List of Courses Taught:- ***\n");
+		System.out.println(" CourseId    CourseTitle   CourseType ");
+		System.out.println("+----------------------------------------+");
+		
+		getCoursesAssignedToProfessor(professor.getProfessorId())
+			.forEach(course -> System.out.format(
+					"%5d%15s%15s\n", 
+						course.getCourseId(), 
+						course.getCourseTitle(),
+						course.getCourseType().toString()));
+		System.out.println("+------------------------------------+\n");	
+	}
+
 }

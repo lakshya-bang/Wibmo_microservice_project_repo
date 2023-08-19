@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.wibmo.bean.Course;
+import com.wibmo.bean.Professor;
 import com.wibmo.enums.CourseType;
 
 public interface CourseOperation {
@@ -50,5 +51,11 @@ public interface CourseOperation {
 	public boolean addCourse(Course course);
 	public boolean removeCourseById(int courseId);
 	public void assignCourseToProfessor(int courseId, int professorId);
+
+	/**
+	 * 
+	 * @param professor
+	 */
+	public void viewCoursesTaughtByProfessor(Professor professor);
 
 }

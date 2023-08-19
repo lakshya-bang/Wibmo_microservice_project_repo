@@ -24,4 +24,11 @@ public interface ProfessorOperation {
 	 */
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds);
 
+	/**
+	 * 
+	 * @param professorId
+	 * @return
+	 */
+	public Boolean isProfessorExistsById(Integer professorId);
+
 }

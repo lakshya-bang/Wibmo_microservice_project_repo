@@ -5,12 +5,17 @@ package com.wibmo.business;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import com.wibmo.bean.Course;
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 import com.wibmo.dao.ReportCardDAO;
 import com.wibmo.dao.ReportCardDAOImpl;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
 
 /**
  * 
@@ -19,15 +24,24 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 
 	private final CourseOperation courseOperation;
 	
+	private final StudentOperation studentOperation;
+	
+	private final CourseRegistrationOperation courseRegistrationOperation;
+	
 	private final ReportCardDAO gradeDAO;
 	
-	public ReportCardOperationImpl(CourseOperation courseOperation) {
+	public ReportCardOperationImpl(
+			StudentOperation studentOperation,
+			CourseOperation courseOperation,
+			CourseRegistrationOperation courseRegistrationOperation) {
+		this.studentOperation = studentOperation;
 		this.courseOperation = courseOperation;
+		this.courseRegistrationOperation = courseRegistrationOperation;
 		gradeDAO = ReportCardDAOImpl.getInstance();
 	}
 	
 	@Override
-	public void viewGradesByStudent(Student student) {
+	public void viewReportCardByStudent(Student student) {
 		
 		Map<Integer, ArrayList<ReportCard>> semesterToGradeMap = getSemesterToReportCardMapByStudentId(student.getStudentId());
 		ArrayList<Integer> courseIds = new ArrayList<>();
@@ -65,7 +79,18 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 	}
 
 	@Override
-	public void uploadGrades(ReportCard reportCard) {
+	public void uploadReportCards(List<ReportCard> reportCards) {
+		
+		if(null == reportCards || reportCards.isEmpty()) {
+			return;
+		}
+		
+		// Filter out New Report Cards
+		List<ReportCard> newReportCards = reportCards
+				.stream()
+				.filter(reportCard -> null == reportCard.getReportId())
+				.collect(Collectors.t());
+		
 		
 		if(hasEntry(reportCard)) {
 			gradeDAO.updateByGradeDetails(reportCard); //particular gradeID in DB.

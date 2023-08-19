@@ -12,8 +12,8 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
-import com.wibmo.exception.CourseNotFoundException;
-import com.wibmo.exception.CoursesNotAvailableForRegistrationException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -50,7 +50,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	public void register(List<Integer> primaryCourseIds, List<Integer> alternativeCourseIds, Student student)
 			throws 
 				StudentAlreadyRegisteredForSemesterException, 
-				CourseNotFoundException {
+				CourseNotExistsInCatalogException {
 		
 		// TODO: Check if Registration is Enabled by Admin
 
@@ -60,12 +60,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		
 		for(Integer courseId : primaryCourseIds) {
 			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
-				throw new CourseNotFoundException(courseId);
+				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
 		for(Integer courseId : alternativeCourseIds) {
 			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
-				throw new CourseNotFoundException(courseId);
+				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
 		
@@ -166,14 +166,14 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 				StudentAlreadyRegisteredForCourseInSemesterException, 
 				StudentAlreadyRegisteredForAllAlternativeCoursesException, 
 				StudentAlreadyRegisteredForAllPrimaryCoursesException, 
-				CourseNotFoundException {
+				CourseNotExistsInCatalogException {
 
 		if(!isStudentRegistered(student)) {
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
 		
 		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
-			throw new CourseNotFoundException(courseId);
+			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
 		// TODO: Improve dual DB call for same thing. Handle with index. 
@@ -267,7 +267,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) {
+	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) throws CourseNotExistsInCatalogException {
+		
+		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
 					.stream()
@@ -326,6 +331,38 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 	public boolean rejectRegistrationByRegistrationId(int courseRegId){
 		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
+	}
+
+	@Override
+	public void viewRegisteredStudentsByProfessorIdAndCourseId(
+			Integer professorId, Integer courseId) throws 
+				CourseNotExistsInCatalogException,
+				ProfessorNotExistsInSystemException {
+		
+		if(null == professorId || null == courseId) {
+			return;
+		}
+		
+		if(!professorOperation.isProfessorExistsById(professorId)) {
+			throw new ProfessorNotExistsInSystemException(professorId);
+		}
+		
+		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		System.out.println("*** List of Registered Students:- ***\n");
+		System.out.print(
+				"+--------------------------------------------------------+\n"
+				+ " StudentId  |  StudentName\t|\t StudentEmail \n"
+				+ "+------------------------------------------------------+\n");
+		
+		getRegisteredStudentsByCourseId(courseId)
+			.forEach(student -> System.out.format(
+					"%5s%20s\n", 
+						student.getStudentId(), 
+						student.getStudentName(),
+						student.getStudentEmail()));
 	}
 	
 }

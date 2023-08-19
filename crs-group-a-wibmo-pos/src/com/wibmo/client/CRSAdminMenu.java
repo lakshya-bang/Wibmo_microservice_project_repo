@@ -1,6 +1,9 @@
 package com.wibmo.client;
 
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
 import com.wibmo.bean.Admin;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.User;
@@ -24,6 +27,9 @@ import com.wibmo.business.ProfessorOperationImpl;
  */
 public class CRSAdminMenu {
 
+	// Plug Logger in CRSStudentMenu logger injection
+	private static final Logger LOG = Logger.getLogger(CRSAdminMenu.class);
+	
 	public static Boolean display(Scanner input, User user) {
 		
 		Integer userId, courseId;
@@ -44,11 +50,13 @@ public class CRSAdminMenu {
 		
 		Admin admin = adminOperation.getAdminById(user.getUserId());
 		
-		System.out.print("+......... Welcome Admin .........+\n");
-		System.out.println(admin);
+		LOG.info("+......... Welcome Admin .........+\n"
+				+ "Admin Id : " + admin.getAdminId() + "\n"
+				+ "Admin Name : " + admin.getAdminName() + "\n"
+				+ "Admin Email : " + admin.getAdminEmail());
 
 		while(!logout) {
-			System.out.print("+-------------------------+\n"
+			System.out.print("+---------------------------------+\n"
 					+ "[1] Approve / Reject New Account Registration\n"
 					+ "[2] Approve / Reject Student Course Registration\n"
 					+ "[3] View Course Catalogue\n"

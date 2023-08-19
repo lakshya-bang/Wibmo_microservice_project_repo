@@ -42,14 +42,14 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
         return instance;
     }
 	
-	public static boolean authenticate(Integer userId, String password) {
+	public static boolean authenticate(String userEmail, String password) {
 		
 		PreparedStatement stmt = null;
 		Connection conn = DBUtils.getConnection();
 		
 		try {
 		stmt = conn.prepareStatement(SQLConstants.AUTH_DETAILS);
-		stmt.setInt(1, userId);
+		stmt.setString(1, userEmail);
 		
 	    ResultSet rs = stmt.executeQuery();
 	    
@@ -68,19 +68,19 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
 		return false;
 	}
 	
-	public static User getUserDetails(Integer userId) {
+	public static User getUserDetails(String userEmail) {
 		PreparedStatement stmt = null;
 		Connection conn = DBUtils.getConnection();
 		try {
 		stmt = conn.prepareStatement(SQLConstants.USER_DETAILS);
-	    stmt.setInt(1, userId);
+	    stmt.setString(1, userEmail);
 		
 		ResultSet rs = stmt.executeQuery();
-	    
-	    
+		
 	   if(rs.next()) {
 		   return new User(
 				   rs.getInt("user_id"),
+				   rs.getString("user_email"),
 				   RegistrationStatus.valueOf(rs.getString("reg_status")),
 				   UserType.valueOf(rs.getString("user_type")));
 	   }

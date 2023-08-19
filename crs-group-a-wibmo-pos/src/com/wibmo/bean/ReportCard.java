@@ -4,11 +4,11 @@
 package com.wibmo.bean;
 
 /**
- * Table Name = grade_details
+ * Table Name = report_card
  */
 public class ReportCard {
 	
-	private Integer reportId;			// grade_detail_id (PK)
+	private Integer reportId;			// report_id (PK)
 	private Integer studentId;			// student_id
 	private Integer courseId;			// course_id
 	private String grade;				// grade

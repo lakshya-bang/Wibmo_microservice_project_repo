@@ -51,6 +51,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 			while(rs.next()) {
 				professors.add(new Professor(
 						rs.getInt("professor_id"),
+						rs.getString("professor_email"),
 						rs.getString("professor_name"),
 						rs.getString("department")));
 			}
@@ -59,6 +60,32 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 		}
 		
 		return professors;
+	}
+
+	@Override
+	public Boolean existsById(Integer professorId) {
+		
+		String sql = "SELECT professor_id FROM professor "
+				+ "WHERE professor_id = ? "
+				+ "LIMIT 1";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, professorId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 }

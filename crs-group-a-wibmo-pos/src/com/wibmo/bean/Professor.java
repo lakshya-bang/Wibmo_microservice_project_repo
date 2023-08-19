@@ -6,6 +6,7 @@ package com.wibmo.bean;
 public class Professor {
 
 	private Integer professorId;	// professor_id (FK)
+	private String professorEmail;	// professor_email
 	private String professorName;	// professor_name
 	private String department;		// department
 
@@ -13,9 +14,11 @@ public class Professor {
 	
 	public Professor(
 			Integer professorId, 
+			String professorEmail,
 			String professorName,
 			String department) {
 		this.professorId = professorId;
+		this.professorEmail = professorEmail;
 		this.professorName = professorName;
 		this.department = department;
 	}
@@ -32,6 +35,20 @@ public class Professor {
 	 */
 	public void setProfessorId(Integer professorId) {
 		this.professorId = professorId;
+	}
+	
+	/**
+	 * @return the professorEmail
+	 */
+	public String getProfessorEmail() {
+		return professorEmail;
+	}
+
+	/**
+	 * @param professorEmail the professorEmail to set
+	 */
+	public void setProfessorEmail(String professorEmail) {
+		this.professorEmail = professorEmail;
 	}
 
 	/**

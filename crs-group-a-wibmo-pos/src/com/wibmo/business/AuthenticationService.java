@@ -15,6 +15,6 @@ public interface AuthenticationService {
 	 * TODO: should return a FailureReson (Invalid Password, User does not exist, etc.)
 	 * TODO: should return UserDetails w.r.t. UserType of this user.
 	 */
-	public User login();
+	public User login(String userEmail, String userPassword);
 
 }

@@ -12,6 +12,7 @@ import com.wibmo.enums.UserType;
 public class User {
 	
 	private Integer userId;							// user_id (PK)
+	private String userEmail;						// user_email
 	private UserType userType;						// user_type
 	private RegistrationStatus registrationStatus;	// reg_status
 	
@@ -19,9 +20,11 @@ public class User {
 	
 	public User(
 			Integer userId, 
+			String userEmail,
 			RegistrationStatus registrationStatus,
 			UserType userType) {
 		this.userId = userId;
+		this.userEmail = userEmail;
 		this.registrationStatus = registrationStatus;
 		this.userType = userType;
 	}
@@ -38,6 +41,20 @@ public class User {
 	 */
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+	
+	/**
+	 * @return the email
+	 */
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	/**

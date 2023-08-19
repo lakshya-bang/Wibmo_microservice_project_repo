@@ -32,4 +32,11 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 						Professor::getProfessorId, 
 						Function.identity()));
 	}
+
+	@Override
+	public Boolean isProfessorExistsById(Integer professorId) {
+		return professorDAO
+				.existsById(professorId);
+	}
+	
 }

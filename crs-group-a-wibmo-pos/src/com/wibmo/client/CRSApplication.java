@@ -3,6 +3,9 @@ package com.wibmo.client;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
 import com.wibmo.bean.User;
 import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.AuthenticationServiceImpl;
@@ -13,6 +16,9 @@ import com.wibmo.enums.RegistrationStatus;
  */
 public class CRSApplication {
 	
+	// Plug Logger in CRSStudentMenu logger injection
+	private static final Logger LOG = Logger.getLogger(CRSStudentMenu.class);
+		
 	public static void main(String[] args) {
 		
 		Scanner input = new Scanner(System.in);
@@ -21,7 +27,7 @@ public class CRSApplication {
 		
 		AuthenticationService authenticationService = new AuthenticationServiceImpl();
 		
-		System.out.println("Welcome to Course Registration System\n"
+		LOG.info("Welcome to Course Registration System\n"
 				+ "Time: " + LocalTime.now().toString() + "\n"
 				+ "Date: " + LocalDate.now().toString());
 		
@@ -42,8 +48,14 @@ public class CRSApplication {
 			switch(choice) {
 				
 			case 1:
+				// TODO: Should add Validator for type
+				System.out.print("Enter User Email: ");
+				String userEmail = input.next();
+				System.out.print("Enter Password: ");
+				String userPassword = input.next();
 				
-				User user = authenticationService.login();
+				User user = authenticationService
+							.login(userEmail, userPassword);
 
 				if(user == null) {
 					System.out.println("Login Failure");

@@ -19,7 +19,7 @@ import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.dao.AuthenticationDAOImpl;
-import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -33,7 +33,7 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 public class CRSStudentMenu {
 
 	// Plug Logger in CRSStudentMenu logger injection
-	private static final Logger logger = Logger.getLogger(CRSProfessorMenu.class);
+	private static final Logger LOG = Logger.getLogger(CRSStudentMenu.class);
 	
 	public static Boolean display(Scanner input, User user) {
 		
@@ -48,13 +48,15 @@ public class CRSStudentMenu {
 		CourseRegistrationOperation courseRegistrationOperation = 
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(courseOperation);
+		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(
+				studentOperation, courseOperation);
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
-		logger.info("+......... Welcome Student .........+\n"
+		LOG.info("+......... Welcome Student .........+\n"
 				+ "Student Id : " + student.getStudentId() + "\n"
 				+ "Student Name : " + student.getStudentName() + "\n"
+				+ "Student Email : " + student.getStudentEmail() + "\n"
 				+ "Current Semester : " + student.getCurrentSemester());
 		
 		while (!logout) {
@@ -93,7 +95,7 @@ public class CRSStudentMenu {
 				while(primaryCourses.size() != 4) {
 					courseId = input.nextInt();
 					if(primaryCourses.contains(courseId)) {
-						System.out.println("Already selected, choose another.");
+						System.out.println(courseId + " already selected, choose another.");
 					} else {
 						primaryCourses.add(courseId);
 					}
@@ -105,7 +107,7 @@ public class CRSStudentMenu {
 				while(alternativeCourses.size() != 2) {
 					courseId = input.nextInt();
 					if(alternativeCourses.contains(courseId)) {
-						System.out.println("Already selected, choose another.");
+						System.out.println(courseId + " already selected, choose another.");
 					} else {
 						alternativeCourses.add(courseId);
 					}
@@ -121,7 +123,7 @@ public class CRSStudentMenu {
 					System.out.println("Successfully Registered!");
 					
 				} catch (StudentAlreadyRegisteredForSemesterException 
-						| CourseNotFoundException e) {
+						| CourseNotExistsInCatalogException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();
 				}
@@ -158,7 +160,7 @@ public class CRSStudentMenu {
 						| StudentAlreadyRegisteredForCourseInSemesterException
 						| StudentAlreadyRegisteredForAllAlternativeCoursesException
 						| StudentAlreadyRegisteredForAllPrimaryCoursesException 
-						| CourseNotFoundException e) {
+						| CourseNotExistsInCatalogException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();z
 				}
@@ -179,7 +181,7 @@ public class CRSStudentMenu {
 				break;
 
 			case 6:
-				reportCardOperation.viewGradesByStudent(student);
+				reportCardOperation.viewReportCardByStudent(student);
 				break;
 
 			case 7:

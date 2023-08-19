@@ -5,7 +5,8 @@ import java.util.Map;
 
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
-import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
@@ -24,7 +25,7 @@ public interface CourseRegistrationOperation {
 	 * @param alternativeCourses
 	 * @param student
 	 * @throws StudentAlreadyRegisteredForSemesterException 
-	 * @throws CourseNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
 	 */
 	public void register(
 			List<Integer> primaryCourses, 
@@ -32,7 +33,7 @@ public interface CourseRegistrationOperation {
 			Student student) 
 					throws 
 						StudentAlreadyRegisteredForSemesterException, 
-						CourseNotFoundException;
+						CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -60,7 +61,7 @@ public interface CourseRegistrationOperation {
 	 * @throws StudentAlreadyRegisteredForCourseInSemesterException 
 	 * @throws StudentAlreadyRegisteredForAllAlternativeCoursesException 
 	 * @throws StudentAlreadyRegisteredForAllPrimaryCoursesException 
-	 * @throws CourseNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
 	 */
 	public void addCourse(Integer courseId, Student student) 
 			throws 
@@ -68,7 +69,7 @@ public interface CourseRegistrationOperation {
 				StudentAlreadyRegisteredForCourseInSemesterException, 
 				StudentAlreadyRegisteredForAllAlternativeCoursesException,
 				StudentAlreadyRegisteredForAllPrimaryCoursesException,
-				CourseNotFoundException;
+				CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -85,8 +86,10 @@ public interface CourseRegistrationOperation {
 	/**
 	 * 
 	 * @param courseId
+	 * @throws CourseNotExistsInCatalogException 
 	 */
-	public List<Student> getRegisteredStudentsByCourseId(Integer courseId);
+	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) 
+			throws CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -101,4 +104,17 @@ public interface CourseRegistrationOperation {
 	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus);
 	public boolean approveRegistrationByRegistrationId(int courseRegId);
 	public boolean rejectRegistrationByRegistrationId(int courseRegId);
+
+	/**
+	 * 
+	 * @param professorId
+	 * @param courseId
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws ProfessorNotExistsInSystemException 
+	 */
+	public void viewRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
+			throws 
+				CourseNotExistsInCatalogException, 
+				ProfessorNotExistsInSystemException;
+		
 }
