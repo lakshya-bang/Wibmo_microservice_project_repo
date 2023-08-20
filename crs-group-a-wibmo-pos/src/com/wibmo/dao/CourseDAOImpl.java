@@ -270,4 +270,31 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 	}
 
+	@Override
+	public Integer findProfessorIdByCourseId(Integer courseId) {
+
+		Integer professorId = null;
+		
+		String sql = "SELECT professor_id FROM course "
+				+ "WHERE course_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, courseId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				professorId = (Integer) rs.getObject("professor_id");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return professorId;
+	}
+
 }

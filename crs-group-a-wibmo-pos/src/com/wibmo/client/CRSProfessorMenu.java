@@ -25,6 +25,7 @@ import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.utils.CRSProfessorMenuUtil;
+import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 
@@ -49,7 +50,8 @@ public class CRSProfessorMenu {
 		CourseRegistrationOperation courseRegistrationOperation =
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
-		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(studentOperation, courseOperation);
+		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(
+				studentOperation, courseOperation, courseRegistrationOperation);
 		
 		Professor professor = professorOperation.getProfessorById(user.getUserId());
 		
@@ -59,7 +61,7 @@ public class CRSProfessorMenu {
 				+ "Professor Email : " + professor.getProfessorEmail());
 		
 		while(!logout) {
-			System.out.print("+-----------------------------------+\n"
+			System.out.print("\n+-----------------------------------+\n"
 					+ "[0] View Courses Taught\n"
 					+ "[1] View Registered Students\n"
 					+ "[2] Upload Grades\n"
@@ -83,7 +85,8 @@ public class CRSProfessorMenu {
 						.viewRegisteredStudentsByProfessorIdAndCourseId(
 							professor.getProfessorId(), courseId);
 				} catch (CourseNotExistsInCatalogException 
-						| ProfessorNotExistsInSystemException e) {
+						| ProfessorNotExistsInSystemException
+						| ProfessorNotAssignedForCourseException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();
 				}
@@ -93,10 +96,23 @@ public class CRSProfessorMenu {
 				System.out.print("Enter the Course Id: ");
 				courseId = input.nextInt();
 				
-				reportCardOperation.uploadReportCards(
-					CRSProfessorMenuUtil
-						.viewReportCardEntryMenu(
-							input, courseId, courseRegistrationOperation));
+				try {
+					reportCardOperation.uploadReportCards(
+						CRSProfessorMenuUtil
+							.viewReportCardEntryMenu(
+								input, 
+								courseId, 
+								professor, 
+								courseOperation, 
+								reportCardOperation,
+								courseRegistrationOperation));
+					
+				} catch (CourseNotExistsInCatalogException 
+						| ProfessorNotExistsInSystemException 
+						| ProfessorNotAssignedForCourseException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				
 				break;
 				
@@ -110,6 +126,7 @@ public class CRSProfessorMenu {
 			}
 		}
 		
+		System.out.println("User Log Out.");
 		return Boolean.FALSE;
 	}
 }

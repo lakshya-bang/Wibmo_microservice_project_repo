@@ -7,6 +7,8 @@ import java.util.Set;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.Professor;
 import com.wibmo.enums.CourseType;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotExistsInSystemException;
 
 public interface CourseOperation {
 
@@ -42,7 +44,7 @@ public interface CourseOperation {
 	 * @param courseId
 	 * @return
 	 */
-	public Boolean isCourseExistsInCatalogue(Integer courseId);
+	public Boolean isCourseExistsInCatalog(Integer courseId);
 
 	/**
 	 * To add
@@ -57,5 +59,18 @@ public interface CourseOperation {
 	 * @param professor
 	 */
 	public void viewCoursesTaughtByProfessor(Professor professor);
+
+	/**
+	 * 
+	 * @param professor
+	 * @param courseId
+	 * @return
+	 * @throws ProfessorNotExistsInSystemException 
+	 * @throws CourseNotExistsInCatalogException 
+	 */
+	public Boolean isProfessorAssignedForCourse(Integer professorId, Integer courseId)
+		throws 
+			ProfessorNotExistsInSystemException, 
+			CourseNotExistsInCatalogException;
 
 }

@@ -11,6 +11,8 @@ import com.wibmo.bean.Professor;
 import com.wibmo.dao.CourseDAO;
 import com.wibmo.dao.CourseDAOImpl;
 import com.wibmo.enums.CourseType;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotExistsInSystemException;
 
 public class CourseOperationImpl implements CourseOperation {
 
@@ -79,7 +81,7 @@ public class CourseOperationImpl implements CourseOperation {
 	}
 
 	@Override
-	public Boolean isCourseExistsInCatalogue(Integer courseId) {
+	public Boolean isCourseExistsInCatalog(Integer courseId) {
 		return courseDAO
 				.existsByCourseId(courseId);
 	}
@@ -114,17 +116,41 @@ public class CourseOperationImpl implements CourseOperation {
 			return;
 		}
 		
-		System.out.println("*** List of Courses Taught:- ***\n");
-		System.out.println(" CourseId    CourseTitle   CourseType ");
-		System.out.println("+----------------------------------------+");
+		System.out.print("*** List of Courses Taught:- ***\n"
+				+ "\n+--------------------------------------------+\n"
+				+ "CourseId |\tCourseTitle\t| CourseType "
+				+ "\n+--------------------------------------------+\n");
 		
 		getCoursesAssignedToProfessor(professor.getProfessorId())
 			.forEach(course -> System.out.format(
-					"%5d%15s%15s\n", 
+					"%5d\t | %s \t| %s\n", 
 						course.getCourseId(), 
 						course.getCourseTitle(),
 						course.getCourseType().toString()));
-		System.out.println("+------------------------------------+\n");	
 	}
 
+	@Override
+	public Boolean isProfessorAssignedForCourse(Integer professorId, Integer courseId)
+		throws 
+			ProfessorNotExistsInSystemException, 
+			CourseNotExistsInCatalogException {
+
+		if(null == professorId || null == courseId) {
+			return false;
+		}
+		
+		if(!professorOperation.isProfessorExistsById(professorId)) {
+			throw new ProfessorNotExistsInSystemException(professorId);
+		}
+		
+		if(!isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		return null != professorId
+				&& professorId.equals(
+						courseDAO.findProfessorIdByCourseId(courseId));
+	}
+
+	
 }

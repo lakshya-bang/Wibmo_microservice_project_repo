@@ -104,7 +104,11 @@ public class ReportCard {
 	public void setYear(Integer year) {
 		this.year = year;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "ReportCard [reportId=" + reportId + ", studentId=" + studentId + ", courseId=" + courseId + ", grade="
+				+ grade + ", semester=" + semester + ", year=" + year + "]";
+	}
 	
 }

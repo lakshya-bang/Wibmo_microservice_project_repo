@@ -15,6 +15,8 @@ public interface ReportCardOperation {
 	/**
 	 * 
 	 * @param student
+	 * 
+	 * TODO: Change to viewReportCardForAllSemestersByStudent()
 	 */
 	public void viewReportCardByStudent(Student student);
 	
@@ -34,5 +36,12 @@ public interface ReportCardOperation {
 	 * @return
 	 */
 	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId);
+	/**
+	 * 
+	 * @param student
+	 * @param courseId
+	 * @return
+	 */
+	public ReportCard getReportCardByStudentForCourse(Student student, Integer courseId);
 
 }

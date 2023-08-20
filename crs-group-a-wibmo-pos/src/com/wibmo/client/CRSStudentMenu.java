@@ -49,7 +49,7 @@ public class CRSStudentMenu {
 				new CourseRegistrationOperationImpl(
 						studentOperation, professorOperation, courseOperation);
 		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(
-				studentOperation, courseOperation);
+				studentOperation, courseOperation, courseRegistrationOperation);
 
 		Student student = studentOperation.getStudentById(user.getUserId());
 
@@ -198,6 +198,7 @@ public class CRSStudentMenu {
 			}
 		}
 		
+		System.out.println("User Log Out.");
 		return Boolean.FALSE;
 	}
 }

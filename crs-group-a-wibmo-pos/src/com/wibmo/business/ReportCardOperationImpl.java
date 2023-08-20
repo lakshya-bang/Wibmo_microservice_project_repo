@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.wibmo.bean.Course;
@@ -28,7 +29,7 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 	
 	private final CourseRegistrationOperation courseRegistrationOperation;
 	
-	private final ReportCardDAO gradeDAO;
+	private final ReportCardDAO reportCardDAO;
 	
 	public ReportCardOperationImpl(
 			StudentOperation studentOperation,
@@ -37,44 +38,58 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 		this.studentOperation = studentOperation;
 		this.courseOperation = courseOperation;
 		this.courseRegistrationOperation = courseRegistrationOperation;
-		gradeDAO = ReportCardDAOImpl.getInstance();
+		reportCardDAO = ReportCardDAOImpl.getInstance();
 	}
 	
 	@Override
 	public void viewReportCardByStudent(Student student) {
 		
-		Map<Integer, ArrayList<ReportCard>> semesterToGradeMap = getSemesterToReportCardMapByStudentId(student.getStudentId());
-		ArrayList<Integer> courseIds = new ArrayList<>();
-		for(ArrayList<ReportCard> temp : semesterToGradeMap.values()){
-			for(ReportCard grade : temp){
-				courseIds.add(grade.getCourseId());
-			}
-		}
-		Map<Integer, Course> courseIdToCourseMap = courseOperation
-				.getCourseIdToCourseMap(new HashSet<>(courseIds));
-
-		System.out.println("**** Student Grades:- ****");
-		semesterToGradeMap
+		// TODO: Map should be a TreeMap
+		Map<Integer, ArrayList<ReportCard>> semesterToReportCardMap = getSemesterToReportCardMapByStudentId(student.getStudentId());
+		
+		Set<Integer> courseIds = new HashSet<>();
+		
+		semesterToReportCardMap
+			.entrySet()
+			.stream()
+			.map(entry -> entry.getValue())
+			.forEach(semWiseReportCards -> {
+				semWiseReportCards
+					.forEach(reportCard -> {
+						courseIds.add(reportCard.getCourseId());
+					});
+			});
+		
+		Map<Integer, Course> courseIdToCourseMap = courseOperation.getCourseIdToCourseMap(courseIds);
+		
+		System.out.println("**** Student Report Card:- ****\n");
+		semesterToReportCardMap
 			.entrySet()
 			.stream()
 			.forEach(entry -> {
 				System.out.print(
-						"\n-------------------\n"
+						  "\n+---------------+\n"
 						+ "Semester = " + entry.getKey() 
-						+ "\n---------------\n");
+						+ "\n+---------------+\n");
 				
-				System.out.println(" CourseId    CourseTitle    Department    Grade ");
-				System.out.println("+----------------------------------------------+");
-				for(ReportCard grade : entry.getValue()){
-						System.out.format("%5d%10s%10s%10s", 
-						grade.getCourseId(),
-						courseIdToCourseMap.get(
-								grade.getCourseId()).getCourseTitle(),  // course title
-						courseIdToCourseMap.get(
-								grade.getCourseId()).getDepartment(),   // CSE, ECE 
-						grade.getGrade());    // "A"
-				}
+				System.out.println(" CourseId |\tCourseTitle\t| CourseType\t| Dept.\t| Grade\n"
+						+ "+------------------------------------------------------------------+");
 				
+				entry
+					.getValue()
+					.forEach(reportCard -> {
+						System.out.format("    %d\t| %s\t| %s\t| %s\t| %s\n", 
+							reportCard.getCourseId(),
+							courseIdToCourseMap.get(
+								reportCard.getCourseId()).getCourseTitle(), // C Programming Lang.
+							courseIdToCourseMap.get(
+								reportCard.getCourseId()).getCourseType(),	// PRIMARY						
+							courseIdToCourseMap.get(
+								reportCard.getCourseId()).getDepartment(),  // CSE, ECE 									
+							reportCard.getGrade());						// "A"
+					});
+				
+				System.out.println("+------------------------------------------------------------------+\n");
 			});
 	}
 
@@ -85,33 +100,35 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 			return;
 		}
 		
-		// Filter out New Report Cards
-		List<ReportCard> newReportCards = reportCards
-				.stream()
-				.filter(reportCard -> null == reportCard.getReportId())
-				.collect(Collectors.t());
+		// TODO: Should use Batch-insert functionality
+		reportCards
+			.forEach(reportCard -> {
+				if(hasEntry(reportCard)) {
+					reportCardDAO.update(reportCard); //particular gradeID in DB.
+				} else {
+					reportCardDAO.save(reportCard);
+				}
+			});
 		
-		
-		if(hasEntry(reportCard)) {
-			gradeDAO.updateByGradeDetails(reportCard); //particular gradeID in DB.
-		} else {
-			gradeDAO.save(reportCard);
-		}
+		System.out.println("Grade Upload Success.");
 	}
 	
 	@Override
 	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId) { //ArrayList of grades
-		return gradeDAO.findAllByStudentId(studentId);
+		return reportCardDAO.findAllByStudentId(studentId);
 
 	}
 	
+	@Override
+	public ReportCard getReportCardByStudentForCourse(Student student, Integer courseId) {
+		return reportCardDAO.findByStudentAndCourseId(student, courseId);
+	}
+	
+	
+	/**************************** Utility Methods *****************************/
+	
 	private boolean hasEntry(ReportCard reportCard) {
-		if(reportCard.getCourseId()!=null){
-			return gradeDAO.checkGradeDetails(reportCard);
-		}
-		else{
-			return false;
-		}
+		return null != reportCard.getReportId();
 	}
 
 }

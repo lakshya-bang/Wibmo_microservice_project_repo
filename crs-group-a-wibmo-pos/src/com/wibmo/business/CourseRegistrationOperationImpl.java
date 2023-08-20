@@ -20,6 +20,7 @@ import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.enums.CourseType;
@@ -59,12 +60,12 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		}
 		
 		for(Integer courseId : primaryCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
 		for(Integer courseId : alternativeCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
@@ -172,7 +173,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
@@ -269,7 +270,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	@Override
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) throws CourseNotExistsInCatalogException {
 		
-		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
@@ -335,9 +336,11 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 
 	@Override
 	public void viewRegisteredStudentsByProfessorIdAndCourseId(
-			Integer professorId, Integer courseId) throws 
+		Integer professorId, Integer courseId)
+			throws 
 				CourseNotExistsInCatalogException,
-				ProfessorNotExistsInSystemException {
+				ProfessorNotExistsInSystemException, 
+				ProfessorNotAssignedForCourseException {
 		
 		if(null == professorId || null == courseId) {
 			return;
@@ -347,19 +350,23 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			throw new ProfessorNotExistsInSystemException(professorId);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalogue(courseId)) {
+		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		System.out.println("*** List of Registered Students:- ***\n");
+		if(!courseOperation.isProfessorAssignedForCourse(professorId, courseId)) {
+			throw new ProfessorNotAssignedForCourseException(professorId, courseId);
+		}
+		
+		System.out.println("*** List of Registered Students for Course Id: " + courseId + " :- ***\n");
 		System.out.print(
-				"+--------------------------------------------------------+\n"
-				+ " StudentId  |  StudentName\t|\t StudentEmail \n"
-				+ "+------------------------------------------------------+\n");
+				  "+--------------------------------------------------------+\n"
+				+ " StudentId  |  StudentName\t| StudentEmail \n"
+				+ "+--------------------------------------------------------+\n");
 		
 		getRegisteredStudentsByCourseId(courseId)
 			.forEach(student -> System.out.format(
-					"%5s%20s\n", 
+					"    %d    | %s\t\t| %s\n", 
 						student.getStudentId(), 
 						student.getStudentName(),
 						student.getStudentEmail()));

@@ -50,5 +50,12 @@ public interface CourseDAO {
 	public boolean saveCourse(Course course);
 	public boolean deleteCourse(int courseId);
 	public boolean assignCoursesToProfessor(int courseId, int professorId);
+
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Integer findProfessorIdByCourseId(Integer courseId);
 	
 }
