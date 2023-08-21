@@ -16,7 +16,7 @@ import com.wibmo.business.CourseRegistrationOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
 import com.wibmo.business.UserOperation;
-import com.wibmo.business.UserOperationimpl;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.business.ProfessorOperation;
@@ -38,7 +38,7 @@ public class CRSAdminMenu {
 
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
-		UserOperation userOperation  =new UserOperationimpl();
+		UserOperation userOperation  =new UserOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
 				professorOperation);
 		CourseRegistrationOperation courseRegistrationOperation =

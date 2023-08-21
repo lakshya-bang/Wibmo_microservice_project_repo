@@ -7,7 +7,16 @@ import com.wibmo.dao.AdminDAOImpl;
 
 public class AdminOperationImpl implements AdminOperation {
 
-	AdminDAO adminDAO = new AdminDAOImpl();
+//	private final UserOperation userOperation;
+	
+	private final AdminDAO adminDAO;
+	
+	public AdminOperationImpl(
+//			UserOperation userOperation
+		) {
+//		this.userOperation = userOperation;
+		adminDAO = new AdminDAOImpl();
+	}
 	
 	@Override
 	public RegistrationStatus acknowledgeStudentRegistration(Long registrationId, Integer semester) {
@@ -25,6 +34,19 @@ public class AdminOperationImpl implements AdminOperation {
 	public boolean registerAdmin(String email, String password, String name) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'registerAdmin'");
+	}
+
+	@Override
+	public void add(Admin admin) {
+		
+		// TODO
+//		if(!userOperation.isUserExistsById(admin.getAdminId())) {
+//			
+//		}
+		
+		adminDAO.save(admin);
+		
+		System.out.println("Account Registration sent to Admin for Approval.");
 	}
 
 	// @Override

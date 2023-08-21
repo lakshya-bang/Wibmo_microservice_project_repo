@@ -38,5 +38,18 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 		return professorDAO
 				.existsById(professorId);
 	}
+
+	@Override
+	public void add(Professor professor) {
+		
+		// TODO
+//		if(!userOperation.isUserExistsById(professor.getProfessorId())) {
+//			
+//		}
+		
+		professorDAO.save(professor);
+		
+		System.out.println("Account Registration sent to Admin for Approval.");
+	}
 	
 }

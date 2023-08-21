@@ -49,4 +49,24 @@ public class StudentDAOImpl implements StudentDAO {
 		
 	}
 
+	@Override
+	public void save(Student student) {
+		
+		String sql = "INSERT INTO student VALUES(?, ?, ?, ?)";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, student.getStudentId());
+			stmt.setString(2, student.getStudentName());
+			stmt.setInt(3, student.getCurrentSemester());
+			stmt.setString(4, student.getStudentEmail());
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+	}
 }

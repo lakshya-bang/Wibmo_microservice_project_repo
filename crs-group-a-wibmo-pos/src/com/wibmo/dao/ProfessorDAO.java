@@ -23,4 +23,11 @@ public interface ProfessorDAO {
 	 * @return
 	 */
 	public Boolean existsById(Integer professorId);
+
+	/**
+	 * 
+	 * @param professor
+	 * @return
+	 */
+	public void save(Professor professor);
 }

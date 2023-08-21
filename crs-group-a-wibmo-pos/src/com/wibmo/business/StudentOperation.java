@@ -10,4 +10,10 @@ public interface StudentOperation {
 	 */
 	public Student getStudentById(Integer integer);
 
+	/**
+	 * 
+	 * @param student
+	 */
+	public void add(Student student);
+
 }	

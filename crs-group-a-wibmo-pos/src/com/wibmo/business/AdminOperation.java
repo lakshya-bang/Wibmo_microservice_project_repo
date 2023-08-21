@@ -35,6 +35,12 @@ public interface AdminOperation {
 	 * @return
 	 */
 	public RegistrationStatus acknowledgeStudentRegistration(Long registrationId, Integer semester);
+
+	/**
+	 * 
+	 * @param admin
+	 */
+	public void add(Admin admin);
 	
 	/**
 	 * Allows the Admin to add the given course to the Course Catalog

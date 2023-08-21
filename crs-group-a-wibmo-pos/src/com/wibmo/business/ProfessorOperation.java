@@ -31,4 +31,10 @@ public interface ProfessorOperation {
 	 */
 	public Boolean isProfessorExistsById(Integer professorId);
 
+	/**
+	 * 
+	 * @param professor
+	 */
+	public void add(Professor professor);
+
 }

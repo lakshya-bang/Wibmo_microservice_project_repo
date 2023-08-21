@@ -15,6 +15,7 @@ public class User {
 	private String userEmail;						// user_email
 	private UserType userType;						// user_type
 	private RegistrationStatus registrationStatus;	// reg_status
+	private String password;
 	
 	public User() {}
 	
@@ -84,4 +85,19 @@ public class User {
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 }

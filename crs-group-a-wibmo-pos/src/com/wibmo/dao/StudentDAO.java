@@ -13,4 +13,10 @@ public interface StudentDAO {
 	 * @return
 	 */
 	public Student findById(Integer studentId);
+
+	/**
+	 * 
+	 * @param student
+	 */
+	public void save(Student student);
 }

@@ -14,6 +14,28 @@ import com.wibmo.utils.DBUtils;
 
 public class AdminDAOImpl implements AdminDAO {
 
+	@Override
+	public void save(Admin admin) {
+		
+		String sql = "INSERT INTO admin "
+				+ "VALUES(?, ?, ?)";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, admin.getAdminId());
+			stmt.setString(2, admin.getAdminEmail());
+			stmt.setString(3, admin.getAdminName());
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+	}
+
 	// @Override
 	// public boolean deleteCourse(String courseName) {
 	// 	// TODO Auto-generated method stub

@@ -16,9 +16,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 
 	private static volatile ProfessorDAOImpl instance = null;
 	
-	private ProfessorDAOImpl() {
-		
-	}
+	private ProfessorDAOImpl() {}
 	
 	public static ProfessorDAOImpl getInstance() {
         if (instance == null) {
@@ -86,6 +84,29 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public void save(Professor professor) {
+		
+		String sql = "INSERT INTO professor "
+				+ "VALUES(?, ?, ?, ?)";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, professor.getProfessorId());
+			stmt.setString(2, professor.getProfessorName());
+			// TODO: Department should be an Enum
+			stmt.setString(3, professor.getDepartment());
+			stmt.setString(4, professor.getProfessorEmail());
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
 	}
 	
 }
