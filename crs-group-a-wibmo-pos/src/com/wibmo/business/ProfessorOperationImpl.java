@@ -16,12 +16,21 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 
 	ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
 	
+	/**
+	 * @param professorId (Integer)
+	 * @return Professor
+	 */
 	@Override
 	public Professor getProfessorById(Integer professorId) {
 		return professorDAO
 				.findAllByIdIn(Set.of(professorId))
 				.get(0);
 	}
+	
+	/**
+	 * @param professorIds (Integer Set)
+	 * @return Map<Integer,Professor>
+	 */
 
 	@Override
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
@@ -33,12 +42,21 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 						Function.identity()));
 	}
 
+	/**
+	 * @param professorId (Integer)
+	 * @return Boolean
+	 */
+	
 	@Override
 	public Boolean isProfessorExistsById(Integer professorId) {
 		return professorDAO
 				.existsById(professorId);
 	}
 
+	/**
+	 * @param Professor
+	 */
+	
 	@Override
 	public void add(Professor professor) {
 		
