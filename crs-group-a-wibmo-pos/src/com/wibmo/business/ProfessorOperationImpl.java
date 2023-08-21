@@ -14,7 +14,11 @@ import com.wibmo.dao.ProfessorDAOImpl;
  */
 public class ProfessorOperationImpl implements ProfessorOperation {
 
-	ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
+	private final ProfessorDAO professorDAO;
+	
+	public ProfessorOperationImpl() {
+		professorDAO = ProfessorDAOImpl.getInstance();
+	}
 	
 	/**
 	 * @param professorId (Integer)

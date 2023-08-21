@@ -15,6 +15,20 @@ import com.wibmo.utils.DBUtils;
 
 public class CourseDAOImpl implements CourseDAO {
 	
+	private static volatile CourseDAOImpl instance = null;
+	
+	private CourseDAOImpl() {}
+	
+	public static CourseDAOImpl getInstance() {
+        if (instance == null) {
+            synchronized (CourseDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new CourseDAOImpl();
+            }
+        }
+        return instance;
+    }
+	
+	
 	public List<Course> findAllByCourseIdIn(Set<Integer> courseIds) {
 
 		List<Course> courses = new ArrayList<>();

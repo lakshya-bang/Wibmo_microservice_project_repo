@@ -12,7 +12,11 @@ import com.wibmo.dao.NotificationDAOImpl;
  */
 public class NotificationOperationImpl implements NotificationOperation{
 
-	NotificationDAO notificationDAO = NotificationDAOImpl.getInstance();
+	private final NotificationDAO notificationDAO;
+	
+	public NotificationOperationImpl() {
+		notificationDAO = NotificationDAOImpl.getInstance();
+	}
 
 	@Override
 	public void createNotification(Integer forUserId, String message) {

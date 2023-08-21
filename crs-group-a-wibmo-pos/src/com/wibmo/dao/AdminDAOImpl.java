@@ -14,6 +14,19 @@ import com.wibmo.utils.DBUtils;
 
 public class AdminDAOImpl implements AdminDAO {
 
+	private static volatile AdminDAOImpl instance = null;
+	
+	private AdminDAOImpl() {}
+	
+	public static AdminDAOImpl getInstance() {
+        if (instance == null) {
+            synchronized (AdminDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new AdminDAOImpl();
+            }
+        }
+        return instance;
+    }
+	
 	@Override
 	public void save(Admin admin) {
 		

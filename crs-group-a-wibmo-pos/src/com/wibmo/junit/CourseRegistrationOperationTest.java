@@ -121,6 +121,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.getRegistrationStatusByStudent(testStudent));
 	}
+	
 	@Test
 	public void getRegistrationStatusByStudentTest() {
 		Student testSt = new Student();

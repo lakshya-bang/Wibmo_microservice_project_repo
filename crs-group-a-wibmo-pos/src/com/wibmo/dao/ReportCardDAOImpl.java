@@ -143,7 +143,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 				+ "grade = ?, "
 				+ "semester = ?, "
 				+ "year = ? "
-				+ "WHERE grade_id = ?";
+				+ "WHERE report_id = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		try{
