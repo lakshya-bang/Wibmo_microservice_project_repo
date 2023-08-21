@@ -27,4 +27,6 @@ public interface NotificationDAO {
 	 * @param notifications ArrayList<Notification>
 	 */
 	public void updateStatus(ArrayList<Notification> notifications);
+
+	public ArrayList<Notification> fetchAllById(Integer userId);
 }
