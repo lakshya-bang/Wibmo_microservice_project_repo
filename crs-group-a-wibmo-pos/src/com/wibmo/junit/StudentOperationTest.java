@@ -24,12 +24,10 @@ import com.wibmo.business.StudentOperationImpl;
 /**
  * @author mourila.vatsav
  */
-public class CRSStudentOperationTest {
+public class StudentOperationTest {
 	
 	private AuthenticationService authenticationService;
 	private StudentOperation studentOperation;
-
-	
 
 	/**
 	 * @throws java.lang.Exception
