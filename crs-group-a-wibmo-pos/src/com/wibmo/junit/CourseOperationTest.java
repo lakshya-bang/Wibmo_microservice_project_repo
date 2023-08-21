@@ -124,5 +124,4 @@ public class CourseOperationTest {
 		assertEquals(expectedCourseType, actualCourseType);
 	}
 	
-	
 }
