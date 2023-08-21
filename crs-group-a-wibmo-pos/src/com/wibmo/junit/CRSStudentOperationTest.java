@@ -24,7 +24,7 @@ import com.wibmo.business.StudentOperationImpl;
 /**
  * @author mourila.vatsav
  */
-public class CRSCourseOperationTest {
+public class CRSStudentOperationTest {
 	
 	private AuthenticationService authenticationService;
 	private StudentOperation studentOperation;
