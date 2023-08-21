@@ -21,7 +21,7 @@ import com.wibmo.business.ProfessorOperationImpl;
 
 
 /**
- * 
+ * @author 
  */
 public class ProfessorOperationTest {
 	private Integer professorId = 1;
