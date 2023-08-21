@@ -3,16 +3,11 @@
  */
 package com.wibmo.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.User;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;

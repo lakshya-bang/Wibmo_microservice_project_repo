@@ -29,8 +29,7 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
  */
 public class CRSApplication {
 	
-	// Plug Logger in CRSStudentMenu logger injection
-	private static final Logger LOG = Logger.getLogger(CRSStudentMenu.class);
+	private static final Logger LOG = Logger.getLogger(CRSApplication.class);
 		
 	public static void main(String[] args) {
 		
