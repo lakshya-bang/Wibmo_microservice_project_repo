@@ -24,7 +24,7 @@ import com.wibmo.business.ProfessorOperationImpl;
  * 
  */
 public class ProfessorOperationTest {
-	private Integer professorId = 1002;
+	private Integer professorId = 1;
 	private ProfessorOperation professorOperation;
 	private final PrintStream standardOut = System.out;
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
@@ -64,6 +64,12 @@ public class ProfessorOperationTest {
 	public void isProfessorExistsByIdTest() {
 		assertTrue(professorOperation.isProfessorExistsById(professorId));
 	}
+	
+	@Test
+	public void isProfessorExistByIdTestFail() {
+		assertFalse(professorOperation.isProfessorExistsById(131));
+	}
+	
 	@Test
 	public void addTest() {
 		Professor professor = new Professor(6,"test@test.com","test1","Test");
