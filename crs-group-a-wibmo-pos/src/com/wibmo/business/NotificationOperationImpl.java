@@ -35,4 +35,9 @@ public class NotificationOperationImpl implements NotificationOperation{
 		notificationDAO.updateStatus(notifications);
 	}
 
+	@Override
+	public ArrayList<Notification> fetchAllNotificationsByUserId(Integer userId) {
+		return notificationDAO.fetchAllById(userId);
+	}
+
 }

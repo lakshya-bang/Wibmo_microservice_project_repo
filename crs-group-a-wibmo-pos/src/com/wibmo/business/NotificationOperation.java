@@ -29,4 +29,12 @@ public interface NotificationOperation {
 	 * @param notifications
 	 */
 	public void updateStatus(ArrayList<Notification> notifications);
+
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+
+	public ArrayList<Notification> fetchAllNotificationsByUserId(Integer userId);
 }
