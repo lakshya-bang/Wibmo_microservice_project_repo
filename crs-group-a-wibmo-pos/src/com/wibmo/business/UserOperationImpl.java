@@ -17,7 +17,11 @@ import com.wibmo.dao.UserDAO;
 
 public class UserOperationImpl implements UserOperation{
 	
-	UserDAO userDAO = new UserDAOImpl();
+	private final UserDAO userDAO;
+	
+	public UserOperationImpl() {
+		userDAO = UserDAOImpl.getInstance();
+	}
 
 	@Override
 	public List<Integer> viewAccountsPendingForApproval() {

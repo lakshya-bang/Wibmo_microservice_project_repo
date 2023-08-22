@@ -15,7 +15,7 @@ public class AdminOperationImpl implements AdminOperation {
 //			UserOperation userOperation
 		) {
 //		this.userOperation = userOperation;
-		adminDAO = new AdminDAOImpl();
+		adminDAO = AdminDAOImpl.getInstance();
 	}
 	
 	@Override

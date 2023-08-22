@@ -21,13 +21,15 @@ import com.wibmo.business.ProfessorOperationImpl;
 
 
 /**
- * 
+ * @author 
  */
 public class ProfessorOperationTest {
-	private Integer professorId = 1;
+	
+	private Integer professorId = 1002;
 	private ProfessorOperation professorOperation;
 	private final PrintStream standardOut = System.out;
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -35,7 +37,7 @@ public class ProfessorOperationTest {
 	public void setUp() throws Exception {
 
 		professorOperation = new ProfessorOperationImpl();
-		 System.setOut(new PrintStream(outputStreamCaptor));
+		System.setOut(new PrintStream(outputStreamCaptor));
 	}
 
 	/**
@@ -72,10 +74,19 @@ public class ProfessorOperationTest {
 	
 	@Test
 	public void addTest() {
-		Professor professor = new Professor(6,"test@test.com","test1","Test");
+		
+		Professor professor = new Professor(
+				1101,
+				"test@test.com",
+				"test1",
+				"Test");
+		
 		String expectedOutput = "Account Registration sent to Admin for Approval.";
+		
 		professorOperation.add(professor);
-		assertEquals(expectedOutput,outputStreamCaptor.toString()
-	      .trim());
+		
+		assertEquals(
+				expectedOutput,
+				outputStreamCaptor.toString().trim());
 	}
 }

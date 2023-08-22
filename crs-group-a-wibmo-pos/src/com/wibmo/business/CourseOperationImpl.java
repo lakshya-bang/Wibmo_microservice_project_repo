@@ -23,7 +23,7 @@ public class CourseOperationImpl implements CourseOperation {
 	public CourseOperationImpl(
 			ProfessorOperation professorOperation) {
 		this.professorOperation = professorOperation;
-		courseDAO = new CourseDAOImpl();
+		courseDAO = CourseDAOImpl.getInstance();
 	}
 	
 	// TODO: This implementation can be moved to Join query in Database

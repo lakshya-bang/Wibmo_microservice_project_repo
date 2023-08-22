@@ -44,7 +44,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		this.studentOperation = studentOperation;
 		this.professorOperation = professorOperation;
 		this.courseOperation = courseOperation;
-		courseRegistrationDAO = new CourseRegistrationDAOImpl();
+		courseRegistrationDAO = CourseRegistrationDAOImpl.getInstance();
 	}
 	
 	@Override

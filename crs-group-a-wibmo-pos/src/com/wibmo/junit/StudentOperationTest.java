@@ -47,10 +47,11 @@ public class StudentOperationTest {
 
 	@Test
 	public void testAdd() {
+		
 		String email = "stest2@test.com";
 		String password = "qwe";
 		
-		Student student = new Student(5,"stest2@test.com","stest2",1);
+		Student student = new Student(1,"stest2@test.com","stest2",1);
 		
 		studentOperation.add(student);
 		Student checkStudent = studentOperation.getStudentById(authenticationService

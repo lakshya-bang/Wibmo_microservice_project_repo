@@ -19,6 +19,19 @@ import com.wibmo.utils.DBUtils;
  */
 public class UserDAOImpl implements UserDAO{
 
+	private static volatile UserDAOImpl instance = null;
+	
+	private UserDAOImpl() {}
+	
+	public static UserDAOImpl getInstance() {
+        if (instance == null) {
+            synchronized (UserDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new UserDAOImpl();
+            }
+        }
+        return instance;
+    }
+	
 	@Override
 	public List<Integer> view() {
 		// TODO Auto-generated method stub

@@ -18,6 +18,20 @@ import com.wibmo.utils.DBUtils;
 
 public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 
+	private static volatile CourseRegistrationDAOImpl instance = null;
+	
+	private CourseRegistrationDAOImpl() {}
+	
+	public static CourseRegistrationDAOImpl getInstance() {
+        if (instance == null) {
+            synchronized (CourseRegistrationDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new CourseRegistrationDAOImpl();
+            }
+        }
+        return instance;
+    }
+	
+	
 	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
