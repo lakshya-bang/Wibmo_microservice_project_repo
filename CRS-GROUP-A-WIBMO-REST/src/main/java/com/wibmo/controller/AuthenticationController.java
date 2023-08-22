@@ -24,14 +24,11 @@ import com.wibmo.service.AuthenticationServiceImpl;
  */
 @RestController
 @Component
+
 public class AuthenticationController {
 	@Autowired
 	private AuthenticationServiceImpl authenticationService;
 	
-	@GetMapping("/hello-world")
-	public String helloWorld() {
-		return "Hello World";
-	}
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,

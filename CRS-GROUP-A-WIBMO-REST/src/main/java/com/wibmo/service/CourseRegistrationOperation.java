@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.wibmo.bean.Student;
+import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.ProfessorNotExistsInSystemException;
@@ -13,7 +14,6 @@ import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
-import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 
 /**
  * 
@@ -40,9 +40,10 @@ public interface CourseRegistrationOperation {
 	 * 
 	 * @param studentId
 	 * @param semOfStudy
+	 * @return 
 	 * @throws StudentNotRegisteredForSemesterException 
 	 */
-	public void viewRegisteredCoursesByStudent(Student student)
+	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student)
 			throws StudentNotRegisteredForSemesterException;
 	
 	/**

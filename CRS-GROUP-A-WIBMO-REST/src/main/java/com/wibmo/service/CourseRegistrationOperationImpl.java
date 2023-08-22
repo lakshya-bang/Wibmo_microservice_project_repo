@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jvnet.hk2.annotations.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
@@ -20,31 +24,25 @@ import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
-import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
+import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
+@Service
+@Component
 public class CourseRegistrationOperationImpl implements CourseRegistrationOperation {
+	@Autowired
+	private StudentOperationImpl studentOperation;
+	@Autowired
+	private ProfessorOperationImpl professorOperation;
+	@Autowired
+	private CourseOperationImpl courseOperation;
+	@Autowired
+	private CourseRegistrationDAOImpl courseRegistrationDAO;
 	
-	private final StudentOperation studentOperation;
-	
-	private final ProfessorOperation professorOperation;
-	
-	private final CourseOperation courseOperation;
-	
-	private final CourseRegistrationDAO courseRegistrationDAO;
-	
-	public CourseRegistrationOperationImpl(
-			StudentOperation studentOperation,
-			ProfessorOperation professorOperation,
-			CourseOperation courseOperation) {
-		
-		this.studentOperation = studentOperation;
-		this.professorOperation = professorOperation;
-		this.courseOperation = courseOperation;
-		courseRegistrationDAO = CourseRegistrationDAOImpl.getInstance();
+	public CourseRegistrationOperationImpl() {
 	}
 	
 	@Override
@@ -92,13 +90,13 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-	public void viewRegisteredCoursesByStudent(Student student) 
+	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student) 
 			throws StudentNotRegisteredForSemesterException {
 		
 		if(!isStudentRegistered(student)) {
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
-		
+		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
 		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
@@ -139,14 +137,10 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			.stream()
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
-				System.out.format("%5d\t| %10s\t| %7s    | %10s\n", 
-				// System.out.format("%5d%15s%15s%15s\n", 
-						course.getCourseId(),
-						course.getCourseTitle(),
-						course.getDepartment(),
-						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());
+				registeredCourses.add(new RegisteredCourse(course.getCourseId(),course.getCourseTitle(),course.getDepartment(),professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()));
 
 			});
+		return registeredCourses;
 	}
 	
 	@Override
