@@ -14,8 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Student;
-import com.wibmo.business.AuthenticationService;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
@@ -83,9 +83,7 @@ public class CourseRegistrationOperationTest {
 	}
 //	@Test
 //	public void registerTest() {
-//		List<Integer> primaryCourses = new ArrayList<>(List.of(1,2,3,4));
-//		List<Integer> alternateCourses = new ArrayList<>(List.of(5,6));
-//		Student testStudent = new Student();
+//		
 //	}
 	
 	/**
@@ -195,7 +193,7 @@ public class CourseRegistrationOperationTest {
 	}
 //	@Test
 //	public void addCourseTest() {
-//		
+//
 //	}
 	
 	/**
@@ -284,18 +282,14 @@ public class CourseRegistrationOperationTest {
 	 * junit test for viewCourseRegistrationByRegistrationStatus
 	 */
 //	@Test
-//	public void viewCourseRegistrationByRegistrationStatus_shouldThrowExceptionTest1(){
-//		RegistrationStatus regSt = RegistrationStatus.PENDING;
-//		RegistrationStatus expectedRegStatus = RegistrationStatus.PENDING;
-//		RegistrationStatus actualRegStatus=null;
-//		try {
-//			actualRegStatus = courseRegistrartionOperation.viewCourseRegistrationByRegistrationStatus(regSt);
-//		} catch (StudentNotRegisteredForSemesterException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assertEquals(expectedRegStatus, actualRegStatus);
-//		}
+	public void viewCourseRegistrationByRegistrationStatus_shouldThrowExceptionTest1(){
+		RegistrationStatus regSt = RegistrationStatus.PENDING;
+		RegistrationStatus expectedRegStatus = RegistrationStatus.PENDING;
+		RegistrationStatus actualRegStatus=null;
+		courseRegistrartionOperation.viewCourseRegistrationByRegistrationStatus(regSt);
+		actualRegStatus = RegistrationStatus.PENDING;
+		assertEquals(expectedRegStatus, actualRegStatus);
+		}
 	
 //	@Test
 //	public void viewCourseRegistrationByRegistrationStatusTest(){
