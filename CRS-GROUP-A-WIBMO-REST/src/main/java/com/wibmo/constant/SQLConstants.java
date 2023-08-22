@@ -3,12 +3,10 @@
  */
 package com.wibmo.constant;
 
-
 /**
  * 
  */
 public class SQLConstants {
-	public static String DRIVER = "com.mysql.cj.jdbc.Driver";  
 	
 	public static String AUTH_DETAILS = "SELECT * FROM user.auth_creds where user_email = ?";
 	
