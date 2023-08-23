@@ -16,7 +16,7 @@ public interface CourseOperation {
 	 * 
 	 * @param currentSemester
 	 */
-	public void viewCourseDetailsBySemester(Integer currentSemester);
+	public List<Course> viewCourseDetailsBySemester(Integer currentSemester);
 	
 	/**
 	 * 
@@ -49,16 +49,16 @@ public interface CourseOperation {
 	/**
 	 * To add
 	 */
-	public void viewAllCourses();
+	public List<Course> viewAllCourses();
 	public boolean addCourse(Course course);
 	public boolean removeCourseById(int courseId);
-	public void assignCourseToProfessor(int courseId, int professorId);
+	public boolean assignCourseToProfessor(int courseId, int professorId);
 
 	/**
 	 * 
 	 * @param professor
 	 */
-	public void viewCoursesTaughtByProfessor(Professor professor);
+	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId);
 
 	/**
 	 * 

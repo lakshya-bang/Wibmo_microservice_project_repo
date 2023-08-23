@@ -46,7 +46,7 @@ public interface CourseDAO {
 	 */
 	public Boolean existsByCourseId(Integer courseId);
 	// add admin dao method to course dao
-	public void viewAllCourse();
+	public List<Course> viewAllCourse();
 	public boolean saveCourse(Course course);
 	public boolean deleteCourse(int courseId);
 	public boolean assignCoursesToProfessor(int courseId, int professorId);
