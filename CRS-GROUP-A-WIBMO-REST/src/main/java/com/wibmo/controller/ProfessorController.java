@@ -22,8 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.business.ProfessorServiceImpl;
+import com.wibmo.service.ProfessorOperationImpl;
 import com.wibmo.controller.ProfessorController;
+
 
 /**
  * 
@@ -35,7 +36,7 @@ public class ProfessorController {
 private static final Logger logger = LogManager.getLogger(ProfessorController.class);
 	
 	@Autowired
-	private ProfessorServiceImpl professorService;
+	private ProfessorOperationImpl professorOperation;
 	
 //	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 //		    method = RequestMethod.GET,
@@ -53,7 +54,7 @@ private static final Logger logger = LogManager.getLogger(ProfessorController.cl
 	@ResponseBody
 	public ResponseEntity getProfessorByID(@PathVariable("id") Integer professorId) {
 
-		Professor professor = professorService.getProfessorById(professorId);
+		Professor professor = professorOperation.getProfessorById(professorId);
 		if (professor == null) {
 			return new ResponseEntity("No Professor found for ID " + professorId, (HttpStatus.NOT_FOUND));
 		}
@@ -67,7 +68,7 @@ private static final Logger logger = LogManager.getLogger(ProfessorController.cl
 	@ResponseBody
 	public ResponseEntity getProfessorMappingbyProfessorId(@RequestBody Set<Integer> professorIds) {
 
-		Map<Integer, Professor> professorMap = professorService.getProfessorIdToProfessorMap(professorIds);
+		Map<Integer, Professor> professorMap = professorOperation.getProfessorIdToProfessorMap(professorIds);
 		if (professorMap == null) {
 			return new ResponseEntity("No Professor mapping found for ID " + professorIds, HttpStatus.NOT_FOUND);
 		}
@@ -80,7 +81,7 @@ private static final Logger logger = LogManager.getLogger(ProfessorController.cl
 		    value = "/exists/{id}")
 	@ResponseBody
 	public ResponseEntity getProfessorifExists(@PathVariable("id") Integer professorId) {
-		boolean professorExist = professorService.isProfessorExistsById(professorId);
+		boolean professorExist = professorOperation.isProfessorExistsById(professorId);
 		if (professorExist == false) {
 			return new ResponseEntity("Professor with Id: " + professorId + " does not exist.", HttpStatus.NOT_FOUND);
 		}
@@ -93,7 +94,7 @@ private static final Logger logger = LogManager.getLogger(ProfessorController.cl
 //		    value = "/add")
 //	@ResponseBody
 //	public ResponseEntity createProfessor(@RequestBody Professor professor) {
-//		professorService.add(professor);
+//		professorOperation.add(professor);
 //		return new ResponseEntity(professor, HttpStatus.OK);
 //	}
 }
