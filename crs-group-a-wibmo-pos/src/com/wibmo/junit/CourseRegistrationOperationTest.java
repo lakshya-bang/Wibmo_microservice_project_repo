@@ -61,15 +61,18 @@ public class CourseRegistrationOperationTest {
 	
 	@Test
 	public void register_shouldTrowExceptionTest() {
-		List<Integer> primaryCourses = new ArrayList<>(List.of(1,2,3,4));
+		
+		List<Integer> primaryCourses = new ArrayList<>(List.of());
 		List<Integer> alternateCourses = new ArrayList<>(List.of(5,6));
+		
 		Student testStudent = new Student();
-		testStudent.setStudentId(4);
-		testStudent.setCurrentSemester(3);
+		testStudent.setStudentId(1001);
+		testStudent.setCurrentSemester(1);
 		
 		assertThrows(StudentAlreadyRegisteredForSemesterException.class, 
 				()->courseRegistrartionOperation.register(primaryCourses, alternateCourses, testStudent));
 	}
+	
 	@Test
 	public void register_shouldTrowExceptionTest1() {
 		List<Integer> primaryCourses = new ArrayList<>(List.of(101,201,102,104));
@@ -81,6 +84,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(CourseNotExistsInCatalogException.class, 
 				()->courseRegistrartionOperation.register(primaryCourses, alternateCourses, testStudent));
 	}
+	
 //	@Test
 //	public void registerTest() {
 //		List<Integer> primaryCourses = new ArrayList<>(List.of(1,2,3,4));
@@ -102,6 +106,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.viewRegisteredCoursesByStudent(testStudent));
 	}
+	
 //	@Test
 //	public void viewRegisteredCoursesByStudentTest() {
 //		

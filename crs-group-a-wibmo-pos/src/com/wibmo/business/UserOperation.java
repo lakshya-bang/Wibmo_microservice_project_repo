@@ -4,8 +4,10 @@
 package com.wibmo.business;
 
 import java.util.List;
+import java.util.Set;
 
 import com.wibmo.bean.User;
+import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
 /**
@@ -16,23 +18,11 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 public interface UserOperation {
 	
 	/**
-	 * used for viewing the account that require approval
-	 * @return List<Int> 
+	 * Used for viewing the accounts that require approval from Admin
+	 * @return List<Integer> 
 	 * */
-	public List<Integer> viewAccountsPendingForApproval();
+	public void viewAccountsPendingForApproval();
 	
-	/**
-	 * used for approving the registration of the new user
-	 * @param userId
-	 * */
-	public void approveLoginById(int userId);
-	
-	/**
-	 * used for Rejecting the registration of the new user
-	 * @param userId
-	 * */
-	public void rejectLoginById(int userId);
-
 	/**
 	 * 
 	 * @param user
@@ -47,4 +37,21 @@ public interface UserOperation {
 	 * @return
 	 */
 	public Integer getUserIdByEmail(String email);
+
+	/**
+	 * 
+	 * @param approved
+	 * @param userIds
+	 */
+	public Boolean updateAccountRegistrationStatusToByUserIds(
+			RegistrationStatus registrationStatus, 
+			Set<Integer> userIds);
+
+	/**
+	 * 
+	 * @param approved
+	 */
+	public Boolean updateAllPendingAccountRegistrationsTo(
+			RegistrationStatus registrationStatus);
+	
 }

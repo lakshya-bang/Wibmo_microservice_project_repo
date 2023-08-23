@@ -2,6 +2,7 @@ package com.wibmo.business;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
@@ -100,12 +101,27 @@ public interface CourseRegistrationOperation {
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
 
 	/**
-	 * To add
+	 * 
+	 * @param regStatus
 	 */
 	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus);
-	public boolean approveRegistrationByRegistrationId(int courseRegId);
-	public boolean rejectRegistrationByRegistrationId(int courseRegId);
+	
+	/**
+	 * 
+	 * @param courseRegId
+	 * @return
+	 */
+	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
+			RegistrationStatus registrationStatus,
+			Set<Integer> courseRegistrationIds);
 
+	/**
+	 * 
+	 * @return
+	 */
+	public Boolean updateAllPendingCourseRegistrationsTo(
+			RegistrationStatus registrationStatus);
+	
 	/**
 	 * 
 	 * @param professorId

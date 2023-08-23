@@ -3,9 +3,11 @@
  */
 package com.wibmo.business;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.wibmo.dao.UserDAOImpl;
+import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.bean.User;
 import com.wibmo.dao.UserDAO;
@@ -24,29 +26,12 @@ public class UserOperationImpl implements UserOperation{
 	}
 
 	@Override
-	public List<Integer> viewAccountsPendingForApproval() {
-		// TODO Auto-generated method stub
-			List<Integer> pendingAccounts = userDAO.view();
-		return pendingAccounts;
-	}
-
-	@Override
-	public void approveLoginById(int userId) {
-		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("APPROVED", userId);
-		if(flag) {
-			System.out.println("the user with the Id" + userId + " has been Approved");
-		}
-	}
-
-	@Override
-	public void rejectLoginById(int userId) {
-		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("REJECTED", userId);
-		if(flag) {
-			System.out.println("the user with the Id" + userId + " has been Rejected");
-		}
-		
+	public void viewAccountsPendingForApproval() {
+		 userDAO
+		 	.findAllByRegistrationStatus(
+		 			RegistrationStatus.PENDING)
+		 	.stream()
+		 	.forEach(System.out::println);
 	}
 
 	@Override
@@ -68,6 +53,35 @@ public class UserOperationImpl implements UserOperation{
 	public Integer getUserIdByEmail(String email) {
 		return userDAO.findUserIdByEmail(email);
 	}
+	
+	@Override
+	public Boolean updateAccountRegistrationStatusToByUserIds(
+			RegistrationStatus registrationStatus,
+			Set<Integer> userIds) {
+		
+		if(null == userIds || userIds.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		
+		return userDAO.updateRegistrationStatusAsByIdIn(
+								registrationStatus, userIds);
+		
+	}
+	
+	@Override
+	public Boolean updateAllPendingAccountRegistrationsTo(
+			RegistrationStatus registrationStatus) {
+		
+		return userDAO.updateRegistrationStatusAsByIdIn(
+				registrationStatus,
+				userDAO
+					.findAllByRegistrationStatus(
+						RegistrationStatus.PENDING)
+					.stream()
+					.map(user -> user.getUserId())
+					.collect(Collectors.toSet()));
+	}
+	
 
 	/*************************** Utility Methods ***************************/
 	

@@ -1,6 +1,8 @@
 package com.wibmo.client;
 
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -32,9 +34,13 @@ public class CRSAdminMenu {
 	
 	public static Boolean display(Scanner input, User user) {
 		
+		String str;
 		Integer userId, courseId;
 		boolean logout = false, exit = false;
 		int choice;
+		Boolean response;
+		Set<Integer> userIds = new HashSet<>();
+		Set<Integer> courseRegistrationIds = new HashSet<>();
 
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
@@ -57,61 +63,139 @@ public class CRSAdminMenu {
 
 		while(!logout) {
 			System.out.print("+---------------------------------+\n"
+					+ "[0] View New Account Registration Requests\n"
 					+ "[1] Approve / Reject New Account Registration\n"
-					+ "[2] Approve / Reject Student Course Registration\n"
-					+ "[3] View Course Catalogue\n"
-					+ "[4] Add Course to Catalogue\n"
-					+ "[5] Drop Course from Catalogue\n"
-					+ "[6] Assign course to Professor\n"
-					+ "[7] Generate Report Cards\n"
+					+ "[2] View New Course Registration Requests\n"
+					+ "[3] Approve / Reject Student Course Registration\n"
+					+ "[4] View Course Catalogue\n"
+					+ "[5] Add Course to Catalogue\n"
+					+ "[6] Drop Course from Catalogue\n"
+					+ "[7] Assign course to Professor\n"
+//					+ "[7] Generate Report Cards\n"
 					+ "[8] Send Bill Due Notification\n"
 					+ "[9] Logout\n"
 					+ "Enter your choice: ");
-					// TODO: Bill Functionality will be added later
 			
+			while(!input.hasNextInt());
 			choice = input.nextInt();
 			
 			switch(choice) {
-			
-			// TODO: This will be moved to Registration section of the CRS Application 
-//			case 1:
-//				System.out.println("*** Register New Admin ***");
-//				System.out.println("Please enter new Admin password: ");
-//				String password = in.next();
-//				System.out.println("Please enter the name : ");
-//				String name = in.next();
-//				adminOperation.registerAdmin(email, password, name);
-//				break;
 				
-			case 1:
+			case 0:
 				System.out.println("*** New Account Registrations:- ***");
 				userOperation.viewAccountsPendingForApproval();
-				
+				break;
+			
+			case 1:
 				exit = false;
 				
 				while(!exit) {
 					
-					System.out.print("Enter the User Id: ");
-					// TODO: Should add check if this user id even exists
-					userId = input.nextInt();
-					
-					System.out.print("Choose Action:\n"
-							+ "[1] Approve\n"
-							+ "[2] Reject\n"
-							+ "[3] Exit\n"
+					System.out.print("+----------------------------+\n"
+							+ "[1] Approve Specific Accounts\n"
+							+ "[2] Approve All\n"
+							+ "[3] Reject Specific Accounts\n"
+							+ "[4] Reject All\n"
+							+ "[5] Exit\n"
 							+ "Enter your choice: ");
+					
 					choice = input.nextInt();
 					
 					switch(choice) {
 					case 1:
-						userOperation.approveLoginById(userId);
+						System.out.println("Enter User Ids to Approve: ");
+						userIds.clear();
+						
+						while (true) {
+			            	
+							while(!input.hasNextInt());
+							
+			                userIds.add(input.nextInt());
+
+			                do {
+			                	System.out.print("Continue ? (Y/N): ");
+			                	str = input.next();
+			                } while(!str.matches("[YN|yn]"));
+			                
+			                if(str.matches("[N|n]")) {
+			                	break;
+			                }
+			            }
+						
+						response = userOperation.updateAccountRegistrationStatusToByUserIds(
+								RegistrationStatus.APPROVED,
+								userIds);
+						
+
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("User Id(s) have been " 
+									+ RegistrationStatus.APPROVED.toString() + ".");
+						} else {
+							System.out.println("Request Failure!");
+						}
+						
 						break;
 						
 					case 2:
-						userOperation.rejectLoginById(userId);
+						response = userOperation.updateAllPendingAccountRegistrationsTo(
+								RegistrationStatus.APPROVED);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("All Pending User Id(s) have been " 
+									+ RegistrationStatus.APPROVED.toString() + ".");
+						} else {
+							System.out.println("Request Failure!");
+						}
+						
 						break;
 						
 					case 3:
+						System.out.println("Enter User Ids to Reject: ");
+						userIds.clear();
+						
+						while (true) {
+			            	
+							while(!input.hasNextInt());
+							
+			                userIds.add(input.nextInt());
+
+			                do {
+			                	System.out.print("Continue ? (Y/N): ");
+			                	str = input.next();
+			                } while(!str.matches("[YN|yn]"));
+			                
+			                if(str.matches("[N|n]")) {
+			                	break;
+			                }
+			            }
+						
+						response = userOperation.updateAccountRegistrationStatusToByUserIds(
+								RegistrationStatus.REJECTED,
+								userIds);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("User Id(s) have been " 
+									+ RegistrationStatus.REJECTED.toString() + ".");
+						} else {
+							System.out.println("Request Failure!");
+						}
+						
+						break;
+						
+					case 4:
+						response = userOperation.updateAllPendingAccountRegistrationsTo(
+								RegistrationStatus.REJECTED);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("All Pending User Id(s) have been " 
+									+ RegistrationStatus.REJECTED.toString() + ".");
+						} else {
+							System.out.println("Request Failure!");
+						}
+						
+						break;
+						
+					case 5:
 						exit = true;
 						break;
 						
@@ -129,35 +213,122 @@ public class CRSAdminMenu {
 					.viewCourseRegistrationByRegistrationStatus(
 							RegistrationStatus.PENDING);
 				
+				break;
+				
+			case 3:
+				
 				exit = false;
 				
 				while(!exit) {
 					
-					System.out.print("Enter the Course Registration Id: ");
-					// TODO: Should add check if this user id even exists
-					Integer courseRegId = input.nextInt();
-					
-					System.out.print("Choose Action:\n"
-							+ "[1] Approve\n"
-							+ "[2] Reject\n"
-							+ "[3] Exit\n"
+					System.out.print("+--------------------------+\n"
+							+ "[1] Approve Selective Course Registrations.\n"
+							+ "[2] Approve All Course Registrations.\n"
+							+ "[3] Reject Selective Course Registrations.\n"
+							+ "[4] Reject All Pending Course Registrations.\n"
+							+ "[5] Exit\n"
 							+ "Enter your choice: ");
+					
+					while(!input.hasNextInt());
 					choice = input.nextInt();
 					
 					switch(choice) {
 					case 1:
-						courseRegistrationOperation
-							.approveRegistrationByRegistrationId(
-								courseRegId);
+						System.out.println("Enter Course Registration Ids to Approve: ");
+						courseRegistrationIds.clear();
+						
+						while (true) {
+			            	
+							while(!input.hasNextInt());
+							
+			                courseRegistrationIds.add(input.nextInt());
+
+			                do {
+			                	System.out.print("Continue ? (Y/N): ");
+			                	str = input.next();
+			                } while(!str.matches("[YN|yn]"));
+			                
+			                if(str.matches("[N|n]")) {
+			                	break;
+			                }
+			            }
+						
+						response = courseRegistrationOperation
+							.updateCourseRegistrationStatusToByRegistrationIds(
+								RegistrationStatus.APPROVED,
+								courseRegistrationIds);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("Course Registration(s) have been " 
+									+ RegistrationStatus.APPROVED.toString() + ".");
+						} else {
+							System.out.println("Request Failure");
+						}
+						
 						break;
 						
 					case 2:
-						courseRegistrationOperation
-							.rejectRegistrationByRegistrationId(
-									courseRegId);
+						response = courseRegistrationOperation
+							.updateAllPendingCourseRegistrationsTo(
+								RegistrationStatus.APPROVED);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("All Pending Course Registration(s) have been " 
+									+ RegistrationStatus.APPROVED.toString() + ".");
+						} else {
+							System.out.println("Request Failure");
+						}
+						
 						break;
 						
 					case 3:
+						
+						System.out.println("Enter Course Registration Ids to Reject: ");
+						courseRegistrationIds.clear();
+						
+						while (true) {
+			            	
+							while(!input.hasNextInt());
+							
+			                courseRegistrationIds.add(input.nextInt());
+
+			                do {
+			                	System.out.print("Continue ? (Y/N): ");
+			                	str = input.next();
+			                } while(!str.matches("[YN|yn]"));
+			                
+			                if(str.matches("[N|n]")) {
+			                	break;
+			                }
+			            }
+						
+						response = courseRegistrationOperation
+							.updateCourseRegistrationStatusToByRegistrationIds(
+								RegistrationStatus.REJECTED,	
+								courseRegistrationIds);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("Course Registration(s) have been " + RegistrationStatus.REJECTED.toString() + ".");
+						} else {
+							System.out.println("Request Failure");
+						}
+						
+						break;
+						
+					case 4:
+						response = courseRegistrationOperation
+							.updateAllPendingCourseRegistrationsTo(
+								RegistrationStatus.REJECTED);
+						
+						if(Boolean.TRUE.equals(response)) {
+							System.out.println("All Pending Course Registration(s) have been " + RegistrationStatus.REJECTED.toString() + ".");
+						} else {
+							System.out.println("Request Failure");
+						}
+						
+						break;
+						
+					case 5:
 						exit = true;
 						break;
 						
@@ -169,17 +340,19 @@ public class CRSAdminMenu {
 				
 				break;
 				
-			case 3:
+			case 4:
 				courseOperation.viewAllCourses();
 				break;
 				
-			case 4:
+			case 5:
 				System.out.println("--- Add a new Course to catalog:- ---");
 				System.out.print("Enter Title of the Course: ");
 				String courseTitle = input.next();
 				System.out.print("Enter Year of the Course: ");
+				while(!input.hasNextInt());
 				Integer courseYear = input.nextInt();
 				System.out.print("Enter Semester of the Course: ");
+				while(!input.hasNextInt());
 				Integer semester = input.nextInt();
 				System.out.print("Enter Department of the Course: ");
 				String department = input.next();
@@ -217,46 +390,36 @@ public class CRSAdminMenu {
 				course.setSemester(semester);
 				course.setCourseType(courseType);
 				
-//				adminOperation.addCourseToCatalog(course);
 				courseOperation.addCourse(course);
 				
 				break;
 				
-			case 5:
+			case 6:
 				System.out.println("--- Drop Course from catalog:- ---");
-				
-//				System.out.println("Please enter course name: ");
-//				courseName = input.next();
-				
+
 				System.out.print("Enter Course Id: ");
 				courseId = input.nextInt();
 				
-//				adminOperation.dropCourseFromCatalog(courseName);
 				courseOperation.removeCourseById(courseId);
 				
 				break;
 				
-			case 6:
+			case 7:
 				System.out.println("--- Assign course to professor:- ---");
-				
-//				System.out.println("Please enter the course name: ");
-//				courseName = in.next();
-//				System.out.println("Please enter Professor name: ");
-//				String professorName = in.next();
+
 				System.out.print("Enter Course Id: ");
 				courseId = input.nextInt();
 				System.out.println("Enter Professor Id: ");
 				Integer professorId = input.nextInt();
 				
-//				adminOperation.assignCoursesToProfessor(courseName,professorName);
 				courseOperation.assignCourseToProfessor(
 						courseId, professorId);
 				
 				break;
 			
-			case 7:
-				System.out.println("Missing Functionality.");
-				break;
+//			case 7:
+//				System.out.println("Missing Functionality.");
+//				break;
 				
 			case 8:
 				System.out.println("Missing Functionality.");
@@ -271,6 +434,7 @@ public class CRSAdminMenu {
 			}
 		}
 		
+		System.out.println("User Log Out.");
 		return Boolean.FALSE;
 	}
 	

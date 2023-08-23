@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -300,38 +301,44 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			});
 		return courseIdToRegisteredStudentsMap;
 	}
-
-	/*************************** Utility Methods ********************************/
 	
-	private Boolean isStudentRegistered(Student student) {
-		return courseRegistrationDAO.existsByStudent(student);
+	@Override
+	public void viewCourseRegistrationByRegistrationStatus(
+			RegistrationStatus registrationStatus){
+		courseRegistrationDAO
+			.findAllByRegistrationStatus(registrationStatus)
+			.stream()
+			.forEach(System.out::println);
 	}
 	
-	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
+	@Override
+	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
+			RegistrationStatus registrationStatus,
+			Set<Integer> courseRegistrationIds){
+		
+		// TODO: Should add this check
+//		Optional<Integer> invalidCourseRegistrationId = getFirstInvalidCourseRegistrationId(courseRegistrationIds);
+//		if(invalidCourseRegistrationId.isPresent()) {
+//			throw new InvalidCourseRegistrationIdArgumentException(invalidCourseRegistrationId.get());
+//		}
+		
 		return courseRegistrationDAO
-				.existsByStudentAndCourseId(student, courseId);
+					.updateRegistrationStatusAsByIdIn(
+						registrationStatus,
+						courseRegistrationIds);
 	}
 	
-	private Boolean isStudentRegisteredForAllAlternativeCourses(Student student) {
+	@Override
+	public Boolean updateAllPendingCourseRegistrationsTo(
+			RegistrationStatus registrationStatus) {
 		return courseRegistrationDAO
-				.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
-					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
-	}
-	
-	private Boolean isStudentRegisteredForAllPrimaryCourses(Student student) {
-		return courseRegistrationDAO
-				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
-					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
-	}
-
-	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
-		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
-	}
-	public boolean approveRegistrationByRegistrationId(int courseRegId){
-		return courseRegistrationDAO.approveRegistrationStatus(courseRegId);
-	}
-	public boolean rejectRegistrationByRegistrationId(int courseRegId){
-		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
+					.updateRegistrationStatusAsByIdIn(
+							registrationStatus, 
+							courseRegistrationDAO
+								.findAllByRegistrationStatus(RegistrationStatus.PENDING)
+								.stream()
+								.map(courseRegistration -> courseRegistration.getCourseRegId())
+								.collect(Collectors.toSet()));
 	}
 
 	@Override
@@ -371,5 +378,28 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 						student.getStudentName(),
 						student.getStudentEmail()));
 	}
+
+
+	/*************************** Utility Methods ********************************/
 	
+	private Boolean isStudentRegistered(Student student) {
+		return courseRegistrationDAO.existsByStudent(student);
+	}
+	
+	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
+		return courseRegistrationDAO
+				.existsByStudentAndCourseId(student, courseId);
+	}
+	
+	private Boolean isStudentRegisteredForAllAlternativeCourses(Student student) {
+		return courseRegistrationDAO
+				.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
+					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+	}
+	
+	private Boolean isStudentRegisteredForAllPrimaryCourses(Student student) {
+		return courseRegistrationDAO
+				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
+					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+	}	
 }
