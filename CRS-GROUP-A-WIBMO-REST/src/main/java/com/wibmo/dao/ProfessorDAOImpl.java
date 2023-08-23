@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.constants.SQLConstants;
+import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
 /**
