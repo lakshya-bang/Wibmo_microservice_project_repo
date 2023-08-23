@@ -82,6 +82,11 @@ public class UserOperationImpl implements UserOperation{
 					.collect(Collectors.toSet()));
 	}
 	
+	@Override
+	public Boolean isUserExistsById(Integer userId) {
+		return userDAO.existsById(userId);
+	}
+	
 
 	/*************************** Utility Methods ***************************/
 	

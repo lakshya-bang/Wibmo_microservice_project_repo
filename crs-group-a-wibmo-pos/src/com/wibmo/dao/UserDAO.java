@@ -44,4 +44,11 @@ public interface UserDAO {
 	public Boolean updateRegistrationStatusAsByIdIn(
 			RegistrationStatus registrationStatus, 
 			Set<Integer> userIds);
+
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean existsById(Integer userId);
 }

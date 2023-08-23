@@ -21,6 +21,9 @@ import com.wibmo.business.UserOperation;
 import com.wibmo.business.UserOperationImpl;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 
@@ -42,13 +45,15 @@ public class CRSAdminMenu {
 		Set<Integer> userIds = new HashSet<>();
 		Set<Integer> courseRegistrationIds = new HashSet<>();
 
+		UserOperation userOperation  =new UserOperationImpl();
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
-		UserOperation userOperation  =new UserOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
+				userOperation,
 				professorOperation);
 		CourseRegistrationOperation courseRegistrationOperation =
 				new CourseRegistrationOperationImpl(
+						userOperation, 
 						studentOperation,
 						professorOperation,
 						courseOperation);
@@ -341,7 +346,9 @@ public class CRSAdminMenu {
 				break;
 				
 			case 4:
-				courseOperation.viewAllCourses();
+				courseOperation
+					.getAllCourses()
+					.forEach(System.out::println);
 				break;
 				
 			case 5:
@@ -349,10 +356,10 @@ public class CRSAdminMenu {
 				System.out.print("Enter Title of the Course: ");
 				String courseTitle = input.next();
 				System.out.print("Enter Year of the Course: ");
-				while(!input.hasNextInt());
+//				while(!input.hasNextInt());
 				Integer courseYear = input.nextInt();
 				System.out.print("Enter Semester of the Course: ");
-				while(!input.hasNextInt());
+//				while(!input.hasNextInt());
 				Integer semester = input.nextInt();
 				System.out.print("Enter Department of the Course: ");
 				String department = input.next();
@@ -367,6 +374,7 @@ public class CRSAdminMenu {
 							+ "[2] Alternative\n"
 							+ "Enter your choice: ");
 					
+					while(!input.hasNextInt());
 					choice = input.nextInt();
 					
 					switch(choice) {
@@ -390,30 +398,58 @@ public class CRSAdminMenu {
 				course.setSemester(semester);
 				course.setCourseType(courseType);
 				
-				courseOperation.addCourse(course);
+				response = courseOperation.add(course);
+				
+				if(Boolean.TRUE.equals(response)) {
+					System.out.println("Course added successfully.");
+				} else {
+					System.out.println("Request Failure!");
+				}
 				
 				break;
 				
 			case 6:
-				System.out.println("--- Drop Course from catalog:- ---");
+				System.out.println("--- Drop Course from Catalog:- ---");
 
 				System.out.print("Enter Course Id: ");
 				courseId = input.nextInt();
 				
-				courseOperation.removeCourseById(courseId);
+				try {
+					response = courseOperation.removeCourseById(courseId);
+					
+					if(Boolean.TRUE.equals(response)) {
+						System.out.println("Course dropped successfully.");
+					} else {
+						System.out.println("Request Failure!");
+					}
+					
+				} catch (CourseNotExistsInCatalogException 
+						| CannotDropCourseAssignedToProfessorException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				
 				break;
 				
 			case 7:
-				System.out.println("--- Assign course to professor:- ---");
+				System.out.println("--- Assign Course to Professor:- ---");
 
 				System.out.print("Enter Course Id: ");
 				courseId = input.nextInt();
 				System.out.println("Enter Professor Id: ");
 				Integer professorId = input.nextInt();
 				
-				courseOperation.assignCourseToProfessor(
-						courseId, professorId);
+				try {
+					courseOperation.assignCourseToProfessor(
+							courseId, professorId);
+					
+					System.out.println("Course successfully assigned.");
+					
+				} catch (CourseNotExistsInCatalogException 
+						| UserNotFoundException e) {
+					System.out.println(e.getMessage());
+//					e.printStackTrace();
+				}
 				
 				break;
 			

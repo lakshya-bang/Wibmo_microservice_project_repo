@@ -148,4 +148,30 @@ public class UserDAOImpl implements UserDAO{
 		return Boolean.FALSE;
 	}
 	
+	@Override
+	public Boolean existsById(Integer userId) {
+		
+		String sql = "SELECT user_id FROM auth_creds "
+				+ "WHERE user_id = ? "
+				+ "LIMIT 1";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, userId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return Boolean.TRUE;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return Boolean.FALSE;
+	}
+	
 }

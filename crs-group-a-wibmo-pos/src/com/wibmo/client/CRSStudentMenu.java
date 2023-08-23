@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
+import com.wibmo.business.UserOperation;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.CourseRegistrationOperation;
@@ -41,16 +43,23 @@ public class CRSStudentMenu {
 		boolean logout = false;
 		int choice;
 
+		UserOperation userOperation = new UserOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
-				professorOperation);
+				userOperation, professorOperation);
 		StudentOperation studentOperation = new StudentOperationImpl();
 		CourseRegistrationOperation courseRegistrationOperation = 
 				new CourseRegistrationOperationImpl(
-						studentOperation, professorOperation, courseOperation);
-		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(
-				studentOperation, courseOperation, courseRegistrationOperation);
-
+						userOperation, 
+						studentOperation, 
+						professorOperation, 
+						courseOperation);
+		ReportCardOperation reportCardOperation =
+				new ReportCardOperationImpl(
+						studentOperation, 
+						courseOperation, 
+						courseRegistrationOperation);
+	
 		Student student = studentOperation.getStudentById(user.getUserId());
 
 		LOG.info("+......... Welcome Student .........+\n"
@@ -173,7 +182,8 @@ public class CRSStudentMenu {
 				try {
 					courseRegistrationOperation.dropCourse(courseId, student);
 				} catch (StudentNotRegisteredForSemesterException
-						| StudentNotRegisteredForCourseInSemesterException e) {
+						| StudentNotRegisteredForCourseInSemesterException 
+						| CourseNotExistsInCatalogException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();
 				}

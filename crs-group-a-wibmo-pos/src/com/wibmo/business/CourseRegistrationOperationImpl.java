@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,13 +13,13 @@ import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
@@ -28,6 +27,8 @@ import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
 public class CourseRegistrationOperationImpl implements CourseRegistrationOperation {
+	
+	private final UserOperation userOperation;
 	
 	private final StudentOperation studentOperation;
 	
@@ -38,10 +39,11 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	private final CourseRegistrationDAO courseRegistrationDAO;
 	
 	public CourseRegistrationOperationImpl(
+			UserOperation userOperation,
 			StudentOperation studentOperation,
 			ProfessorOperation professorOperation,
 			CourseOperation courseOperation) {
-		
+		this.userOperation = userOperation;
 		this.studentOperation = studentOperation;
 		this.professorOperation = professorOperation;
 		this.courseOperation = courseOperation;
@@ -231,6 +233,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	@Override
 	public void dropCourse(Integer courseId, Student student) 
 			throws 
+				CourseNotExistsInCatalogException,
 				StudentNotRegisteredForSemesterException, 
 				StudentNotRegisteredForCourseInSemesterException {
 		
@@ -283,7 +286,8 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId) {
+	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
+			throws UserNotFoundException {
 		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
 		courses
@@ -346,15 +350,15 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException,
-				ProfessorNotExistsInSystemException, 
+				UserNotFoundException, 
 				ProfessorNotAssignedForCourseException {
 		
 		if(null == professorId || null == courseId) {
 			return;
 		}
 		
-		if(!professorOperation.isProfessorExistsById(professorId)) {
-			throw new ProfessorNotExistsInSystemException(professorId);
+		if(!userOperation.isUserExistsById(professorId)) {
+			throw new UserNotFoundException(professorId);
 		}
 		
 		if(!courseOperation.isCourseExistsInCatalog(courseId)) {

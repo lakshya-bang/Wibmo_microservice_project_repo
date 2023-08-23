@@ -11,17 +11,22 @@ import com.wibmo.bean.Professor;
 import com.wibmo.dao.CourseDAO;
 import com.wibmo.dao.CourseDAOImpl;
 import com.wibmo.enums.CourseType;
+import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
+import com.wibmo.exception.UserNotFoundException;
 
 public class CourseOperationImpl implements CourseOperation {
 
+	private final UserOperation userOperation;
+	
 	private final ProfessorOperation professorOperation;
 	
 	private final CourseDAO courseDAO;
 	
 	public CourseOperationImpl(
+			UserOperation userOperation,
 			ProfessorOperation professorOperation) {
+		this.userOperation = userOperation;
 		this.professorOperation = professorOperation;
 		courseDAO = CourseDAOImpl.getInstance();
 	}
@@ -69,13 +74,25 @@ public class CourseOperationImpl implements CourseOperation {
 	}
 
 	@Override
-	public List<Course> getCoursesAssignedToProfessor(Integer professorId) {
+	public List<Course> getCoursesAssignedToProfessor(Integer professorId) 
+			throws UserNotFoundException {
+		
+		if(!userOperation.isUserExistsById(professorId)) {
+			throw new UserNotFoundException(professorId);
+		}
+		
 		return courseDAO
 				.findAllByProfessorId(professorId);
 	}
 	
 	@Override
-	public CourseType getCourseTypeByCourseId(Integer courseId) {
+	public CourseType getCourseTypeByCourseId(Integer courseId) 
+			throws CourseNotExistsInCatalogException {
+		
+		if(!isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
 		return courseDAO
 				.findCourseTypeByCourseId(courseId);
 	}
@@ -86,33 +103,63 @@ public class CourseOperationImpl implements CourseOperation {
 				.existsByCourseId(courseId);
 	}
 
-	/*
-	 * added crs admin menu method
-	 */
 	@Override
-	public void viewAllCourses() {
-		courseDAO.viewAllCourse();
+	public List<Course> getAllCourses() {
+		return courseDAO.findAll();
 	}
 
 	@Override
-	public boolean addCourse(Course course) {
-		return courseDAO.saveCourse(course); 
+	public Boolean add(Course course) {
+		
+		// TODO: Move to Validator
+		if(null == course || null != course.getCourseId()) {
+			return Boolean.FALSE;
+		}
+		
+		return courseDAO.save(course); 
 	}
 
 	@Override
-	public boolean removeCourseById(int courseId) {
-		return courseDAO.deleteCourse(courseId);
+	public Boolean removeCourseById(Integer courseId) 
+			throws 
+				CourseNotExistsInCatalogException, 
+				CannotDropCourseAssignedToProfessorException {
+		
+		if(!isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		Integer professorId = courseDAO.findProfessorIdByCourseId(courseId);
+		
+		if(null != professorId) {
+			throw new CannotDropCourseAssignedToProfessorException(courseId, professorId);
+		}
+		
+		return courseDAO.deleteCourseById(courseId);
 	}
 
 	@Override
-	public void assignCourseToProfessor(int courseId, int professorId) {
-		courseDAO.assignCoursesToProfessor(courseId, professorId);
+	public void assignCourseToProfessor(Integer courseId, Integer professorId) 
+			throws 
+				CourseNotExistsInCatalogException, 
+				UserNotFoundException {
+		
+		if(!isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		if(!userOperation.isUserExistsById(professorId)) {
+			throw new UserNotFoundException(professorId);
+		}
+		
+		courseDAO.setProfessorIdAsWhereCourseIdIs(professorId, courseId);
 	}
 
 	@Override
 	public void viewCoursesTaughtByProfessor(Professor professor) {
 		
-		if(null == professor) {
+		// TODO: Move to Validator
+		if(null == professor || null == professor.getProfessorId()) {
 			return;
 		}
 		
@@ -121,26 +168,31 @@ public class CourseOperationImpl implements CourseOperation {
 				+ "CourseId |\tCourseTitle\t| CourseType "
 				+ "\n+--------------------------------------------+\n");
 		
-		getCoursesAssignedToProfessor(professor.getProfessorId())
-			.forEach(course -> System.out.format(
-					"%5d\t | %s \t| %s\n", 
-						course.getCourseId(), 
-						course.getCourseTitle(),
-						course.getCourseType().toString()));
+		try {
+			getCoursesAssignedToProfessor(professor.getProfessorId())
+				.forEach(course -> System.out.format(
+						"%5d\t | %s \t| %s\n", 
+							course.getCourseId(), 
+							course.getCourseTitle(),
+							course.getCourseType().toString()));
+		} catch (UserNotFoundException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Boolean isProfessorAssignedForCourse(Integer professorId, Integer courseId)
 		throws 
-			ProfessorNotExistsInSystemException, 
+			UserNotFoundException, 
 			CourseNotExistsInCatalogException {
 
 		if(null == professorId || null == courseId) {
 			return false;
 		}
 		
-		if(!professorOperation.isProfessorExistsById(professorId)) {
-			throw new ProfessorNotExistsInSystemException(professorId);
+		if(!userOperation.isUserExistsById(professorId)) {
+			throw new UserNotFoundException(professorId);
 		}
 		
 		if(!isCourseExistsInCatalog(courseId)) {
@@ -152,5 +204,11 @@ public class CourseOperationImpl implements CourseOperation {
 						courseDAO.findProfessorIdByCourseId(courseId));
 	}
 
+	/************************** Utility Methods **************************/
+	
+	private boolean isCourseAssignedToAnyProfessor(Integer courseId) {
+		return courseDAO.findProfessorIdByCourseId(courseId) != null;
+	}
+	
 	
 }

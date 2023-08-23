@@ -25,13 +25,6 @@ public interface ProfessorOperation {
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds);
 
 	/**
-	 * Checks if professorExists using professorId
-	 * @param professorId
-	 * @return
-	 */
-	public Boolean isProfessorExistsById(Integer professorId);
-
-	/**
 	 * Creates a new entry in the professor table.
 	 * @param professor
 	 */

@@ -54,4 +54,11 @@ public interface UserOperation {
 	public Boolean updateAllPendingAccountRegistrationsTo(
 			RegistrationStatus registrationStatus);
 	
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public Boolean isUserExistsById(Integer userId);
+	
 }

@@ -61,16 +61,6 @@ public class ProfessorOperationTest {
 		professorIdtoProfessor = professorOperation.getProfessorIdToProfessorMap(Set.of(professorId));
 		assertFalse(professorIdtoProfessor.isEmpty());
 	}
-
-	@Test
-	public void isProfessorExistsByIdTest() {
-		assertTrue(professorOperation.isProfessorExistsById(professorId));
-	}
-	
-	@Test
-	public void isProfessorExistByIdTestFail() {
-		assertFalse(professorOperation.isProfessorExistsById(131));
-	}
 	
 	@Test
 	public void addTest() {

@@ -50,12 +50,6 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 	 * @param professorId (Integer)
 	 * @return Boolean
 	 */
-	
-	@Override
-	public Boolean isProfessorExistsById(Integer professorId) {
-		return professorDAO
-				.existsById(professorId);
-	}
 
 	/**
 	 * @param Professor

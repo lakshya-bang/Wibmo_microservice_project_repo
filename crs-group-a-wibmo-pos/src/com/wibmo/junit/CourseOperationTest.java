@@ -15,6 +15,8 @@ import com.wibmo.bean.Course;
 import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseOperationImpl;
 import com.wibmo.business.ProfessorOperationImpl;
+import com.wibmo.business.UserOperation;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.enums.CourseType;
 
 /**
@@ -24,6 +26,7 @@ public class CourseOperationTest {
 
 	private Integer courseId;
 	private Integer professorId;
+	
 	private CourseOperation courseOperation;
 
 	@Before
@@ -31,6 +34,7 @@ public class CourseOperationTest {
 		courseId = 16;
 		professorId = 1002;
 		courseOperation = new CourseOperationImpl(
+				new UserOperationImpl(),
 				new ProfessorOperationImpl());
 	}
 

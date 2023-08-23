@@ -7,13 +7,13 @@ import java.util.Set;
 import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 
 /**
@@ -33,9 +33,9 @@ public interface CourseRegistrationOperation {
 			List<Integer> primaryCourses, 
 			List<Integer> alternativeCourses, 
 			Student student) 
-					throws 
-						StudentAlreadyRegisteredForSemesterException, 
-						CourseNotExistsInCatalogException;
+				throws 
+					StudentAlreadyRegisteredForSemesterException, 
+					CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -79,11 +79,12 @@ public interface CourseRegistrationOperation {
 	 * @param student
 	 * @throws StudentNotRegisteredForSemesterException 
 	 * @throws StudentNotRegisteredForCourseInSemesterException 
+	 * @throws CourseNotExistsInCatalogException 
 	 */
 	public void dropCourse(Integer courseId, Student student) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
-				StudentNotRegisteredForCourseInSemesterException;
+				StudentNotRegisteredForCourseInSemesterException, CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -97,8 +98,10 @@ public interface CourseRegistrationOperation {
 	 * 
 	 * @param professorId
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
-	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
+	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId) 
+			throws UserNotFoundException;
 
 	/**
 	 * 
@@ -133,7 +136,7 @@ public interface CourseRegistrationOperation {
 	public void viewRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException, 
-				ProfessorNotExistsInSystemException,
+				UserNotFoundException,
 				ProfessorNotAssignedForCourseException;
 		
 }
