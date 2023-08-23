@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,34 +35,9 @@ public class CourseOperationImpl implements CourseOperation {
 	
 	// TODO: This implementation can be moved to Join query in Database
 	@Override
-	public void viewCourseDetailsBySemester(Integer currentSemester) {
-		List<Course> courses = courseDAO.findAllBySemester(currentSemester);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation
-				.getProfessorIdToProfessorMap(
-						courses
-							.stream()
-							.map(course -> course.getProfessorId())
-							.filter(professorId -> professorId != null)
-							.collect(Collectors.toSet()));
+	public List<Course> viewCourseDetailsBySemester(Integer currentSemester) {
+		return courseDAO.findAllBySemester(currentSemester);
 		
-		System.out.println("List of applicable Courses for Semeseter: " + currentSemester);
-		System.out.println(" CourseID  | \t CourseTitle \t|  Course Type  | Seats |   \t   ProfessorName   \t| \tDepartment ");
-		System.out.println("+----------------------------------------------------------------------------------------------------------------------------+");
-		courses
-			.forEach(
-				course -> System.out.format(
-						"|    %d\t| %s\t| %s\t| %d\t| %s \t| %s |\n", 
-						// "%5d%15s%16d%20s%13s\n", 
-							course.getCourseId(),
-							course.getCourseTitle(),
-							course.getCourseType().toString(),
-							course.getNoOfSeats(),
-							null != course.getProfessorId()
-								? professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()
-								: "NULL",
-							null != course.getProfessorId()
-								? professorIdToProfessorMap.get(course.getProfessorId()).getDepartment()
-								: "NULL"));
 	}
 
 	@Override
@@ -96,8 +72,8 @@ public class CourseOperationImpl implements CourseOperation {
 	 * added crs admin menu method
 	 */
 	@Override
-	public void viewAllCourses() {
-		courseDAO.viewAllCourse();
+	public List<Course> viewAllCourses() {
+		return courseDAO.viewAllCourse();
 	}
 
 	@Override
@@ -111,28 +87,21 @@ public class CourseOperationImpl implements CourseOperation {
 	}
 
 	@Override
-	public void assignCourseToProfessor(int courseId, int professorId) {
-		courseDAO.assignCoursesToProfessor(courseId, professorId);
+	public boolean assignCourseToProfessor(int courseId, int professorId) {
+		return courseDAO.assignCoursesToProfessor(courseId, professorId);
 	}
 
 	@Override
-	public void viewCoursesTaughtByProfessor(Professor professor) {
+	public List<Course> viewCoursesTaughtByProfessorId(Integer professorId) {
 		
-		if(null == professor) {
-			return;
-		}
 		
 		System.out.print("*** List of Courses Taught:- ***\n"
 				+ "\n+--------------------------------------------+\n"
 				+ "CourseId |\tCourseTitle\t| CourseType "
 				+ "\n+--------------------------------------------+\n");
 		
-		getCoursesAssignedToProfessor(professor.getProfessorId())
-			.forEach(course -> System.out.format(
-					"%5d\t | %s \t| %s\n", 
-						course.getCourseId(), 
-						course.getCourseTitle(),
-						course.getCourseType().toString()));
+		return getCoursesAssignedToProfessor(professorId);
+			
 	}
 
 	@Override
@@ -157,6 +126,7 @@ public class CourseOperationImpl implements CourseOperation {
 				&& professorId.equals(
 						courseDAO.findProfessorIdByCourseId(courseId));
 	}
-
+	
+	
 	
 }

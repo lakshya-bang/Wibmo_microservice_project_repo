@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.bean.Course;
@@ -184,16 +185,18 @@ public class CourseDAOImpl implements CourseDAO {
 	}
 
 	@Override
-	public void viewAllCourse() {
+	public List<Course> viewAllCourse() {
 		String sql = "SELECT * FROM course";
 		
 		Connection conn = DBUtils.getConnection();
+		List<Course> courses = new ArrayList<Course>();
 		try {
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		
 		ResultSet rs = stmt.executeQuery();
-		String id = "Course Id", title = "Course Title", sem="Semester", year="year", dept="Department", profId="Professor Id", isCancel="Is Cancelled", noOfSeats="No. of Seats", courseType="Course Type";
-		    System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s", id, title, sem, year, dept, profId, isCancel, noOfSeats, courseType+ "\n");
+		
+//		String id = "Course Id", title = "Course Title", sem="Semester", year="year", dept="Department", profId="Professor Id", isCancel="Is Cancelled", noOfSeats="No. of Seats", courseType="Course Type";
+//		    System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s", id, title, sem, year, dept, profId, isCancel, noOfSeats, courseType+ "\n");
 		    while(rs.next()) {
 		         int cid  = rs.getInt("course_id");
 		         String title1 = rs.getString("course_title");
@@ -204,13 +207,15 @@ public class CourseDAOImpl implements CourseDAO {
 				 int isCancel1  = rs.getInt("is_cancelled");
 		         int noOfSeat1 = rs.getInt("no_of_seats");
 		         String courseType1 = rs.getString("course_type");
-
-		         System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s", cid, title1, sem1, year1, dept1, profId1, isCancel1, noOfSeat1, courseType1+ "\n");
-		     }
+		         CourseType courseType2=CourseType.valueOf(courseType1);
+		         Course course =new Course(cid, title1, sem1, year1, dept1, profId1, (isCancel1==0?false:true), noOfSeat1, courseType2);
+		         courses.add(course);
+		    }
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+		return courses;
 	}
 
 	@Override
