@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.bean.Professor;
 import com.wibmo.business.ProfessorServiceImpl;
-import com.wibmo.rest.ProfessorRESTController;
+import com.wibmo.controller.ProfessorController;
 
 /**
  * 
@@ -32,7 +32,7 @@ import com.wibmo.rest.ProfessorRESTController;
 @Component
 @RequestMapping(value="/professor")
 public class ProfessorController {
-private static final Logger logger = LogManager.getLogger(ProfessorRESTController.class);
+private static final Logger logger = LogManager.getLogger(ProfessorController.class);
 	
 	@Autowired
 	private ProfessorServiceImpl professorService;
