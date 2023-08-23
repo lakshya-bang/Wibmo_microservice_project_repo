@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.wibmo.bean.Professor;
 import com.wibmo.dao.ProfessorDAO;
 //import com.wibmo.dao.ProfessorDAOImpl;
-import com.wibmo.rest.ProfessorRESTController;
+import com.wibmo.controller.ProfessorController;
 
 /**
  * 
@@ -25,7 +25,7 @@ import com.wibmo.rest.ProfessorRESTController;
 @Service
 @Component
 public class ProfessorServiceImpl implements ProfessorService{
-	private static final Logger logger = LogManager.getLogger(ProfessorRESTController.class);
+	private static final Logger logger = LogManager.getLogger(ProfessorController.class);
 
 	@Autowired
 	private ProfessorDAO professorDAO;

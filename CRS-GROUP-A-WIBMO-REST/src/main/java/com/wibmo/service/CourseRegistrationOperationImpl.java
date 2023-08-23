@@ -18,6 +18,7 @@ import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.ProfessorNotExistsInSystemException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
