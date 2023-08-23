@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.business;
+package com.wibmo.service;
 
 import java.util.Map;
 import java.util.Set;
