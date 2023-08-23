@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.wibmo.dao;
 
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.stereotype.Repository;
 
 import com.wibmo.bean.Professor;
 
@@ -14,7 +9,7 @@ import com.wibmo.bean.Professor;
  * 
  */
 public interface ProfessorDAO {
-	
+
 	/**
 	 * 
 	 * @param professorIds

@@ -2,10 +2,10 @@
  * 
  */
 package com.wibmo.utils;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ import java.util.Properties;
  * 
  */
 public class DBUtils {
-	private static Connection connection = null;
+private static Connection connection = null;
 	
 	public static Connection getConnection() {
 			try {
@@ -48,6 +48,7 @@ public class DBUtils {
 				e.printStackTrace();
 			}
             return connection;
+
     }
 	public static boolean isValid() throws SQLException {
 		return connection != null && !connection.isClosed();

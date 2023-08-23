@@ -1,18 +1,10 @@
-/**
- * 
- */
 package com.wibmo.bean;
 
-import java.io.Serializable;
-
 /**
- * 
+ *
  */
-public class Professor implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Professor {
+
 	private Integer professorId;	// professor_id (FK)
 	private String professorEmail;	// professor_email
 	private String professorName;	// professor_name
