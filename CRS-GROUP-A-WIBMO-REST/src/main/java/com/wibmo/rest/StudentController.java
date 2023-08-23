@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.controller;
+package com.wibmo.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wibmo.bean.Student;
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
-import com.wibmo.service.StudentOperationImpl;
 
 /**
  * 
@@ -31,7 +30,7 @@ public class StudentController {
 		// and inject the dependency without
 		// using new keyword.
 		@Autowired
-		private StudentOperationImpl studentOperation;
+		private StudentDAOImpl studentDAO;
 
 		
 		
@@ -42,7 +41,7 @@ public class StudentController {
 		@GetMapping("/student/{id}")
 		public ResponseEntity getStudent(@PathVariable("id") Integer id) {
 
-			Student student = studentOperation.getStudentById(id);
+			Student student = studentDAO.findById(id);
 			if (student == null) {
 				return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
 			}
@@ -53,7 +52,7 @@ public class StudentController {
 		@PostMapping(value = "/student")
 		public ResponseEntity createStudent(@RequestBody Student student) {
 
-			studentOperation.add(student);
+			studentDAO.save(student);
 
 			return new ResponseEntity(student, HttpStatus.OK);
 		}
