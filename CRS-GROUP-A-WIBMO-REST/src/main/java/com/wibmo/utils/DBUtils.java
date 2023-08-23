@@ -5,11 +5,14 @@ package com.wibmo.utils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 /**
  * 
@@ -25,7 +28,7 @@ private static Connection connection = null;
 				else {
 				try {
 					Properties prop = new Properties(); //Properties is used to read files
-				    InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("config.properties");
+				    InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("./config.properties");
 				    prop.load(inputStream);
 				    String driver = prop.getProperty("driver");
 				    String url = prop.getProperty("url");
