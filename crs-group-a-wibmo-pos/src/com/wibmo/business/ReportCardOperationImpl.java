@@ -25,19 +25,13 @@ public class ReportCardOperationImpl implements ReportCardOperation {
 
 	private final CourseOperation courseOperation;
 	
-	private final StudentOperation studentOperation;
-	
-	private final CourseRegistrationOperation courseRegistrationOperation;
-	
 	private final ReportCardDAO reportCardDAO;
 	
 	public ReportCardOperationImpl(
 			StudentOperation studentOperation,
 			CourseOperation courseOperation,
 			CourseRegistrationOperation courseRegistrationOperation) {
-		this.studentOperation = studentOperation;
 		this.courseOperation = courseOperation;
-		this.courseRegistrationOperation = courseRegistrationOperation;
 		reportCardDAO = ReportCardDAOImpl.getInstance();
 	}
 	

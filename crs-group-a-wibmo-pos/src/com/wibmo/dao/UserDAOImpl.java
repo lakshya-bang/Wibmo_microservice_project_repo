@@ -7,11 +7,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.enums.UserType;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -33,24 +35,28 @@ public class UserDAOImpl implements UserDAO{
     }
 	
 	@Override
-	public List<Integer> view() {
-		// TODO Auto-generated method stub
-		CourseRegistration courseRegistration = null;
-		List<Integer> resultOfPendingusers =null;
+	public List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus) {
 		
-		String sql = "SELECT user_id FROM auth_creds "
-				+ "WHERE reg_status = 'PENDING'";
+		List<User> users = new ArrayList<>();
+		
+		String sql = "SELECT * FROM auth_creds "
+				+ "WHERE reg_status = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			
+			stmt.setString(1, registrationStatus.toString());
 			
 			ResultSet rs = stmt.executeQuery();
 			
-			
 			while(rs.next()) {
-				resultOfPendingusers.add(rs.getInt("user_id"));
+				users.add(new User(
+						rs.getInt("user_id"),
+						rs.getString("user_email"),
+						RegistrationStatus.valueOf(
+								rs.getString("reg_status")),
+						UserType.valueOf(
+								rs.getString("user_type"))));
 			}
 			
 		} catch (SQLException e) {
@@ -58,29 +64,9 @@ public class UserDAOImpl implements UserDAO{
 //			e.printStackTrace();
 		}
 		
-		return resultOfPendingusers;
+		return users;
 	}
-
-	@Override
-	public Boolean update(String status , int userId) {
-		// TODO Auto-generated method stub
-		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
-		Connection conn = DBUtils.getConnection();
-		try{
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, status);
-			stmt.setInt(2, userId);
-
-			stmt.executeUpdate();
-			return true;
-		}
-		catch(SQLException se){
-			System.out.println(se.getMessage());
-			return false;
-		}
-		
-	}
-
+	
 	@Override
 	public void save(User user) {
 
@@ -131,6 +117,61 @@ public class UserDAOImpl implements UserDAO{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Boolean updateRegistrationStatusAsByIdIn(
+			RegistrationStatus registrationStatus, 
+			Set<Integer> userIds) {
+		
+		StringBuilder sql = new StringBuilder(
+				"UPDATE auth_creds "
+				+ "SET reg_status = ? "
+				+ "WHERE user_id IN (");
+		userIds.forEach(userId -> sql.append(userId).append(","));
+		sql.replace(sql.length() - 1, sql.length(), ")");
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql.toString());
+			stmt.setString(1, registrationStatus.toString());
+			
+			if(userIds.size() == stmt.executeUpdate()) {
+				return Boolean.TRUE;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return Boolean.FALSE;
+	}
+	
+	@Override
+	public Boolean existsById(Integer userId) {
+		
+		String sql = "SELECT user_id FROM auth_creds "
+				+ "WHERE user_id = ? "
+				+ "LIMIT 1";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, userId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return Boolean.TRUE;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return Boolean.FALSE;
 	}
 	
 }

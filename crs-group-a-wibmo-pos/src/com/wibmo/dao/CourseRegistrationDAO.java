@@ -151,10 +151,21 @@ public interface CourseRegistrationDAO {
 			Integer primaryCourseIdIndex, 
 			Integer courseRegistrationId);
 	
-	public void viewCourseRegistrationStatus(RegistrationStatus regStatus);
+	/**
+	 * 
+	 * @param regStatus
+	 * @return
+	 */
+	public List<CourseRegistration> findAllByRegistrationStatus(
+			RegistrationStatus regStatus);
 
-	public boolean approveRegistrationStatus(int courseRegId);
-	
-	public boolean rejectRegistrationStatus(int courseRegId);
+	/**
+	 * 
+	 * @param courseRegId
+	 * @return
+	 */
+	public Boolean updateRegistrationStatusAsByIdIn(
+			RegistrationStatus registrationIds,
+			Set<Integer> courseRegistrationIds);
 
 }

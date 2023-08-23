@@ -17,8 +17,10 @@ import com.wibmo.business.ReportCardOperation;
 import com.wibmo.business.ReportCardOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.business.UserOperation;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.CRSProfessorMenuUtil;
 import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.business.ProfessorOperation;
@@ -38,13 +40,17 @@ public class CRSProfessorMenu {
 		boolean logout = false;
 		int choice;
 		
+		UserOperation userOperation = new UserOperationImpl();
 		StudentOperation studentOperation = new StudentOperationImpl();
 		ProfessorOperation professorOperation = new ProfessorOperationImpl();
 		CourseOperation courseOperation = new CourseOperationImpl(
-				professorOperation);
+				userOperation, professorOperation);
 		CourseRegistrationOperation courseRegistrationOperation =
 				new CourseRegistrationOperationImpl(
-						studentOperation, professorOperation, courseOperation);
+						userOperation, 
+						studentOperation, 
+						professorOperation, 
+						courseOperation);
 		ReportCardOperation reportCardOperation = new ReportCardOperationImpl(
 				studentOperation, courseOperation, courseRegistrationOperation);
 		
@@ -80,7 +86,7 @@ public class CRSProfessorMenu {
 						.viewRegisteredStudentsByProfessorIdAndCourseId(
 							professor.getProfessorId(), courseId);
 				} catch (CourseNotExistsInCatalogException 
-						| ProfessorNotExistsInSystemException
+						| UserNotFoundException
 						| ProfessorNotAssignedForCourseException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();
@@ -103,7 +109,7 @@ public class CRSProfessorMenu {
 								courseRegistrationOperation));
 					
 				} catch (CourseNotExistsInCatalogException 
-						| ProfessorNotExistsInSystemException 
+						| UserNotFoundException 
 						| ProfessorNotAssignedForCourseException e) {
 					System.out.println(e.getMessage());
 //					e.printStackTrace();

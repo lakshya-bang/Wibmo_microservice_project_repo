@@ -20,12 +20,12 @@ public class StudentOperationImpl implements StudentOperation {
 	@Override
 	public void add(Student student) {
 		
-		// TODO
-//		if(!userOperation.isUserExistsById(student.getStudentId())) {
-//			
-//		}
+		if(null == student || null != student.getStudentId()) {
+			return;
+		}
 		
 		studentDAO.save(student);
+		
 		System.out.println("Account Registration sent to Admin for Approval");
 	}
 	
