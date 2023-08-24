@@ -3,7 +3,7 @@ package com.wibmo.service;
 import java.util.Map;
 import java.util.Set;
 
-import com.wibmo.bean.Professor;
+import com.wibmo.entity.Professor;
 
 /**
  * @author lakshya.bang

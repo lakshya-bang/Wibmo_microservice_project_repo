@@ -1,6 +1,6 @@
 package com.wibmo.service;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 
 public interface StudentService {
 

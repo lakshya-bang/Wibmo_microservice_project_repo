@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Student;
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
+import com.wibmo.entity.Student;
 import com.wibmo.service.StudentServiceImpl;
 
 /**

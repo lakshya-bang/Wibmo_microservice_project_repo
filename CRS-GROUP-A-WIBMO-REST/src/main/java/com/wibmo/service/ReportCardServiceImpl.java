@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Course;
-import com.wibmo.bean.ReportCard;
-import com.wibmo.bean.Student;
 import com.wibmo.dao.ReportCardDAO;
 import com.wibmo.dao.ReportCardDAOImpl;
+import com.wibmo.entity.Course;
+import com.wibmo.entity.ReportCard;
+import com.wibmo.entity.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 
 /**

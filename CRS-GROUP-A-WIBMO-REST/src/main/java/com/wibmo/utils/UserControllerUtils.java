@@ -3,14 +3,14 @@
  */
 package com.wibmo.utils;
 
-import com.wibmo.bean.User;
-import com.wibmo.dto.UserRegistrationDetails;
+import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.entity.User;
 
 /**
  * 
  */
 public class UserControllerUtils {
-	public static User saveRegDetailsToUser(UserRegistrationDetails userRegistrationDetails) {
+	public static User saveRegDetailsToUser(UserRegistrationDTO userRegistrationDetails) {
 		User user = new User();
 		user.setUserEmail(userRegistrationDetails.getUserName());
 		user.setPassword(userRegistrationDetails.getPassword());

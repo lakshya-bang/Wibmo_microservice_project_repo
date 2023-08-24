@@ -19,8 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.ReportCard;
-import com.wibmo.bean.Student;
+import com.wibmo.entity.ReportCard;
+import com.wibmo.entity.Student;
 import com.wibmo.service.ReportCardServiceImpl;
 
 /**

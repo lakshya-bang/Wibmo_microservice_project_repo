@@ -4,6 +4,7 @@
 package com.wibmo.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
@@ -16,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Student;
-import com.wibmo.dto.RegistrationDetails;
+import com.wibmo.entity.Student;
+import com.wibmo.dto.CourseRegistrationDTO;
+import com.wibmo.dto.StudentCourseIdDTO;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
@@ -38,7 +40,9 @@ public class CourseRegistrationController {
 	@Autowired
 	private CourseRegistrationServiceImpl courseRegistrationService;
 	
-	// TODO: View methods need Projection Mapping
+	/*
+	 * TODO: View methods need Projection Mapping
+	 */
 //	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 //		    method = RequestMethod.GET,
 //		    value = "/view-registration-details/{studentId}/{semester}")
@@ -57,10 +61,16 @@ public class CourseRegistrationController {
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
 		    value = "/register")
-	public ResponseEntity register(@RequestBody RegistrationDetails registrationDetails ) {
+	public ResponseEntity register(
+			@RequestBody CourseRegistrationDTO courseRegistrationDTO) {
 		try {
-			courseRegistrationService.register(registrationDetails.getPrimaryCourseIds(), registrationDetails.getAlternativeCourseIds(), registrationDetails.getStudent());
-			return new ResponseEntity(registrationDetails,HttpStatus.OK);
+			
+			courseRegistrationService.register(
+					courseRegistrationDTO.getPrimaryCourseIds(), 
+					courseRegistrationDTO.getAlternativeCourseIds(), 
+					courseRegistrationDTO.getStudent());
+			
+			return new ResponseEntity("Course Registration sent to Admin for Approval!", HttpStatus.OK);
 		}
 		catch(StudentAlreadyRegisteredForSemesterException 
 			| CourseNotExistsInCatalogException e) {
@@ -86,7 +96,8 @@ public class CourseRegistrationController {
 //	}
 	
 	
-	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
 		    value = "/view-registered-students/{courseId}")
 	public ResponseEntity viewRegisteredStudentsByCourseId(@PathVariable Integer courseId) {
@@ -102,12 +113,17 @@ public class CourseRegistrationController {
 
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
-		    value = "/add-course/{studentId}/{courseId}/{semester}")
+		    value = "/add-course")
 	
-	public ResponseEntity addCourse(@PathVariable Integer studentId, @PathVariable Integer semester, @PathVariable Integer courseId) {
+	public ResponseEntity addCourse(
+			@RequestBody StudentCourseIdDTO studentCourseIdDTO) {
 		try {
-			courseRegistrationService.addCourse(courseId, new Student(studentId,null,null,semester));
-			return new ResponseEntity("Course Id added successfully: " + courseId,HttpStatus.OK);
+			courseRegistrationService.addCourse(
+					studentCourseIdDTO.getCourseId(), 
+					studentCourseIdDTO.getStudent());
+			return new ResponseEntity(
+					"Course Id added successfully: " + studentCourseIdDTO.getCourseId(),
+					HttpStatus.OK);
 		}
 		catch(StudentNotRegisteredForSemesterException 
 			| StudentAlreadyRegisteredForCourseInSemesterException
@@ -120,11 +136,17 @@ public class CourseRegistrationController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
-		    value = "/drop-course/{studentId}/{courseId}/{semester}")
-	public ResponseEntity dropCourse(@PathVariable Integer studentId, @PathVariable Integer semester, @PathVariable Integer courseId) {
+		    value = "/drop-course")
+	public ResponseEntity dropCourse(
+			@RequestBody StudentCourseIdDTO studentCourseIdDTO) {
 		try {
-			courseRegistrationService.dropCourse(courseId, new Student(studentId,null,null,semester));
-			return new ResponseEntity("Course Id dropped successfully: " + courseId,HttpStatus.OK);
+			courseRegistrationService
+				.dropCourse(
+					studentCourseIdDTO.getCourseId(),
+					studentCourseIdDTO.getStudent());
+			return new ResponseEntity(
+					"Course Id dropped successfully: " + studentCourseIdDTO.getCourseId(),
+					HttpStatus.OK);
 		}
 		catch(CourseNotExistsInCatalogException
 			| StudentNotRegisteredForSemesterException
@@ -135,12 +157,12 @@ public class CourseRegistrationController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/view-registration-status/{studentId}/{semester}")
-	
-	public ResponseEntity viewRegistrationStatusByStudentId(@PathVariable Integer studentId, @PathVariable Integer semester) {
+		    value = "/status")
+	public ResponseEntity viewRegistrationStatusByStudentId(
+			@RequestBody Student student) {
 		RegistrationStatus regStatus;
 		try {
-			regStatus = courseRegistrationService.getRegistrationStatusByStudent(new Student(studentId,null,null,semester));
+			regStatus = courseRegistrationService.getRegistrationStatusByStudent(student);
 			return new ResponseEntity(regStatus.toString(),HttpStatus.OK);
 		}
 		catch(StudentNotRegisteredForSemesterException e) {
@@ -148,4 +170,70 @@ public class CourseRegistrationController {
 		}
 		
 	}
+	
+	/*
+	 * To show all the pending courses registration requests.
+	 */
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.GET,
+		    value = "/view/pending/")
+	public ResponseEntity viewPendingCourseRegistrations() {
+		return new ResponseEntity(
+				courseRegistrationService
+					.getCourseRegistrationsByRegistrationStatus(
+						RegistrationStatus.PENDING),
+				HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/approve/")
+	public ResponseEntity approveCourseRegistrationByIds(
+			@RequestBody Set<Integer> courseRegistrationIds) {
+		return new ResponseEntity(
+				courseRegistrationService
+					.updateCourseRegistrationStatusToByRegistrationIds(
+						RegistrationStatus.APPROVED, 
+				courseRegistrationIds), HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/approve-all/")
+	public ResponseEntity approveAllCourseRegistrations() {
+		return new ResponseEntity(
+				courseRegistrationService
+					.updateAllPendingCourseRegistrationsTo(
+						RegistrationStatus.APPROVED)
+				, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/reject/")
+	public ResponseEntity rejectCourseRegistrationByIds(
+			@RequestBody Set<Integer> courseRegistrationIds) {
+		return new ResponseEntity(
+				courseRegistrationService
+					.updateCourseRegistrationStatusToByRegistrationIds(
+						RegistrationStatus.REJECTED, 
+				courseRegistrationIds), HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/reject-all/")
+	public ResponseEntity rejectAllCourseRegistrations() {
+		return new ResponseEntity(
+				courseRegistrationService
+					.updateAllPendingCourseRegistrationsTo(
+						RegistrationStatus.APPROVED),
+				HttpStatus.OK);
+	}
+	
 }

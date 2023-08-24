@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Course;
-import com.wibmo.bean.CourseRegistration;
-import com.wibmo.bean.Professor;
-import com.wibmo.bean.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
@@ -25,6 +21,10 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
+import com.wibmo.entity.Course;
+import com.wibmo.entity.CourseRegistration;
+import com.wibmo.entity.Professor;
+import com.wibmo.entity.Student;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
@@ -303,12 +303,10 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	}
 	
 	@Override
-	public void viewCourseRegistrationByRegistrationStatus(
+	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus){
-		courseRegistrationDAO
-			.findAllByRegistrationStatus(registrationStatus)
-			.stream()
-			.forEach(System.out::println);
+		return courseRegistrationDAO
+			.findAllByRegistrationStatus(registrationStatus);
 	}
 	
 	@Override

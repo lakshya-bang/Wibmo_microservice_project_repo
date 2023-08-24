@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;

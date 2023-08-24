@@ -1,6 +1,6 @@
 package com.wibmo.dao;
 
-import com.wibmo.bean.Admin;
+import com.wibmo.entity.Admin;
 
 /**
  * 

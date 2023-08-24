@@ -3,7 +3,7 @@
  */
 package com.wibmo.exception;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 
 /**
  * 

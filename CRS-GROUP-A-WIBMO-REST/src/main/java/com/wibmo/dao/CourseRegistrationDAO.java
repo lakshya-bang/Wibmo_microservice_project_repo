@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.wibmo.bean.CourseRegistration;
-import com.wibmo.bean.Professor;
-import com.wibmo.bean.Student;
+
+import com.wibmo.entity.CourseRegistration;
+import com.wibmo.entity.Professor;
+import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 
 /**

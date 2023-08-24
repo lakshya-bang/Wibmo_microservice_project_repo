@@ -3,7 +3,7 @@ package com.wibmo.dao;
 import java.util.List;
 import java.util.Set;
 
-import com.wibmo.bean.Course;
+import com.wibmo.entity.Course;
 import com.wibmo.enums.CourseType;
 
 /**

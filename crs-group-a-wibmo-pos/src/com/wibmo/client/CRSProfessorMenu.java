@@ -22,7 +22,7 @@ import com.wibmo.business.UserOperationImpl;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.CRSProfessorMenuUtil;
-import com.wibmo.utils.ProfessorNotAssignedForCourseException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 

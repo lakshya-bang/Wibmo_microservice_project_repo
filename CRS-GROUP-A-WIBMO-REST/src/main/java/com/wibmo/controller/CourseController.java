@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Course;
 import com.wibmo.dto.ProfessorIdCourseIdDTO;
+import com.wibmo.entity.Course;
 import com.wibmo.enums.CourseType;
 import com.wibmo.service.CourseServiceImpl;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;

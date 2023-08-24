@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.bean;
+package com.wibmo.entity;
 
 import java.util.Objects;
 

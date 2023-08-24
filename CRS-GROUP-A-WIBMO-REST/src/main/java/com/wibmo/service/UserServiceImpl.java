@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.dao.UserDAOImpl;
+import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
-import com.wibmo.bean.User;
 
 /**
  * 
