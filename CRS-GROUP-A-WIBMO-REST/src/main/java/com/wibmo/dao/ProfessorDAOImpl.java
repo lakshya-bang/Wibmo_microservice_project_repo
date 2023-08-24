@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.wibmo.dao;
 
 import java.sql.Connection;
@@ -11,31 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
 import com.wibmo.bean.Professor;
 import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
-/**
- * 
- */
-@Repository
-@Component
-public class ProfessorDAOImpl implements ProfessorDAO{
-//	private static volatile ProfessorDAOImpl instance = null;
-	
-//	private ProfessorDAOImpl() {}
-	
-//	public static ProfessorDAOImpl getInstance() {
-//        if (instance == null) {
-//            synchronized (ProfessorDAOImpl.class) { //It's a synchronized object that will thread safe.
-//                instance = new ProfessorDAOImpl();
-//            }
-//        }
-//        return instance;
-//    }
+public class ProfessorDAOImpl implements ProfessorDAO {
 	
 	@Override
 	public List<Professor> findAllByIdIn(Set<Integer> ids) {
@@ -118,4 +95,5 @@ public class ProfessorDAOImpl implements ProfessorDAO{
 //			e.printStackTrace();
 		}
 	}
+	
 }

@@ -45,11 +45,35 @@ public interface CourseDAO {
 	 * @return
 	 */
 	public Boolean existsByCourseId(Integer courseId);
-	// add admin dao method to course dao
-	public List<Course> viewAllCourse();
-	public boolean saveCourse(Course course);
-	public boolean deleteCourse(int courseId);
-	public boolean assignCoursesToProfessor(int courseId, int professorId);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Course> findAll();
+	
+	/**
+	 * 
+	 * @param course
+	 * @return
+	 */
+	public Boolean save(Course course);
+	
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean deleteCourseById(Integer courseId);
+	
+	/**
+	 * TODO: enhance to assigneCoursesToProfessor(Set<Integer> courseIds, Integer professorId)
+	 * 
+	 * @param courseId
+	 * @param professorId
+	 * @return
+	 */
+	public Boolean setProfessorIdAsWhereCourseIdIs(Integer professorId, Integer courseId);
 
 	/**
 	 * 

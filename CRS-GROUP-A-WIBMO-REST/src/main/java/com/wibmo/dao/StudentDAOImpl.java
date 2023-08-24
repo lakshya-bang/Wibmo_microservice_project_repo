@@ -8,8 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.stereotype.Repository;
-
 import com.wibmo.bean.Student;
 import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
@@ -17,7 +15,6 @@ import com.wibmo.utils.DBUtils;
 /**
  * 
  */
-@Repository
 public class StudentDAOImpl implements StudentDAO {
 
 	@Override
