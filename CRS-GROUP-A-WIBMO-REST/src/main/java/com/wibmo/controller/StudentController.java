@@ -26,38 +26,35 @@ import com.wibmo.service.StudentServiceImpl;
  */
 @RestController
 public class StudentController {
+
 	// NOTE:
-		// By default, this object is singleton
-		// and inject the dependency without
-		// using new keyword.
-		@Autowired
-		private StudentServiceImpl studentOperation;
+	// By default, this object is singleton
+	// and inject the dependency without
+	// using new keyword.
+	@Autowired
+	private StudentServiceImpl studentService;
 
-		// NOTE:
-		// Need to replace all the GET / PUT /POST / DELETE mapping
-		// by @RequestMapping annotation.
-		
-		@GetMapping("/student/{id}")
-		public ResponseEntity getStudent(@PathVariable("id") Integer id) {
-
-			Student student = studentOperation.getStudentById(id);
-			if (student == null) {
-				return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
-			}
-
-			return new ResponseEntity(student, HttpStatus.OK);
+	// NOTE:
+	// Need to replace all the GET / PUT /POST / DELETE mapping
+	// by @RequestMapping annotation.
+	
+	@GetMapping("/student/{id}")
+	public ResponseEntity getStudent(@PathVariable("id") Integer id) {
+		Student student = studentService.getStudentById(id);
+		if (student == null) {
+			return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
 		}
 
-		@PostMapping(value = "/student")
-		public ResponseEntity createStudent(@RequestBody Student student) {
+		return new ResponseEntity(student, HttpStatus.OK);
+	}
 
-			studentOperation.add(student);
+	// TODO: Add 
+//	@PostMapping(value = "/student")
+//	public ResponseEntity createStudent(@RequestBody Student student) {
+//
+//		studentService.add(student);
+//
+//		return new ResponseEntity(student, HttpStatus.OK);
+//	}
 
-			return new ResponseEntity(student, HttpStatus.OK);
-		}
-
-		
-		}
-
-		
-
+}

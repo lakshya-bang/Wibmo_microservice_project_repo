@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.wibmo.bean.ReportCard;
 import com.wibmo.bean.Student;
 import com.wibmo.constant.SQLConstants;
@@ -19,20 +21,8 @@ import com.wibmo.utils.DBUtils;
 /**
  * 
  */
+@Repository
 public class ReportCardDAOImpl implements ReportCardDAO {
-
-	private static volatile ReportCardDAOImpl instance = null;
-	
-	private ReportCardDAOImpl() {}
-	
-	public static ReportCardDAOImpl getInstance() {
-        if (instance == null) {
-            synchronized (ReportCardDAOImpl.class) { //It's a synchronized object that will thread safe.
-                instance = new ReportCardDAOImpl();
-            }
-        }
-        return instance;
-    }
 	
 	@Override
 	public void save(ReportCard reportCard) {

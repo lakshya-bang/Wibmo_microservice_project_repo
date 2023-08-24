@@ -32,52 +32,56 @@ import com.wibmo.utils.UserControllerUtils;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	@Autowired
-	private UserServiceImpl userOperation;
-	@Autowired
-	private StudentServiceImpl studentOperation;
-	@Autowired
-	private ProfessorServiceImpl professorOperation;
-	@Autowired
-	private AdminServiceImpl adminOperation;
 	
-	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
+	@Autowired
+	private UserServiceImpl userService;
+	
+	@Autowired
+	private StudentServiceImpl studentService;
+	
+	@Autowired
+	private ProfessorServiceImpl professorService;
+	
+	@Autowired
+	private AdminServiceImpl adminService;
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
 		    value = "/register")
-	public ResponseEntity register(@RequestBody UserRegistrationDetails userRegistrationDetails ) {
+	public ResponseEntity register(
+			@RequestBody UserRegistrationDetails userRegistrationDetails ) {
 		try {
 			User user = UserControllerUtils.saveRegDetailsToUser(userRegistrationDetails);
-			userOperation.add(user);
-			user.setUserId(userOperation.getUserIdByEmail(user.getUserEmail()));
+			userService.add(user);
+			user.setUserId(userService.getUserIdByEmail(user.getUserEmail()));
 			switch(user.getUserType()) {
+			
 			case ADMIN:{
 				Admin admin = new Admin(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName());
-				adminOperation.add(admin);
+				adminService.add(admin);
 				return new ResponseEntity(admin,HttpStatus.OK);
 			}
 
 			case PROFESSOR:{
 				Professor professor = new Professor(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName(),userRegistrationDetails.getDepartment());
-				professorOperation.add(professor);
+				professorService.add(professor);
 				return new ResponseEntity(professor,HttpStatus.OK);
 			}
 				
 			case STUDENT:{
 				Student student = new Student(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName(),userRegistrationDetails.getSemester());
-				studentOperation.add(student);
+				studentService.add(student);
 
 				return new ResponseEntity(student,HttpStatus.OK);
-				}
+			}
+			
 			default:{
 				return new ResponseEntity("Invalid User Type.", HttpStatus.BAD_REQUEST);
 			}
-			}
-		}
-		catch(Exception e) {
+			} 
+		} catch(Exception e) {
 			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	
 }

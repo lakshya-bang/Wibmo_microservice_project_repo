@@ -11,6 +11,7 @@ import com.wibmo.bean.Student;
  * 
  */
 public class RegistrationDetails {
+	
 	private Student student;
 	private List<Integer> primaryCourseIds;
 	private List<Integer> alternativeCourseIds;
