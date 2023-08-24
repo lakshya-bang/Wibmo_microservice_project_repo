@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -36,19 +37,16 @@ public class UserDAOImpl implements UserDAO{
 //    }
 	
 	@Override
-	public List<Integer> view() {
+	public List<Integer> find() {
 		// TODO Auto-generated method stub
-		CourseRegistration courseRegistration = null;
-		List<Integer> resultOfPendingusers =null;
+		List<Integer> resultOfPendingusers = new ArrayList<Integer>();
 		
-		String sql = "SELECT user_id FROM auth_creds "
+		String sql = "SELECT user_id FROM user.auth_creds "
 				+ "WHERE reg_status = 'PENDING'";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			
-			
 			ResultSet rs = stmt.executeQuery();
 			
 			
@@ -67,7 +65,7 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public Boolean update(String status , int userId) {
 		// TODO Auto-generated method stub
-		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
+		String sql = "UPDATE auth_creds SET reg_status =? where user_id =?";
 		Connection conn = DBUtils.getConnection();
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);

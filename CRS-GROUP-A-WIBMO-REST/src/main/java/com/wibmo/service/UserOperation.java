@@ -25,13 +25,13 @@ public interface UserOperation {
 	 * used for approving the registration of the new user
 	 * @param userId
 	 * */
-	public void approveLoginById(int userId);
+	public boolean approveLoginById(int userId);
 	
 	/**
 	 * used for Rejecting the registration of the new user
 	 * @param userId
 	 * */
-	public void rejectLoginById(int userId);
+	public boolean rejectLoginById(int userId);
 
 	/**
 	 * 

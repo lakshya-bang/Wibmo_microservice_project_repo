@@ -12,7 +12,7 @@ import com.wibmo.bean.User;
  */
 public interface UserDAO {
 	
-	public List<Integer> view();
+	public List<Integer> find();
 	
 	public Boolean update(String status,int userId);
 

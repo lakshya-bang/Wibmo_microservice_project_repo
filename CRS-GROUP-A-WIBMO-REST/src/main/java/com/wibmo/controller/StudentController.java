@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.bean.Student;
@@ -25,6 +26,7 @@ import com.wibmo.service.StudentOperationImpl;
  * 
  */
 @RestController
+@RequestMapping("/student")
 public class StudentController {
 	// NOTE:
 		// By default, this object is singleton
@@ -39,7 +41,7 @@ public class StudentController {
 		// Need to replace all the GET / PUT /POST / DELETE mapping
 		// by @RequestMapping annotation.
 		
-		@GetMapping("/student/{id}")
+		@GetMapping("/{id}")
 		public ResponseEntity getStudent(@PathVariable("id") Integer id) {
 
 			Student student = studentOperation.getStudentById(id);
@@ -50,7 +52,7 @@ public class StudentController {
 			return new ResponseEntity(student, HttpStatus.OK);
 		}
 
-		@PostMapping(value = "/student")
+		@PostMapping(value = "")
 		public ResponseEntity createStudent(@RequestBody Student student) {
 
 			studentOperation.add(student);

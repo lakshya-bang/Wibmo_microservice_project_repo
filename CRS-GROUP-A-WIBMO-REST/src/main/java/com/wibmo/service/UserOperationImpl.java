@@ -30,26 +30,22 @@ public class UserOperationImpl implements UserOperation{
 	@Override //Will go in Admin Route
 	public List<Integer> viewAccountsPendingForApproval() {
 		// TODO Auto-generated method stub
-			List<Integer> pendingAccounts = userDAO.view();
+			List<Integer> pendingAccounts = userDAO.find();
 		return pendingAccounts;
 	}
 
 	@Override //Will go in Admin route
-	public void approveLoginById(int userId) {
+	public boolean approveLoginById(int userId) {
 		// TODO Auto-generated method stub
 		boolean flag = userDAO.update("APPROVED", userId);
-		if(flag) {
-			System.out.println("the user with the Id" + userId + " has been Approved");
-		}
+		return flag;
 	}
 
 	@Override //Will go in Admin route
-	public void rejectLoginById(int userId) {
+	public boolean rejectLoginById(int userId) {
 		// TODO Auto-generated method stub
 		boolean flag = userDAO.update("REJECTED", userId);
-		if(flag) {
-			System.out.println("the user with the Id" + userId + " has been Rejected");
-		}
+		return flag;
 		
 	}
 

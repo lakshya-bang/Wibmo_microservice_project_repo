@@ -26,6 +26,7 @@ import com.wibmo.service.CourseOperationImpl;
  * 
  */
 @RestController
+@RequestMapping("/course")
 public class CourseController {
 	
 	@Autowired
