@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 import com.wibmo.service.AuthenticationService;
 import com.wibmo.service.AuthenticationServiceImpl;
 
@@ -30,7 +30,8 @@ public class AuthenticationController {
 	private AuthenticationServiceImpl authenticationService;
 	
 	
-	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
 		    value = "/login")
 	public ResponseEntity login(@RequestBody Creds creds) {

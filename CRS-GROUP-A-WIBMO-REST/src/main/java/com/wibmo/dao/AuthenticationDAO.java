@@ -5,7 +5,7 @@ package com.wibmo.dao;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 
 /**
  * 

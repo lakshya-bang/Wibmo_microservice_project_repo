@@ -1,21 +1,17 @@
 package com.wibmo.service;
 
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Student;
-import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
+import com.wibmo.entity.Student;
+import com.wibmo.dao.StudentDAO;
 
 @Service
-@Component
-public class StudentOperationImpl implements StudentOperation {
+public class StudentServiceImpl implements StudentService {
+
 	@Autowired
 	private StudentDAOImpl studentDAO;
-	
-	public StudentOperationImpl() {
-	}
 	
 	@Override
 	public Student getStudentById(Integer studentId) {
@@ -25,12 +21,12 @@ public class StudentOperationImpl implements StudentOperation {
 	@Override
 	public void add(Student student) {
 		
-		// TODO
-//		if(!userOperation.isUserExistsById(student.getStudentId())) {
-//			
-//		}
+		if(null == student || null != student.getStudentId()) {
+			return;
+		}
 		
 		studentDAO.save(student);
+		
 		System.out.println("Account Registration sent to Admin for Approval");
 	}
 	

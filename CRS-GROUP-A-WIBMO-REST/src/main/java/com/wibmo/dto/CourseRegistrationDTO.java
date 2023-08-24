@@ -5,12 +5,13 @@ package com.wibmo.dto;
 
 import java.util.List;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 
 /**
  * 
  */
-public class RegistrationDetails {
+public class CourseRegistrationDTO {
+	
 	private Student student;
 	private List<Integer> primaryCourseIds;
 	private List<Integer> alternativeCourseIds;

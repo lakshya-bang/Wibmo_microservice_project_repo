@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.enums.UserType;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -37,21 +37,28 @@ public class UserDAOImpl implements UserDAO{
 //    }
 	
 	@Override
-	public List<Integer> find() {
-		// TODO Auto-generated method stub
-		List<Integer> resultOfPendingusers = new ArrayList<Integer>();
+	public List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus) {
 		
-		String sql = "SELECT user_id FROM user.auth_creds "
-				+ "WHERE reg_status = 'PENDING'";
+		List<User> users = new ArrayList<>();
+		
+		String sql = "SELECT * FROM auth_creds "
+				+ "WHERE reg_status = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, registrationStatus.toString());
+			
 			ResultSet rs = stmt.executeQuery();
 			
-			
 			while(rs.next()) {
-				resultOfPendingusers.add(rs.getInt("user_id"));
+				users.add(new User(
+						rs.getInt("user_id"),
+						rs.getString("user_email"),
+						RegistrationStatus.valueOf(
+								rs.getString("reg_status")),
+						UserType.valueOf(
+								rs.getString("user_type"))));
 			}
 			
 		} catch (SQLException e) {
@@ -59,13 +66,13 @@ public class UserDAOImpl implements UserDAO{
 //			e.printStackTrace();
 		}
 		
-		return resultOfPendingusers;
+		return users;
 	}
 
 	@Override
 	public Boolean update(String status , int userId) {
 		// TODO Auto-generated method stub
-		String sql = "UPDATE auth_creds SET reg_status =? where user_id =?";
+		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
 		Connection conn = DBUtils.getConnection();
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -133,4 +140,34 @@ public class UserDAOImpl implements UserDAO{
 		return null;
 	}
 	
+	@Override
+	public Integer findUserByEmail(String email) {
+		User user;
+		String sql = "SELECT * FROM auth_creds "
+				+ "WHERE user_email = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				user = new User(rs.getInt("user_id"), rs.getString("user_email"), 
+				RegistrationStatus.valueOf(rs.getString("reg_status")), 
+				UserType.valueOf(rs.getString("user_type"))
+				);
+				user.setPassword(rs.getString("user_password"));
+			}
+			return user;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+
 }

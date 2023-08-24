@@ -9,7 +9,8 @@ import com.wibmo.enums.UserType;
 /**
  * 
  */
-public class UserRegistrationDetails {
+public class UserRegistrationDTO {
+	
 	private Integer userId;
 	private String userName;
 	private String password;
@@ -18,6 +19,7 @@ public class UserRegistrationDetails {
 	private UserType userType;
 	private String department;
 	private Integer semester;
+	
 	/**
 	 * @return the userId
 	 */

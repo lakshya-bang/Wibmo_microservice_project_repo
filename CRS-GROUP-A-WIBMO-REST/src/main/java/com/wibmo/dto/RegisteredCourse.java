@@ -12,6 +12,7 @@ public class RegisteredCourse {
 	private String courseTitle;
 	private String department;
 	private String professorName;
+	
 	public RegisteredCourse(Integer courseId, String courseTitle, String department, String professorName) {
 		this.courseId = courseId;
 		this.courseTitle = courseTitle;

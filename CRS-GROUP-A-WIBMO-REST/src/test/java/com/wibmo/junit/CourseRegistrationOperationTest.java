@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
@@ -28,14 +28,14 @@ import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
-import com.wibmo.service.CourseOperation;
-import com.wibmo.service.CourseOperationImpl;
-import com.wibmo.service.CourseRegistrationOperation;
-import com.wibmo.service.CourseRegistrationOperationImpl;
-import com.wibmo.service.ProfessorOperation;
-import com.wibmo.service.ProfessorOperationImpl;
-import com.wibmo.service.StudentOperation;
-import com.wibmo.service.StudentOperationImpl;
+import com.wibmo.service.CourseService;
+import com.wibmo.service.CourseServiceImpl;
+import com.wibmo.service.CourseRegistrationService;
+import com.wibmo.service.CourseRegistrationServiceImpl;
+import com.wibmo.service.ProfessorService;
+import com.wibmo.service.ProfessorServiceImpl;
+import com.wibmo.service.StudentService;
+import com.wibmo.service.StudentServiceImpl;
 
 /**
  * @author manali.kumari
@@ -45,7 +45,7 @@ import com.wibmo.service.StudentOperationImpl;
 class CourseRegistrationOperationTest {
 	
 	@Autowired
-	private CourseRegistrationOperationImpl courseRegistrartionOperation;
+	private CourseRegistrationServiceImpl courseRegistrartionOperation;
 
 	@Test
 	public void register_shouldTrowExceptionTest() {

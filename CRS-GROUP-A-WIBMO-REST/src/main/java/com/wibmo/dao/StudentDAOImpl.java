@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.Student;
 import com.wibmo.constant.SQLConstants;
+import com.wibmo.entity.Student;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -20,19 +20,6 @@ import com.wibmo.utils.DBUtils;
 @Repository
 public class StudentDAOImpl implements StudentDAO {
 
-	private static volatile StudentDAOImpl instance = null;
-	
-//	private StudentDAOImpl() {}
-//	
-//	public static StudentDAOImpl getInstance() {
-//        if (instance == null) {
-//            synchronized (StudentDAOImpl.class) { //It's a synchronized object that will thread safe.
-//                instance = new StudentDAOImpl();
-//            }
-//        }
-//        return instance;
-//    }
-	
 	@Override
 	public Student findById(Integer studentId) {
 		

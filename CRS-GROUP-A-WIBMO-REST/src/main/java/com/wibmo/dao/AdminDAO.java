@@ -1,14 +1,23 @@
 package com.wibmo.dao;
 
-import com.wibmo.bean.Admin;
+import com.wibmo.entity.Admin;
 
+/**
+ * 
+ */
 public interface AdminDAO {
 
-	void save(Admin admin);
+	/**
+	 * 
+	 * @param adminId
+	 * @return
+	 */
+	public Admin findById(Integer adminId);
 
-	// public boolean saveAdmin(String adminName,String password,String name);
-	// public boolean saveCourse(Course course);
-	// public boolean assignCoursesToProfessor(String courseName,String professorName);
-	// public boolean deleteCourse(String courseName);
-	
+	/**
+	 * 
+	 * @param admin
+	 */
+	public void save(Admin admin);
+
 }

@@ -3,7 +3,7 @@ package com.wibmo.dao;
 import java.util.List;
 import java.util.Set;
 
-import com.wibmo.bean.Professor;
+import com.wibmo.entity.Professor;
 
 /**
  * 

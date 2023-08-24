@@ -28,7 +28,7 @@ private static Connection connection = null;
 				else {
 				try {
 					Properties prop = new Properties(); //Properties is used to read files
-				    InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("./config.properties");
+				    InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("config.properties");
 				    prop.load(inputStream);
 				    String driver = prop.getProperty("driver");
 				    String url = prop.getProperty("url");

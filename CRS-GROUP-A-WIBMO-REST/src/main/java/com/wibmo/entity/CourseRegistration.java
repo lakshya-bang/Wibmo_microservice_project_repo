@@ -1,4 +1,4 @@
-package com.wibmo.bean;
+package com.wibmo.entity;
 
 import com.wibmo.enums.RegistrationStatus;
 

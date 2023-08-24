@@ -1,8 +1,8 @@
 package com.wibmo.service;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 
-public interface StudentOperation {
+public interface StudentService {
 
 	/**
 	 * @param integer

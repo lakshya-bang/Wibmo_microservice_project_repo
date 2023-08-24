@@ -14,11 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 import com.wibmo.service.AuthenticationService;
 import com.wibmo.service.AuthenticationServiceImpl;
-import com.wibmo.service.StudentOperation;
-import com.wibmo.service.StudentOperationImpl;
+import com.wibmo.service.StudentService;
+import com.wibmo.service.StudentServiceImpl;
 
 /**
  * 
@@ -31,7 +31,7 @@ class StudentOperationTest {
 	private AuthenticationServiceImpl authenticationService;
 	
 	@Autowired
-	private StudentOperationImpl studentOperation;
+	private StudentServiceImpl studentOperation;
 	
 	/**
 	 * @throws java.lang.Exception

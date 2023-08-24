@@ -13,6 +13,7 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.ReportCardOperation;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.exception.UserNotFoundException;
 
 /**

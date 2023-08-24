@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Student;
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
-import com.wibmo.service.StudentOperationImpl;
+import com.wibmo.entity.Student;
+import com.wibmo.service.StudentServiceImpl;
 
 /**
  * 
@@ -28,6 +28,7 @@ import com.wibmo.service.StudentOperationImpl;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
+
 	// NOTE:
 		// By default, this object is singleton
 		// and inject the dependency without
@@ -49,8 +50,8 @@ public class StudentController {
 				return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
 			}
 
-			return new ResponseEntity(student, HttpStatus.OK);
-		}
+		return new ResponseEntity(student, HttpStatus.OK);
+	}
 
 		@PostMapping(value = "")
 		public ResponseEntity createStudent(@RequestBody Student student) {

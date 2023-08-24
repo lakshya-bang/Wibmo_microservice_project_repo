@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.Admin;
-import com.wibmo.service.AdminOperationImpl;
+import com.wibmo.entity.Admin;
+import com.wibmo.service.AdminServiceImpl;
 
 /**
  * 
@@ -25,7 +25,7 @@ import com.wibmo.service.AdminOperationImpl;
 class AdminOperationTest {
 	
 	@Autowired
-	private AdminOperationImpl adminOperation;
+	private AdminServiceImpl adminOperation;
 	/**
 	 * @throws java.lang.Exception
 	 */
