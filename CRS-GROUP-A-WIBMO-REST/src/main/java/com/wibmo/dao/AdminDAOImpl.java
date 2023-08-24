@@ -5,12 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Repository;
+
 import com.wibmo.bean.Admin;
 import com.wibmo.utils.DBUtils;
 
 /**
  * 
  */
+@Repository
 public class AdminDAOImpl implements AdminDAO {
 
 	@Override

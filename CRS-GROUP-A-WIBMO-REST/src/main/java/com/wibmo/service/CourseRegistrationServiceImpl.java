@@ -8,43 +8,43 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.wibmo.bean.Course;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
-import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
-import com.wibmo.dao.CourseRegistrationDAO;
+import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
-import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
 @Service
-@Component
-public class CourseRegistrationOperationImpl implements CourseRegistrationOperation {
+public class CourseRegistrationServiceImpl implements CourseRegistrationService {
+	
 	@Autowired
-	private StudentOperationImpl studentOperation;
+	private UserServiceImpl userOperation;
+	
 	@Autowired
-	private ProfessorOperationImpl professorOperation;
+	private StudentServiceImpl studentOperation;
+	
 	@Autowired
-	private CourseOperationImpl courseOperation;
+	private ProfessorServiceImpl professorOperation;
+	
+	@Autowired
+	private CourseServiceImpl courseOperation;
+	
 	@Autowired
 	private CourseRegistrationDAOImpl courseRegistrationDAO;
-	
-	public CourseRegistrationOperationImpl() {
-	}
 	
 	@Override
 	public void register(List<Integer> primaryCourseIds, List<Integer> alternativeCourseIds, Student student)
@@ -91,13 +91,13 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student) 
+	public void viewRegisteredCoursesByStudent(Student student) 
 			throws StudentNotRegisteredForSemesterException {
 		
 		if(!isStudentRegistered(student)) {
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
-		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
+		
 		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
@@ -138,10 +138,14 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 			.stream()
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
-				registeredCourses.add(new RegisteredCourse(course.getCourseId(),course.getCourseTitle(),course.getDepartment(),professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()));
+				System.out.format("%5d\t| %10s\t| %7s    | %10s\n", 
+				// System.out.format("%5d%15s%15s%15s\n", 
+						course.getCourseId(),
+						course.getCourseTitle(),
+						course.getDepartment(),
+						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());
 
 			});
-		return registeredCourses;
 	}
 	
 	@Override
@@ -225,6 +229,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	@Override
 	public void dropCourse(Integer courseId, Student student) 
 			throws 
+				CourseNotExistsInCatalogException,
 				StudentNotRegisteredForSemesterException, 
 				StudentNotRegisteredForCourseInSemesterException {
 		
@@ -277,7 +282,8 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 
 	@Override
-	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId) {
+	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
+			throws UserNotFoundException {
 		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
 		courses
@@ -297,19 +303,58 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 	}
 	
 	@Override
+	public void viewCourseRegistrationByRegistrationStatus(
+			RegistrationStatus registrationStatus){
+		courseRegistrationDAO
+			.findAllByRegistrationStatus(registrationStatus)
+			.stream()
+			.forEach(System.out::println);
+	}
+	
+	@Override
+	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
+			RegistrationStatus registrationStatus,
+			Set<Integer> courseRegistrationIds){
+		
+		// TODO: Should add this check
+//		Optional<Integer> invalidCourseRegistrationId = getFirstInvalidCourseRegistrationId(courseRegistrationIds);
+//		if(invalidCourseRegistrationId.isPresent()) {
+//			throw new InvalidCourseRegistrationIdArgumentException(invalidCourseRegistrationId.get());
+//		}
+		
+		return courseRegistrationDAO
+					.updateRegistrationStatusAsByIdIn(
+						registrationStatus,
+						courseRegistrationIds);
+	}
+	
+	@Override
+	public Boolean updateAllPendingCourseRegistrationsTo(
+			RegistrationStatus registrationStatus) {
+		return courseRegistrationDAO
+					.updateRegistrationStatusAsByIdIn(
+							registrationStatus, 
+							courseRegistrationDAO
+								.findAllByRegistrationStatus(RegistrationStatus.PENDING)
+								.stream()
+								.map(courseRegistration -> courseRegistration.getCourseRegId())
+								.collect(Collectors.toSet()));
+	}
+
+	@Override
 	public void viewRegisteredStudentsByProfessorIdAndCourseId(
 		Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException,
-				ProfessorNotExistsInSystemException, 
-				com.wibmo.exception.ProfessorNotAssignedForCourseException {
+				UserNotFoundException, 
+				ProfessorNotAssignedForCourseException {
 		
 		if(null == professorId || null == courseId) {
 			return;
 		}
 		
-		if(!professorOperation.isProfessorExistsById(professorId)) {
-			throw new ProfessorNotExistsInSystemException(professorId);
+		if(!userOperation.isUserExistsById(professorId)) {
+			throw new UserNotFoundException(professorId);
 		}
 		
 		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
@@ -334,6 +379,7 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 						student.getStudentEmail()));
 	}
 
+
 	/*************************** Utility Methods ********************************/
 	
 	private Boolean isStudentRegistered(Student student) {
@@ -355,18 +401,5 @@ public class CourseRegistrationOperationImpl implements CourseRegistrationOperat
 		return courseRegistrationDAO
 				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
 					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
-	}
-
-	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus){
-		courseRegistrationDAO.viewCourseRegistrationStatus(regStatus);
-	}
-	public boolean approveRegistrationByRegistrationId(int courseRegId){
-		return courseRegistrationDAO.approveRegistrationStatus(courseRegId);
-	}
-	public boolean rejectRegistrationByRegistrationId(int courseRegId){
-		return courseRegistrationDAO.rejectRegistrationStatus(courseRegId);
-	}
-
-	
-	
+	}	
 }

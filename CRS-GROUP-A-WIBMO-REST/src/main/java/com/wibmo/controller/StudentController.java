@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wibmo.bean.Student;
 import com.wibmo.dao.StudentDAO;
 import com.wibmo.dao.StudentDAOImpl;
-import com.wibmo.service.StudentOperationImpl;
+import com.wibmo.service.StudentServiceImpl;
 
 /**
  * 
@@ -31,7 +31,7 @@ public class StudentController {
 		// and inject the dependency without
 		// using new keyword.
 		@Autowired
-		private StudentOperationImpl studentOperation;
+		private StudentServiceImpl studentOperation;
 
 		// NOTE:
 		// Need to replace all the GET / PUT /POST / DELETE mapping

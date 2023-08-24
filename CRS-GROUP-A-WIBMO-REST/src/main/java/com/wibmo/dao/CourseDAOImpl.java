@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.stereotype.Repository;
+
 import com.wibmo.bean.Course;
 import com.wibmo.enums.CourseType;
 import com.wibmo.constant.SQLConstants;
 import com.wibmo.utils.DBUtils;
 
+@Repository
 public class CourseDAOImpl implements CourseDAO {
 	
 	@Override

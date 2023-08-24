@@ -14,7 +14,7 @@ import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
-import com.wibmo.utils.ProfessorNotAssignedForCourseException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 
 /**
  * 
@@ -132,6 +132,7 @@ public interface CourseRegistrationOperation {
 	 * @throws CourseNotExistsInCatalogException 
 	 * @throws ProfessorNotExistsInSystemException 
 	 * @throws ProfessorNotAssignedForCourseException 
+	 * @throws com.wibmo.exception.ProfessorNotAssignedForCourseException 
 	 */
 	public void viewRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
 			throws 

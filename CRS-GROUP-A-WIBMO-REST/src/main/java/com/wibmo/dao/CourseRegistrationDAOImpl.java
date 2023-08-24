@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -16,6 +19,7 @@ import com.wibmo.bean.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.utils.DBUtils;
 
+@Repository
 public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	
 	@Override

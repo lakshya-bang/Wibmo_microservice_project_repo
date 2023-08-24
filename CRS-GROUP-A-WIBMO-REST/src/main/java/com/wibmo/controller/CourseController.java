@@ -20,7 +20,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Professor;
 import com.wibmo.dto.ProfessorIdCourseIdDTO;
 import com.wibmo.enums.CourseType;
-import com.wibmo.service.CourseOperationImpl;
+import com.wibmo.service.CourseServiceImpl;
 
 /**
  * 
@@ -29,7 +29,7 @@ import com.wibmo.service.CourseOperationImpl;
 public class CourseController {
 	
 	@Autowired
-	private CourseOperationImpl courseOperation;
+	private CourseServiceImpl courseOperation;
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON,
 			method = RequestMethod.GET,

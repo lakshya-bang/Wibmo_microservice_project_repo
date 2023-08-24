@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.stereotype.Repository;
+
 import com.wibmo.bean.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
@@ -19,6 +21,7 @@ import com.wibmo.utils.DBUtils;
 /**
  * 
  */
+@Repository
 public class UserDAOImpl implements UserDAO{
 
 	@Override

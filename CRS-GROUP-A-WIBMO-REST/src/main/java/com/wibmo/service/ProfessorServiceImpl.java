@@ -1,42 +1,25 @@
-/**
- * 
- */
 package com.wibmo.service;
 
-/**
- * 
- */
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.wibmo.bean.Professor;
 import com.wibmo.dao.ProfessorDAO;
-//import com.wibmo.dao.ProfessorDAOImpl;
-import com.wibmo.controller.ProfessorController;
+import com.wibmo.dao.ProfessorDAOImpl;
 
 /**
  * 
  */
 @Service
-@Component
-public class ProfessorServiceImpl implements ProfessorService{
-	private static final Logger logger = LogManager.getLogger(ProfessorController.class);
+public class ProfessorServiceImpl implements ProfessorService {
 
 	@Autowired
-	private ProfessorDAO professorDAO;
-	
-	
-//	public ProfessorServiceImpl() {
-//		professorDAO = ProfessorDAOImpl.getInstance();
-//	}
+	private ProfessorDAOImpl professorDAO;
 	
 	/**
 	 * @param professorId (Integer)
@@ -68,12 +51,6 @@ public class ProfessorServiceImpl implements ProfessorService{
 	 * @param professorId (Integer)
 	 * @return Boolean
 	 */
-	
-	@Override
-	public Boolean isProfessorExistsById(Integer professorId) {
-		return professorDAO
-				.existsById(professorId);
-	}
 
 	/**
 	 * @param Professor
@@ -89,6 +66,7 @@ public class ProfessorServiceImpl implements ProfessorService{
 		
 		professorDAO.save(professor);
 		
-		logger.info("Account Registration sent to Admin for Approval.");
+		System.out.println("Account Registration sent to Admin for Approval.");
 	}
+	
 }

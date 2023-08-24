@@ -20,7 +20,7 @@ import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
-import com.wibmo.utils.ProfessorNotAssignedForCourseException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAO;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.enums.CourseType;

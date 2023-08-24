@@ -23,7 +23,7 @@ import com.wibmo.bean.Student;
 import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.dto.RegistrationDetails;
 import com.wibmo.enums.RegistrationStatus;
-import com.wibmo.service.CourseRegistrationOperationImpl;
+import com.wibmo.service.CourseRegistrationServiceImpl;
 
 /**
  * 
@@ -33,7 +33,7 @@ import com.wibmo.service.CourseRegistrationOperationImpl;
 @RequestMapping("/course-registration")
 public class CourseRegistrationController {
 	@Autowired
-	private CourseRegistrationOperationImpl courseRegistrationOperation;
+	private CourseRegistrationServiceImpl courseRegistrationOperation;
 	
 	
 //	@RequestMapping(produces = MediaType.APPLICATION_JSON, 

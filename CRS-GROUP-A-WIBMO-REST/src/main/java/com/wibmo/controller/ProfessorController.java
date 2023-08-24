@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.bean.Professor;
-import com.wibmo.service.ProfessorOperationImpl;
+import com.wibmo.service.ProfessorServiceImpl;
 import com.wibmo.controller.ProfessorController;
 
 
@@ -36,7 +36,7 @@ public class ProfessorController {
 private static final Logger logger = LogManager.getLogger(ProfessorController.class);
 	
 	@Autowired
-	private ProfessorOperationImpl professorOperation;
+	private ProfessorServiceImpl professorOperation;
 	
 //	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 //		    method = RequestMethod.GET,

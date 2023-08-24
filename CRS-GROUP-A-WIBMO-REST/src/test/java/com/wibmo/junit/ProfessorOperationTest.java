@@ -21,8 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
 import com.wibmo.bean.Professor;
-import com.wibmo.service.ProfessorOperation;
-import com.wibmo.service.ProfessorOperationImpl;
+import com.wibmo.service.ProfessorService;
+import com.wibmo.service.ProfessorServiceImpl;
 
 /**
  * 
@@ -35,7 +35,7 @@ class ProfessorOperationTest {
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 	
 	@Autowired
-	private ProfessorOperationImpl professorOperation;
+	private ProfessorServiceImpl professorOperation;
 	/**
 	 * @throws java.lang.Exception
 	 */

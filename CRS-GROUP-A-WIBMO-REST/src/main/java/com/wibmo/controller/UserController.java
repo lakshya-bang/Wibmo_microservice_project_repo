@@ -20,10 +20,10 @@ import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
 import com.wibmo.dto.RegistrationDetails;
 import com.wibmo.dto.UserRegistrationDetails;
-import com.wibmo.service.AdminOperationImpl;
-import com.wibmo.service.ProfessorOperationImpl;
-import com.wibmo.service.StudentOperationImpl;
-import com.wibmo.service.UserOperationImpl;
+import com.wibmo.service.AdminServiceImpl;
+import com.wibmo.service.ProfessorServiceImpl;
+import com.wibmo.service.StudentServiceImpl;
+import com.wibmo.service.UserServiceImpl;
 import com.wibmo.utils.UserControllerUtils;
 
 /**
@@ -33,13 +33,13 @@ import com.wibmo.utils.UserControllerUtils;
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
-	private UserOperationImpl userOperation;
+	private UserServiceImpl userOperation;
 	@Autowired
-	private StudentOperationImpl studentOperation;
+	private StudentServiceImpl studentOperation;
 	@Autowired
-	private ProfessorOperationImpl professorOperation;
+	private ProfessorServiceImpl professorOperation;
 	@Autowired
-	private AdminOperationImpl adminOperation;
+	private AdminServiceImpl adminOperation;
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
