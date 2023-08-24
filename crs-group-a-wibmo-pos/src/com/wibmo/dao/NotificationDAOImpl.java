@@ -56,7 +56,7 @@ public class NotificationDAOImpl implements NotificationDAO{
 	public ArrayList<Notification> fetchByUserId(Integer userId) {
 		ArrayList<Notification> notifications = new ArrayList<>();
 		Connection conn = DBUtils.getConnection();
-		String sql = SQLConstants.NOTIFICATION_FETCH_BY_ID;
+		String sql = SQLConstants.PENDING_NOTIFICATION_FETCH_BY_ID;
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, userId);
@@ -94,6 +94,32 @@ public class NotificationDAOImpl implements NotificationDAO{
 			e.printStackTrace();
 		 	}
 		}
+	}
+
+	@Override
+	public ArrayList<Notification> fetchAllById(Integer userId) {
+		ArrayList<Notification> notifications = new ArrayList<>();
+		Connection conn = DBUtils.getConnection();
+		String sql = SQLConstants.NOTIFICATION_FETCH_BY_ID;
+		try{
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				Notification notification;
+				notification = new Notification(rs.getInt("notification_id"), 
+												rs.getInt("notification_to_user"),
+												NotificationStatus.valueOf(rs.getString("notification_status")),
+												rs.getString("notification_message"));
+				notifications.add(notification);
+			}
+		}
+		catch(SQLException se){
+			se.printStackTrace();
+		 }catch(Exception e){
+			e.printStackTrace();
+		 }
+		return notifications;
 	}
 	
 }

@@ -6,7 +6,11 @@ import com.wibmo.dao.StudentDAO;
 
 public class StudentOperationImpl implements StudentOperation {
 
-	StudentDAO studentDAO = new StudentDAOImpl();
+	private final StudentDAO studentDAO;
+	
+	public StudentOperationImpl() {
+		studentDAO = StudentDAOImpl.getInstance();
+	}
 	
 	@Override
 	public Student getStudentById(Integer studentId) {
@@ -16,12 +20,12 @@ public class StudentOperationImpl implements StudentOperation {
 	@Override
 	public void add(Student student) {
 		
-		// TODO
-//		if(!userOperation.isUserExistsById(student.getStudentId())) {
-//			
-//		}
+		if(null == student || null != student.getStudentId()) {
+			return;
+		}
 		
 		studentDAO.save(student);
+		
 		System.out.println("Account Registration sent to Admin for Approval");
 	}
 	

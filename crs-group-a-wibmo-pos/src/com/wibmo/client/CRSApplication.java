@@ -29,8 +29,7 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
  */
 public class CRSApplication {
 	
-	// Plug Logger in CRSStudentMenu logger injection
-	private static final Logger LOG = Logger.getLogger(CRSStudentMenu.class);
+	private static final Logger LOG = Logger.getLogger(CRSApplication.class);
 		
 	public static void main(String[] args) {
 		
@@ -151,6 +150,8 @@ public class CRSApplication {
 								userName,
 								1));
 						
+						System.out.println("Student Account Registration request sent to Admin for Approval.");
+						
 					} catch (UserWithEmailAlreadyExistsException e) {
 						System.out.println(e.getMessage());
 //						e.printStackTrace();
@@ -190,6 +191,8 @@ public class CRSApplication {
 								userName,
 								department));
 						
+						System.out.println("Professor Account Registration request sent to Admin for Approval");
+						
 					} catch (UserWithEmailAlreadyExistsException e) {
 						System.out.println(e.getMessage());
 //						e.printStackTrace();
@@ -207,6 +210,8 @@ public class CRSApplication {
 								userOperation.getUserIdByEmail(userEmail),
 								userEmail,
 								userName));
+						
+						System.out.println("Admin Account Registration sent to existing Admin for Approval.");
 						
 					} catch (UserWithEmailAlreadyExistsException e) {
 						System.out.println(e.getMessage());

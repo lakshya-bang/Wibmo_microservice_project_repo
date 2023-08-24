@@ -14,14 +14,27 @@ import com.wibmo.dao.ProfessorDAOImpl;
  */
 public class ProfessorOperationImpl implements ProfessorOperation {
 
-	ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
+	private final ProfessorDAO professorDAO;
 	
+	public ProfessorOperationImpl() {
+		professorDAO = ProfessorDAOImpl.getInstance();
+	}
+	
+	/**
+	 * @param professorId (Integer)
+	 * @return Professor
+	 */
 	@Override
 	public Professor getProfessorById(Integer professorId) {
 		return professorDAO
 				.findAllByIdIn(Set.of(professorId))
 				.get(0);
 	}
+	
+	/**
+	 * @param professorIds (Integer Set)
+	 * @return Map<Integer,Professor>
+	 */
 
 	@Override
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
@@ -33,12 +46,15 @@ public class ProfessorOperationImpl implements ProfessorOperation {
 						Function.identity()));
 	}
 
-	@Override
-	public Boolean isProfessorExistsById(Integer professorId) {
-		return professorDAO
-				.existsById(professorId);
-	}
+	/**
+	 * @param professorId (Integer)
+	 * @return Boolean
+	 */
 
+	/**
+	 * @param Professor
+	 */
+	
 	@Override
 	public void add(Professor professor) {
 		

@@ -3,7 +3,6 @@
  */
 package com.wibmo.utils;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,7 +13,8 @@ import com.wibmo.business.CourseOperation;
 import com.wibmo.business.CourseRegistrationOperation;
 import com.wibmo.business.ReportCardOperation;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
+import com.wibmo.exception.UserNotFoundException;
 
 /**
  * Utility class to support Interactive UI for Professor.
@@ -33,7 +33,7 @@ public class CRSProfessorMenuUtil {
 			final CourseRegistrationOperation courseRegistrationOperation) 
 				throws 
 					CourseNotExistsInCatalogException, 
-					ProfessorNotExistsInSystemException, 
+					UserNotFoundException, 
 					ProfessorNotAssignedForCourseException {
 		
 		if(!courseOperation.isCourseExistsInCatalog(courseId)) {

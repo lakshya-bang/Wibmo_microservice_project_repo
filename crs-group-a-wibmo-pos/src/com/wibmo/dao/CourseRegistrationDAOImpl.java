@@ -18,6 +18,20 @@ import com.wibmo.utils.DBUtils;
 
 public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 
+	private static volatile CourseRegistrationDAOImpl instance = null;
+	
+	private CourseRegistrationDAOImpl() {}
+	
+	public static CourseRegistrationDAOImpl getInstance() {
+        if (instance == null) {
+            synchronized (CourseRegistrationDAOImpl.class) { //It's a synchronized object that will thread safe.
+                instance = new CourseRegistrationDAOImpl();
+            }
+        }
+        return instance;
+    }
+	
+	
 	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
@@ -584,24 +598,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 	}
 
 	@Override
-	public boolean approveRegistrationStatus(int courseRegId) {
-
-		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
-		
-		Connection conn = DBUtils.getConnection();
-		try {
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, "APPROVED");
-			stmt.setInt(2, courseRegId);
-			stmt.executeUpdate();
-			return true;
-		}catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return false;
-		}
-	}
-
-	@Override
 	public void setPrimaryCourseIdAsAtIndexByCourseRegistrationId(
 			Integer courseId, 
 			Integer primaryCourseIdIndex,
@@ -629,6 +625,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		String sql = "UPDATE user.registered_courses SET reg_status=? where reg_id = ?";
 		
 		Connection conn = DBUtils.getConnection();
+		
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, "REJECTED");
@@ -641,9 +638,14 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		}
 	}
 
-	// TODO: Will have to shift view to Business instead
-	public void viewCourseRegistrationStatus(RegistrationStatus regStatus) {
-		String sql = "SELECT * FROM user.registered_courses where regStatus=?";
+	@Override
+	public List<CourseRegistration> findAllByRegistrationStatus(
+			RegistrationStatus registrationStatus) {
+		
+		List<CourseRegistration> courseRegistrations = new ArrayList<>();
+		
+		String sql = "SELECT * FROM user.registered_courses "
+				+ "WHERE reg_status = ?";
 		
 		Connection conn = DBUtils.getConnection();
 		
@@ -651,30 +653,60 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			
-			stmt.setObject(1, regStatus);
+			stmt.setString(1, registrationStatus.toString());
 	
 			ResultSet rs = stmt.executeQuery();
-			String regId = "Registration Id", studentId = "Student Id", sem="Semester", year="year", pCourse1="Primary Course 1", pCourse2="Primary Course 2", pCourse3="Primary Course 3", pCourse4="Primary Course 4", aCourse1="Alternate Course 1", aCourse2="Alternate Course 2", regSt="reg_status";
-			System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId, studentId, sem, year, pCourse1, pCourse2, pCourse3, pCourse4, aCourse1, aCourse2, regSt+ "\n");
+			
 			while(rs.next()){
-				int regId1  = rs.getInt("reg_id");
-				int sid  = rs.getInt("student_id");
-				int sem1 = rs.getInt("semester");
-				int year1  = rs.getInt("year");
-				int prCourse1 = rs.getInt("primary_course_1_id");
-				int prCourse2 = rs.getInt("primary_course_2_id");
-				int prCourse3 = rs.getInt("primary_course_3_id");
-				int prCourse4 = rs.getInt("primary_course_4_id");
-				int alCourse1 = rs.getInt("alternate_course_1_id");
-				int alCourse2= rs.getInt("alternate_course_2_id");
-				String regSt1 = rs.getString("reg_status");
-		
-
-				System.out.format("%10s%16s%16s%16s%16s%16s%16s%16s%16s%16s%16s", regId1, sid, sem1, year1, prCourse1, prCourse2, prCourse3, prCourse4, alCourse1, alCourse2, regSt1+ "\n");
+				courseRegistrations.add(new CourseRegistration(
+						rs.getInt("reg_id"),
+						rs.getInt("student_id"),
+						rs.getInt("semester"),
+						rs.getInt("year"),
+						rs.getInt("primary_course_1_id"),
+						rs.getInt("primary_course_2_id"),
+						rs.getInt("primary_course_3_id"),
+						rs.getInt("primary_course_4_id"),
+						rs.getInt("alternative_course_1_id"),
+						rs.getInt("alternative_course_2_id"),
+						RegistrationStatus.valueOf(rs.getString("reg_status"))));
 			}
 
 		}catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
+		return courseRegistrations;
+	}
+
+	// TODO: Improve PreparedStatement
+	@Override
+	public Boolean updateRegistrationStatusAsByIdIn(
+			RegistrationStatus registrationStatus,
+			Set<Integer> courseRegistrationIds) {
+		
+		StringBuilder sql = new StringBuilder("UPDATE registered_courses "
+				+ "SET reg_status = ? "
+				+ "WHERE reg_id IN (");
+		courseRegistrationIds.forEach(courseRegistrationId -> sql.append(courseRegistrationId).append(","));
+		sql.replace(sql.length() - 1, sql.length(), ")");
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql.toString());
+			stmt.setString(1, registrationStatus.toString());
+			
+			int rows = stmt.executeUpdate();
+			
+			if(courseRegistrationIds.size() == rows) {
+				return Boolean.TRUE;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return Boolean.FALSE;
 	}
 }

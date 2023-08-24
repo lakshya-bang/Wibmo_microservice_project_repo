@@ -1,5 +1,7 @@
 package com.wibmo.bean;
 
+import java.util.Objects;
+
 import com.wibmo.enums.CourseType;
 
 /**
@@ -167,11 +169,36 @@ public class Course {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hash(courseId, courseTitle, courseType, department, isCancelled, noOfSeats, professorId,
+				semester, year);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Course other = (Course) obj;
+		return Objects.equals(courseId, other.courseId) 
+				&& Objects.equals(courseTitle, other.courseTitle)
+				&& courseType == other.courseType
+				&& Objects.equals(department, other.department)
+				&& Objects.equals(isCancelled, other.isCancelled) 
+				&& Objects.equals(noOfSeats, other.noOfSeats)
+				&& Objects.equals(professorId, other.professorId) 
+				&& Objects.equals(semester, other.semester)
+				&& Objects.equals(year, other.year);
+	}
+
+	@Override
 	public String toString() {
 		return "Course [courseId=" + courseId + ", courseTitle=" + courseTitle + ", semester=" + semester + ", year="
 				+ year + ", department=" + department + ", professorId=" + professorId + ", isCancelled=" + isCancelled
 				+ ", noOfSeats=" + noOfSeats + ", courseType=" + courseType + "]";
 	}
-		
 	
 }

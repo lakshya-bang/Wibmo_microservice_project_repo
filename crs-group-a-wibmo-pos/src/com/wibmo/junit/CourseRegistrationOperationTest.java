@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,14 +25,15 @@ import com.wibmo.business.ProfessorOperation;
 import com.wibmo.business.ProfessorOperationImpl;
 import com.wibmo.business.StudentOperation;
 import com.wibmo.business.StudentOperationImpl;
+import com.wibmo.business.UserOperationImpl;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.ProfessorNotAssignedForCourseException;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
@@ -41,18 +43,18 @@ import com.wibmo.enums.RegistrationStatus;
 public class CourseRegistrationOperationTest {
 
 	private CourseRegistrationOperation courseRegistrartionOperation;
-	private StudentOperation studentOperation;
-	private ProfessorOperation professorOperation;
-	private CourseOperation courseOperation;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		studentOperation = new StudentOperationImpl();
-		professorOperation = new ProfessorOperationImpl();
-		courseOperation = new CourseOperationImpl(professorOperation);
-		courseRegistrartionOperation = new CourseRegistrationOperationImpl(studentOperation, professorOperation, courseOperation);
+		courseRegistrartionOperation = new CourseRegistrationOperationImpl(
+				new UserOperationImpl(),
+				new StudentOperationImpl(), 
+				new ProfessorOperationImpl(), 
+				new CourseOperationImpl(
+					new UserOperationImpl(), 
+					new ProfessorOperationImpl()));
 	}
 	
 	/**
@@ -61,15 +63,18 @@ public class CourseRegistrationOperationTest {
 	
 	@Test
 	public void register_shouldTrowExceptionTest() {
-		List<Integer> primaryCourses = new ArrayList<>(List.of(1,2,3,4));
+		
+		List<Integer> primaryCourses = new ArrayList<>(List.of());
 		List<Integer> alternateCourses = new ArrayList<>(List.of(5,6));
+		
 		Student testStudent = new Student();
-		testStudent.setStudentId(4);
-		testStudent.setCurrentSemester(3);
+		testStudent.setStudentId(1001);
+		testStudent.setCurrentSemester(1);
 		
 		assertThrows(StudentAlreadyRegisteredForSemesterException.class, 
 				()->courseRegistrartionOperation.register(primaryCourses, alternateCourses, testStudent));
 	}
+	
 	@Test
 	public void register_shouldTrowExceptionTest1() {
 		List<Integer> primaryCourses = new ArrayList<>(List.of(101,201,102,104));
@@ -81,6 +86,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(CourseNotExistsInCatalogException.class, 
 				()->courseRegistrartionOperation.register(primaryCourses, alternateCourses, testStudent));
 	}
+	
 //	@Test
 //	public void registerTest() {
 //		
@@ -100,6 +106,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.viewRegisteredCoursesByStudent(testStudent));
 	}
+	
 //	@Test
 //	public void viewRegisteredCoursesByStudentTest() {
 //		
@@ -119,6 +126,7 @@ public class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.getRegistrationStatusByStudent(testStudent));
 	}
+	
 	@Test
 	public void getRegistrationStatusByStudentTest() {
 		Student testSt = new Student();
@@ -302,8 +310,11 @@ public class CourseRegistrationOperationTest {
 	@Test
 	public void approveRegistrationByRegistrationIdTest(){
 		int courseRegId = 3;
-		boolean expectedValue = true;
-		boolean actualValue = courseRegistrartionOperation.approveRegistrationByRegistrationId(courseRegId);
+		Boolean expectedValue = Boolean.TRUE;
+		Boolean actualValue = courseRegistrartionOperation
+				.updateCourseRegistrationStatusToByRegistrationIds(
+					RegistrationStatus.APPROVED, 
+					Set.of(courseRegId));
 		assertEquals(expectedValue, actualValue);
 	}
 	
@@ -313,8 +324,11 @@ public class CourseRegistrationOperationTest {
 	@Test
 	public void rejectRegistrationByRegistrationIdTest(){
 		int courseRegId = 2;
-		boolean expectedValue = true;
-		boolean actualValue = courseRegistrartionOperation.rejectRegistrationByRegistrationId(courseRegId);
+		Boolean expectedValue = Boolean.TRUE;
+		Boolean actualValue = courseRegistrartionOperation
+				.updateCourseRegistrationStatusToByRegistrationIds(
+					RegistrationStatus.REJECTED, 
+					Set.of(courseRegId));
 		assertEquals(expectedValue, actualValue);
 	}
 	
@@ -328,7 +342,8 @@ public class CourseRegistrationOperationTest {
 	public void viewRegisteredStudentsByProfessorIdAndCourseId_shouldThrowExceptionTest(){
 		Integer courseId = 201;
 		Integer professorId = 1;
-		assertThrows(CourseNotExistsInCatalogException.class,
+		assertThrows(
+				CourseNotExistsInCatalogException.class,
 				()->courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId,courseId));
 	
 	}
@@ -336,7 +351,8 @@ public class CourseRegistrationOperationTest {
 	public void viewRegisteredStudentsByProfessorIdAndCourseId_shouldThrowExceptionTest1(){
 		Integer courseId = 7;
 		Integer professorId = 4;
-		assertThrows(ProfessorNotExistsInSystemException.class,
+		assertThrows(
+				UserNotFoundException.class,
 				()->courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId,courseId));
 	
 	}
