@@ -19,6 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
 import com.wibmo.bean.Course;
 import com.wibmo.enums.CourseType;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.CourseService;
 import com.wibmo.service.CourseServiceImpl;
 import com.wibmo.service.ProfessorServiceImpl;
@@ -100,8 +102,13 @@ class CourseOperationTest {
 	@Test
 	public void getCoursesAssignedToProfessorTest() {
 		
-		List<Course> courses = courseOperation
-				.getCoursesAssignedToProfessor(professorId);
+		List<Course> courses = null;
+		try {
+			courses = courseOperation
+					.getCoursesAssignedToProfessor(professorId);
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 		assertNotNull(courseOperation);
 		assertEquals(3, courses.size());
@@ -121,8 +128,14 @@ class CourseOperationTest {
 		
 		CourseType expectedCourseType = CourseType.ALTERNATIVE;
 		
-		CourseType actualCourseType = courseOperation
-					.getCourseTypeByCourseId(courseId);
+		CourseType actualCourseType = null;
+		try {
+			actualCourseType = courseOperation
+						.getCourseTypeByCourseId(courseId);
+		} catch (CourseNotExistsInCatalogException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		assertEquals(expectedCourseType, actualCourseType);
 	}
@@ -134,8 +147,14 @@ class CourseOperationTest {
 		
 		CourseType expectedCourseType = CourseType.PRIMARY;
 		
-		CourseType actualCourseType = courseOperation
-					.getCourseTypeByCourseId(courseId);
+		CourseType actualCourseType = null;
+		try {
+			actualCourseType = courseOperation
+						.getCourseTypeByCourseId(courseId);
+		} catch (CourseNotExistsInCatalogException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		assertEquals(expectedCourseType, actualCourseType);
 	}

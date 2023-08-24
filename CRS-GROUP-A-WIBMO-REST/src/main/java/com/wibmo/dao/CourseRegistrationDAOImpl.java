@@ -320,7 +320,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 						rs.getInt("alternative_course_1_id"),
 						rs.getInt("alternative_course_2_id"),
 						RegistrationStatus.valueOf(
-								rs.getString("registration_status")));
+								rs.getString("reg_status")));
 			}
 			
 		} catch (SQLException e) {
