@@ -20,19 +20,6 @@ import com.wibmo.utils.DBUtils;
 @Repository
 public class StudentDAOImpl implements StudentDAO {
 
-	private static volatile StudentDAOImpl instance = null;
-	
-//	private StudentDAOImpl() {}
-//	
-//	public static StudentDAOImpl getInstance() {
-//        if (instance == null) {
-//            synchronized (StudentDAOImpl.class) { //It's a synchronized object that will thread safe.
-//                instance = new StudentDAOImpl();
-//            }
-//        }
-//        return instance;
-//    }
-	
 	@Override
 	public Student findById(Integer studentId) {
 		

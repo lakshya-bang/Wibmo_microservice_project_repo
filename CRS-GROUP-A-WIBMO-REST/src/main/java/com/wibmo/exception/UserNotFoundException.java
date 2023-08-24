@@ -1,10 +1,10 @@
 package com.wibmo.exception;
 
-public class StudentNotFoundException extends Exception {
+public class UserNotFoundException extends Exception {
 
 	private Long studentId;
 	
-	public StudentNotFoundException(Long studentId) {
+	public UserNotFoundException(Long studentId) {
 		this.studentId = studentId;
 	}
 	

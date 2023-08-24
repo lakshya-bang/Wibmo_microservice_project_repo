@@ -30,7 +30,8 @@ public class AuthenticationController {
 	private AuthenticationServiceImpl authenticationService;
 	
 	
-	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
 		    value = "/login")
 	public ResponseEntity login(@RequestBody Creds creds) {

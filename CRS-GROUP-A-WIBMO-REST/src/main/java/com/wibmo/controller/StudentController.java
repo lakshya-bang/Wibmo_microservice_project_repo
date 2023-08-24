@@ -33,8 +33,6 @@ public class StudentController {
 		@Autowired
 		private StudentOperationImpl studentOperation;
 
-		
-		
 		// NOTE:
 		// Need to replace all the GET / PUT /POST / DELETE mapping
 		// by @RequestMapping annotation.
