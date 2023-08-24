@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.wibmo.bean.CourseRegistration;
 import com.wibmo.bean.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.enums.UserType;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -135,4 +136,34 @@ public class UserDAOImpl implements UserDAO{
 		return null;
 	}
 	
+	@Override
+	public User findUserByEmail(String email) {
+		User user = null;
+		String sql = "SELECT * FROM auth_creds "
+				+ "WHERE user_email = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				user = new User(rs.getInt("user_id"), rs.getString("user_email"), 
+				RegistrationStatus.valueOf(rs.getString("reg_status")), 
+				UserType.valueOf(rs.getString("user_type"))
+				);
+				user.setPassword(rs.getString("user_password"));
+			}
+			return user;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+
 }

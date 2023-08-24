@@ -2,9 +2,12 @@ package com.wibmo.bean;
 
 import java.io.Serializable;
 
+import javax.annotation.security.RolesAllowed;
+
 /**
  *
  */
+@RolesAllowed("Role.PROFESSOR")
 public class Professor implements Serializable {
 
 	/**

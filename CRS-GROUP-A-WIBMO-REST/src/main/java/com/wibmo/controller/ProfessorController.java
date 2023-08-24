@@ -6,6 +6,7 @@ package com.wibmo.controller;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +36,7 @@ import com.wibmo.controller.ProfessorController;
 @RestController
 @Component
 @RequestMapping(value="/professor")
+@PreAuthorize("hasAuthority('Role.PROFESSOR')")
 public class ProfessorController {
 private static final Logger logger = LogManager.getLogger(ProfessorController.class);
 	
@@ -52,7 +58,8 @@ private static final Logger logger = LogManager.getLogger(ProfessorController.cl
 		    value = "/{id}")
 	@ResponseBody
 	public ResponseEntity getProfessorByID(@PathVariable("id") Integer professorId) {
-
+		UserDetails userDetails =
+				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Professor professor = professorService.getProfessorById(professorId);
 		if (professor == null) {
 			return new ResponseEntity("No Professor found for ID " + professorId, (HttpStatus.NOT_FOUND));

@@ -28,4 +28,6 @@ public interface UserDAO {
 	 * @return
 	 */
 	public Integer findUserIdByEmail(String email);
+
+	public User findUserByEmail(String email);
 }
