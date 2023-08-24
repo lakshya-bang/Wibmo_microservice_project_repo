@@ -3,7 +3,7 @@
  */
 package com.wibmo.service;
 
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 
 /**
  * @author lakshya.bang

@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.Student;
 import com.wibmo.constant.SQLConstants;
+import com.wibmo.entity.Student;
 import com.wibmo.utils.DBUtils;
 
 /**

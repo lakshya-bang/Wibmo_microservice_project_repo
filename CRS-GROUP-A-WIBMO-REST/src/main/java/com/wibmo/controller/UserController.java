@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Admin;
-import com.wibmo.bean.Professor;
-import com.wibmo.bean.Student;
-import com.wibmo.bean.User;
-import com.wibmo.dto.RegistrationDetails;
-import com.wibmo.dto.UserRegistrationDetails;
+import com.wibmo.dto.CourseRegistrationDTO;
+import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.entity.Admin;
+import com.wibmo.entity.Professor;
+import com.wibmo.entity.Student;
+import com.wibmo.entity.User;
 import com.wibmo.service.AdminServiceImpl;
 import com.wibmo.service.ProfessorServiceImpl;
 import com.wibmo.service.StudentServiceImpl;
@@ -50,7 +50,7 @@ public class UserController {
 		    method = RequestMethod.POST,
 		    value = "/register")
 	public ResponseEntity register(
-			@RequestBody UserRegistrationDetails userRegistrationDetails ) {
+			@RequestBody UserRegistrationDTO userRegistrationDetails ) {
 		try {
 			User user = UserControllerUtils.saveRegDetailsToUser(userRegistrationDetails);
 			userService.add(user);

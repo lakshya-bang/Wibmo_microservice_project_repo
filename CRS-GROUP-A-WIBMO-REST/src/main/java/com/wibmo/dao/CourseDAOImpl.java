@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.Course;
 import com.wibmo.enums.CourseType;
 import com.wibmo.constant.SQLConstants;
+import com.wibmo.entity.Course;
 import com.wibmo.utils.DBUtils;
 
 @Repository

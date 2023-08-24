@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.bean;
+package com.wibmo.entity;
 
 /**
  * Table Name = report_card

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.Admin;
+import com.wibmo.entity.Admin;
 import com.wibmo.service.AdminServiceImpl;
 
 /**

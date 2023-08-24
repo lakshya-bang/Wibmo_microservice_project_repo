@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Course;
-import com.wibmo.bean.Professor;
 import com.wibmo.dao.CourseDAOImpl;
+import com.wibmo.entity.Course;
+import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;

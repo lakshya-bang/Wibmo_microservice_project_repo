@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
-import com.wibmo.bean.Course;
+import com.wibmo.entity.Course;
 import com.wibmo.enums.CourseType;
 import com.wibmo.service.CourseService;
 import com.wibmo.service.CourseServiceImpl;

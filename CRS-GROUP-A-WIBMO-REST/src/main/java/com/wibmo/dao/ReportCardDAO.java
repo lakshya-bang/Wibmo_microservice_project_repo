@@ -3,8 +3,9 @@ package com.wibmo.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.wibmo.bean.ReportCard;
-import com.wibmo.bean.Student;
+
+import com.wibmo.entity.ReportCard;
+import com.wibmo.entity.Student;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package com.wibmo.service;
 
-import com.wibmo.bean.Admin;
+import com.wibmo.entity.Admin;
 
 /**
  * 

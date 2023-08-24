@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.bean.Professor;
 import com.wibmo.service.ProfessorServiceImpl;
 import com.wibmo.controller.ProfessorController;
+import com.wibmo.entity.Professor;
 
 
 /**

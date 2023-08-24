@@ -6,7 +6,7 @@ package com.wibmo.service;
 import java.util.List;
 import java.util.Set;
 
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 

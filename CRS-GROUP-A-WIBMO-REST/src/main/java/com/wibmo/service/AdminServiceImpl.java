@@ -3,8 +3,8 @@ package com.wibmo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Admin;
 import com.wibmo.dao.AdminDAOImpl;
+import com.wibmo.entity.Admin;
 
 /**
  * 

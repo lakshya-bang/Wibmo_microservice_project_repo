@@ -3,8 +3,8 @@ package com.wibmo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.bean.Student;
 import com.wibmo.dao.StudentDAOImpl;
+import com.wibmo.entity.Student;
 import com.wibmo.dao.StudentDAO;
 
 @Service

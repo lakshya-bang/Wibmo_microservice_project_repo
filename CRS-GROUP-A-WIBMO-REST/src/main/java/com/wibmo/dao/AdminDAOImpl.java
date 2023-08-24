@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.Admin;
+import com.wibmo.entity.Admin;
 import com.wibmo.utils.DBUtils;
 
 /**

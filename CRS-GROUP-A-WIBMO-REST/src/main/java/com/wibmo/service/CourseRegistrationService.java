@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.CourseRegistration;
+import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
@@ -106,8 +107,10 @@ public interface CourseRegistrationService {
 	/**
 	 * 
 	 * @param regStatus
+	 * @return 
 	 */
-	public void viewCourseRegistrationByRegistrationStatus(RegistrationStatus regStatus);
+	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
+			RegistrationStatus registrationStatus);
 	
 	/**
 	 * 

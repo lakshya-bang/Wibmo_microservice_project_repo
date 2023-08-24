@@ -1,6 +1,6 @@
 package com.wibmo.dao;
 
-import com.wibmo.bean.Student;
+import com.wibmo.entity.Student;
 
 /**
  * 
