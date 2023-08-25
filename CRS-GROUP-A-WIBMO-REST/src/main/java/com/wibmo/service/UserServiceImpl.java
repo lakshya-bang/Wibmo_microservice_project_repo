@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.dao.UserDAOImpl;
+import com.wibmo.entity.Student;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
@@ -19,6 +20,15 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
  */
 @Service
 public class UserServiceImpl implements UserService{
+	
+	@Autowired
+	private StudentServiceImpl studentService;
+	
+	@Autowired
+	private ProfessorServiceImpl professorService;
+	
+	@Autowired
+	public AdminServiceImpl adminService;
 	
 	@Autowired
 	private UserDAOImpl userDAO;
@@ -33,7 +43,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void add(User user) throws UserWithEmailAlreadyExistsException {
+	public void add(User user) 
+			throws UserWithEmailAlreadyExistsException {
 		
 		if(null != user.getUserId()) {
 			// TODO: Add to logger to reject the incoming request
@@ -45,6 +56,20 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		userDAO.save(user);
+		
+//		switch(user.getUserType()) {
+//		case STUDENT:
+//			studentService.add(
+//				new Student(
+//					getUserIdByEmail(user.getUserEmail()),
+//					user.getUserEmail(),
+//					user.get));
+//			break;
+//		case ADMIN:
+//			break;
+//		case PROFESSOR:
+//			break;
+//		}
 	}
 	
 	@Override

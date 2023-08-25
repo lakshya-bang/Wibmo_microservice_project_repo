@@ -99,7 +99,7 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/view-registered-students/{courseId}")
+		    value = "/view/students/{courseId}")
 	public ResponseEntity viewRegisteredStudentsByCourseId(@PathVariable Integer courseId) {
 		List<Student> students;
 		try {
@@ -112,7 +112,7 @@ public class CourseRegistrationController {
 	}
 
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
-		    method = RequestMethod.POST,
+		    method = RequestMethod.PUT,
 		    value = "/add-course")
 	
 	public ResponseEntity addCourse(
@@ -157,7 +157,7 @@ public class CourseRegistrationController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/status")
+		    value = "/view/student/status")
 	public ResponseEntity viewRegistrationStatusByStudentId(
 			@RequestBody Student student) {
 		RegistrationStatus regStatus;
@@ -177,7 +177,7 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/view/pending/")
+		    value = "/view/pending")
 	public ResponseEntity viewPendingCourseRegistrations() {
 		return new ResponseEntity(
 				courseRegistrationService
@@ -189,7 +189,7 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/approve/")
+		    value = "/approve")
 	public ResponseEntity approveCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
 		return new ResponseEntity(
@@ -202,7 +202,7 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/approve-all/")
+		    value = "/approve-all")
 	public ResponseEntity approveAllCourseRegistrations() {
 		return new ResponseEntity(
 				courseRegistrationService
@@ -214,7 +214,7 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/reject/")
+		    value = "/reject")
 	public ResponseEntity rejectCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
 		return new ResponseEntity(
@@ -227,12 +227,12 @@ public class CourseRegistrationController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/reject-all/")
+		    value = "/reject-all")
 	public ResponseEntity rejectAllCourseRegistrations() {
 		return new ResponseEntity(
 				courseRegistrationService
 					.updateAllPendingCourseRegistrationsTo(
-						RegistrationStatus.APPROVED),
+						RegistrationStatus.REJECTED),
 				HttpStatus.OK);
 	}
 	

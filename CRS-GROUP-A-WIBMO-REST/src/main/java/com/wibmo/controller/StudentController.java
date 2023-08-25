@@ -48,13 +48,6 @@ public class StudentController {
 		return new ResponseEntity(student, HttpStatus.OK);
 	}
 
-	// TODO: Add 
-//	@PostMapping(value = "/student")
-//	public ResponseEntity createStudent(@RequestBody Student student) {
-//
-//		studentService.add(student);
-//
-//		return new ResponseEntity(student, HttpStatus.OK);
-//	}
-
+	// TODO: Add Get Report Card API
+	
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.entity.User;
+import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.service.AuthenticationService;
 import com.wibmo.service.AuthenticationServiceImpl;
 
@@ -26,17 +27,21 @@ import com.wibmo.service.AuthenticationServiceImpl;
 @Component
 
 public class AuthenticationController {
+	
 	@Autowired
 	private AuthenticationServiceImpl authenticationService;
-	
 	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.POST,
 		    value = "/login")
 	public ResponseEntity login(@RequestBody Creds creds) {
-		
-		return new ResponseEntity(authenticationService.login(creds.userName, creds.password),HttpStatus.OK);
+		User user = authenticationService.login(creds.userName, creds.password);
+		if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(
+				user.getRegistrationStatus())) {
+			return new ResponseEntity("User Account Not Approved by Admin", HttpStatus.OK);
+		}
+		return new ResponseEntity(user,HttpStatus.OK);
 	}
 	
 }
