@@ -20,6 +20,7 @@ import com.wibmo.entity.Admin;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.Student;
 import com.wibmo.entity.User;
+import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.service.AdminServiceImpl;
 import com.wibmo.service.ProfessorServiceImpl;
 import com.wibmo.service.StudentServiceImpl;
@@ -50,38 +51,31 @@ public class UserController {
 		    method = RequestMethod.POST,
 		    value = "/register")
 	public ResponseEntity register(
-			@RequestBody UserRegistrationDTO userRegistrationDetails ) {
+			@RequestBody UserRegistrationDTO userRegistrationDTO) {
 		try {
-			User user = UserControllerUtils.saveRegDetailsToUser(userRegistrationDetails);
+			User user = UserControllerUtils.saveRegDetailsToUser(userRegistrationDTO);
 			userService.add(user);
-			user.setUserId(userService.getUserIdByEmail(user.getUserEmail()));
 			switch(user.getUserType()) {
-			
-			case ADMIN:{
-				Admin admin = new Admin(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName());
-				adminService.add(admin);
-				return new ResponseEntity(admin,HttpStatus.OK);
+			case ADMIN:
+				adminService.add(new Admin(userService.getUserIdByEmail(user.getUserEmail()), user.getUserEmail(), userRegistrationDTO.getName()));
+				break;
+			case PROFESSOR:
+				professorService.add(new Professor(userService.getUserIdByEmail(user.getUserEmail()), user.getUserEmail(), userRegistrationDTO.getName(), userRegistrationDTO.getDepartment()));
+				break;
+			case STUDENT:
+				studentService.add(new Student(userService.getUserIdByEmail(user.getUserEmail()), user.getUserEmail(), userRegistrationDTO.getName(), userRegistrationDTO.getSemester()));
+				break;
 			}
-
-			case PROFESSOR:{
-				Professor professor = new Professor(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName(),userRegistrationDetails.getDepartment());
-				professorService.add(professor);
-				return new ResponseEntity(professor,HttpStatus.OK);
-			}
-				
-			case STUDENT:{
-				Student student = new Student(user.getUserId(),user.getUserEmail(),userRegistrationDetails.getName(),userRegistrationDetails.getSemester());
-				studentService.add(student);
-
-				return new ResponseEntity(student,HttpStatus.OK);
-			}
-			
-			default:{
-				return new ResponseEntity("Invalid User Type.", HttpStatus.BAD_REQUEST);
-			}
-			} 
-		} catch(Exception e) {
-			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(
+					"User Account Registration sent to Admin for Approval.",
+					HttpStatus.OK);
+		} catch(UserWithEmailAlreadyExistsException e) {
+			return new ResponseEntity(
+					e.getMessage(), 
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	// TODO: Add Approve / Reject APIs
+	
 }

@@ -53,16 +53,6 @@ public class StudentController {
 		return new ResponseEntity(student, HttpStatus.OK);
 	}
 
-		@PostMapping(value = "")
-		public ResponseEntity createStudent(@RequestBody Student student) {
-
-			studentOperation.add(student);
-
-			return new ResponseEntity(student, HttpStatus.OK);
-		}
-
-		
-		}
-
-		
-
+	// TODO: Add Get Report Card API
+	
+}
