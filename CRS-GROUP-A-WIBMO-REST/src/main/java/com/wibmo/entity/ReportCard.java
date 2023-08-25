@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.util.Objects;
+
 /**
  * Table Name = report_card
  */
@@ -110,5 +112,25 @@ public class ReportCard {
 		return "ReportCard [reportId=" + reportId + ", studentId=" + studentId + ", courseId=" + courseId + ", grade="
 				+ grade + ", semester=" + semester + ", year=" + year + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(courseId, grade, reportId, semester, studentId, year);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ReportCard other = (ReportCard) obj;
+		return Objects.equals(courseId, other.courseId) && Objects.equals(grade, other.grade)
+				&& Objects.equals(reportId, other.reportId) && Objects.equals(semester, other.semester)
+				&& Objects.equals(studentId, other.studentId) && Objects.equals(year, other.year);
+	}
+	
 	
 }

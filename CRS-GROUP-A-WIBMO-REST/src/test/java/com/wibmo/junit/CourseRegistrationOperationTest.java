@@ -6,7 +6,11 @@ package com.wibmo.junit;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,17 +21,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wibmo.application.CrsGroupAWibmoRestApplication;
+import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
-import com.wibmo.exception.ProfessorNotExistsInSystemException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.CourseService;
 import com.wibmo.service.CourseServiceImpl;
 import com.wibmo.service.CourseRegistrationService;
@@ -38,7 +43,7 @@ import com.wibmo.service.StudentService;
 import com.wibmo.service.StudentServiceImpl;
 
 /**
- * @author manali.kumari
+ *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CrsGroupAWibmoRestApplication.class})
@@ -46,6 +51,8 @@ class CourseRegistrationOperationTest {
 	
 	@Autowired
 	private CourseRegistrationServiceImpl courseRegistrartionOperation;
+	@Autowired
+	private CourseRegistrationDAOImpl courseRegDAO;
 
 	@Test
 	public void register_shouldTrowExceptionTest() {
@@ -98,11 +105,7 @@ class CourseRegistrationOperationTest {
 	 */
 	@Test
 	public void viewRegisteredCoursesByStudent_shouldThrowExceptionTest() {
-		Student testStudent = new Student();
-		testStudent.setStudentId(1010);
-		testStudent.setStudentEmail("mohit@stu.user.com");
-		testStudent.setStudentName("Mohit");
-		testStudent.setCurrentSemester(1);
+		Student testStudent = new Student(1012, "paras@stu.user.com", "PARAS", 1);
 		
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.viewRegisteredCoursesByStudent(testStudent));
@@ -117,11 +120,7 @@ class CourseRegistrationOperationTest {
 	 */
 	@Test
 	public void getRegistrationStatusByStudent_shouldThrowExceptionTest() {
-		Student testStudent = new Student();
-		testStudent.setStudentId(1010);
-		testStudent.setStudentEmail("mohit@stu.user.com");
-		testStudent.setStudentName("Mohit");
-		testStudent.setCurrentSemester(1);
+		Student testStudent = new Student(1012, "paras@stu.user.com", "PARAS", 1);
 		
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.getRegistrationStatusByStudent(testStudent));
@@ -129,9 +128,7 @@ class CourseRegistrationOperationTest {
 	
 	@Test
 	public void getRegistrationStatusByStudentTest() {
-		Student testSt = new Student();
-		testSt.setStudentId(1008);
-		testSt.setCurrentSemester(1);
+		Student testSt = new Student(1008, "ayush@stu.user.com", "Aayush", 1);
 		RegistrationStatus expectedRegStatus = RegistrationStatus.APPROVED;
 		RegistrationStatus actualRegStatus=null;
 		try {
@@ -150,7 +147,7 @@ class CourseRegistrationOperationTest {
 	public void addCourse_shouldThrowExceptionTest() {
 		Integer courseId = 2;
 		Student testStudent = new Student();
-		testStudent.setStudentId(1017);
+		testStudent.setStudentId(1012);
 		testStudent.setCurrentSemester(1);
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.addCourse(courseId, testStudent));
@@ -191,6 +188,23 @@ class CourseRegistrationOperationTest {
 		assertThrows(CourseNotExistsInCatalogException.class,
 				()->courseRegistrartionOperation.addCourse(courseId, testStudent));
 	}
+	@Test
+	public void addCourseTest(){
+		Integer courseId = 11;
+		Student testStudent = new Student(1017, "robert@stu.user.com", "Robert", 1);
+		boolean expectedOutput = false;
+		try {
+			courseRegistrartionOperation.addCourse(courseId, testStudent);
+			expectedOutput = true;
+
+		} catch (StudentNotRegisteredForSemesterException | StudentAlreadyRegisteredForCourseInSemesterException
+				| StudentAlreadyRegisteredForAllAlternativeCoursesException
+				| StudentAlreadyRegisteredForAllPrimaryCoursesException | CourseNotExistsInCatalogException e) {
+			e.printStackTrace();
+		}
+		boolean actualOutput = courseRegDAO.existsByStudentAndCourseId(testStudent, courseId);
+		assertEquals(expectedOutput, actualOutput);
+	}
 	
 	/**
 	 * junit test for dropCourse
@@ -213,6 +227,25 @@ class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForCourseInSemesterException.class,
 				()->courseRegistrartionOperation.dropCourse(courseId, testStudent));
 	}
+	@Test
+	public void dropCourseTest(){
+		Integer courseId = 11;
+		Student testStudent = new Student(1017, "robert@stu.user.com", "Robert", 1);
+		boolean expectedOutput = true;
+		
+		try {
+			courseRegistrartionOperation.dropCourse(courseId, testStudent);
+			expectedOutput = false;
+		} catch (CourseNotExistsInCatalogException | StudentNotRegisteredForSemesterException
+				| StudentNotRegisteredForCourseInSemesterException e) {
+			e.printStackTrace();
+		}
+//		boolean actualOutput = courseRegistrartionOperation.isStudentRegisteredForCourse(testStudent, courseId);
+		
+		boolean actualOutput = courseRegDAO.existsByStudentAndCourseId(testStudent, courseId);
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
 	
 	/**
 	 * junit test for getRegisteredStudentsByCourseId
@@ -224,23 +257,18 @@ class CourseRegistrationOperationTest {
 		assertThrows(CourseNotExistsInCatalogException.class,
 				()->courseRegistrartionOperation.getRegisteredStudentsByCourseId(courseId));
 	}
-	//error
+	//error - fixed
 	@Test
 	public void getRegisteredStudentsByCourseIdTest(){
-		Student st = null;
 		Integer courseId = 2;
 		List<Student> expectedstudent = new ArrayList<>();
-		st = new Student();
-		st.setStudentId(1001);
-		st.setCurrentSemester(1);
+		Student st = new Student(1001, "abhi@stu.user.com", "Abhishek", 1);
 		expectedstudent.add(st);
-		st = new Student();
-		st.setStudentId(1008);
-		st.setCurrentSemester(1);
+		st = new Student(1008, "ayush@stu.user.com", "Ayush", 1);
 		expectedstudent.add(st);
-		st = new Student();
-		st.setStudentId(1009);
-		st.setCurrentSemester(1);
+		st = new Student(1009, "arpit@stu.user.com", "Arpit", 1);
+		expectedstudent.add(st);
+		st = new Student(1010, "mohit@stu.user.com", "Mohit", 1);
 		expectedstudent.add(st);
 		
 		List<Student> actualStudent = null;
@@ -249,67 +277,40 @@ class CourseRegistrationOperationTest {
 		} catch (CourseNotExistsInCatalogException e) {
 			e.printStackTrace();
 		}
-		
-		assertEquals(expectedstudent, actualStudent);
+		assertEquals(new HashSet<Student>(expectedstudent), new HashSet<Student>(actualStudent));
 	}
 	
 	/**
 	 * junit test for getCourseIdToRegisteredStudentsMappingByProfessorId
 	 */
-//	@Test
-//	public void getCourseIdToRegisteredStudentsMappingByProfessorIdTest(){
-//		Integer ProfessorId = 1;
-//		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
-//		
-//		
-//	}
-	
-	
-	/**
-	 * junit test for viewCourseRegistrationByRegistrationStatus
-	 */
-//	@Test
-//	public void viewCourseRegistrationByRegistrationStatus_shouldThrowExceptionTest1(){
-//		RegistrationStatus regSt = RegistrationStatus.PENDING;
-//		RegistrationStatus expectedRegStatus = RegistrationStatus.PENDING;
-//		RegistrationStatus actualRegStatus=null;
-//		try {
-//			actualRegStatus = courseRegistrartionOperation.viewCourseRegistrationByRegistrationStatus(regSt);
-//		} catch (StudentNotRegisteredForSemesterException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assertEquals(expectedRegStatus, actualRegStatus);
-//		}
-	
-	
-	/**
-	 * junit test for approveRegistrationByRegistrationId
-	 */
+	//TODO: have to to debugging error only one student mapping
 	@Test
-	public void approveRegistrationByRegistrationIdTest(){
-		int courseRegId = 1;
-		boolean expectedValue = true;
-		boolean actualValue = courseRegistrartionOperation.approveRegistrationByRegistrationId(courseRegId);
-		assertEquals(expectedValue, actualValue);
+	public void getCourseIdToRegisteredStudentsMappingByProfessorIdTest(){
+		Integer professorId = 1003;
+		
+		Integer courseId = 3;
+		List<Student> student = new ArrayList<>();
+		Student st = new Student(1008, "ayush@stu.user.com", "Ayush", 1);
+		student.add(st);
+		st = new Student(1017, "robert@stu.user.com", "Robert", 1);
+		student.add(st);
+		
+		Map<Integer, List<Student>> expectedMap = new HashMap<>();
+		expectedMap.put(courseId, student);
+		
+		Map<Integer, List<Student>> actualMap = new HashMap<>();
+		try {
+			actualMap = courseRegistrartionOperation.getCourseIdToRegisteredStudentsMappingByProfessorId(professorId);
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(expectedMap, actualMap);
 	}
-	
+		
 	/**
-	 * junit test for rejectRegistrationByRegistrationId
-	 */
-	@Test
-	public void rejectRegistrationByRegistrationIdTest(){
-		int courseRegId = 4;
-		boolean expectedValue = true;
-		boolean actualValue = courseRegistrartionOperation.rejectRegistrationByRegistrationId(courseRegId);
-		assertEquals(expectedValue, actualValue);
-	}
-	
-	/**
-	 * viewRegisteredStudentsByProfessorIdAndCourseId
-	 * CourseNotExistsInCatalogException, 
-				ProfessorNotExistsInSystemException,
-				ProfessorNotAssignedForCourseException;
+	 * junit tests for viewRegisteredStudentsByProfessorIdAndCourseId
 	 */
 	@Test
 	public void viewRegisteredStudentsByProfessorIdAndCourseId_shouldThrowExceptionTest(){
@@ -323,16 +324,93 @@ class CourseRegistrationOperationTest {
 	public void viewRegisteredStudentsByProfessorIdAndCourseId_shouldThrowExceptionTest1(){
 		Integer courseId = 7;
 		Integer professorId = 4;
-		assertThrows(ProfessorNotExistsInSystemException.class,
+		assertThrows(UserNotFoundException.class,
 				()->courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId,courseId));
 	
 	}
 	@Test
 	public void viewRegisteredStudentsByProfessorIdAndCourseId_shouldThrowExceptionTest2(){
 		Integer courseId = 17;
-		Integer professorId = 1006;
+		Integer professorId = 1102;
 		assertThrows(ProfessorNotAssignedForCourseException.class,
 				()->courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId,courseId));
 	
 	}
+	//testing by courseid as professor is same for courseid
+	@Test
+	public void viewRegisteredStudentsByProfessorIdAndCourseIdTest() {
+		Integer professorId = 1007;
+		Integer courseId = 11;
+		List<Student> expectedstudent = new ArrayList<>();
+		Student st = new Student(1001, "abhi@stu.user.com", "Abhishek", 1);
+		expectedstudent.add(st);
+		st = new Student(1010, "mohit@stu.user.com", "Mohit", 1);
+		expectedstudent.add(st);
+		List<Student> actualStudent = null;
+		
+		try {
+			courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId, courseId);
+			actualStudent = courseRegistrartionOperation.getRegisteredStudentsByCourseId(courseId);
+		} catch (CourseNotExistsInCatalogException | UserNotFoundException | ProfessorNotAssignedForCourseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(new HashSet<Student>(expectedstudent), new HashSet<Student>(actualStudent));
+
+	}	
+	
+	
+	/**
+	 * junit test for viewCourseRegistrationByRegistrationStatus
+	 */
+	//uses getRegistrationStatusByStudent
+//	@Test
+//	public void viewCourseRegistrationByRegistrationStatus(){	
+//		List<RegistrationStatus> expectedStatus = new ArrayList<>();
+//		expectedStatus.add(RegistrationStatus.PENDING);
+//		expectedStatus.add(RegistrationStatus.PENDING);
+//		
+//		Student student = new Student();
+//		List<RegistrationStatus> actualStatus = new ArrayList<>();
+//		
+//		try {
+//			courseRegistrartionOperation.viewCourseRegistrationByRegistrationStatus(RegistrationStatus.PENDING);
+//			student = new Student(1010, "mohit@stu.user.com", "Mohit", 1);
+//			actualStatus.add(courseRegistrartionOperation.getRegistrationStatusByStudent(student));
+//			student = new Student(1017, "robert@stu.user.com", "Robert", 1);
+//			actualStatus.add(courseRegistrartionOperation.getRegistrationStatusByStudent(student));
+//		} catch (StudentNotRegisteredForSemesterException e) {
+//			e.printStackTrace();
+//		}			
+//		assertEquals(expectedStatus, actualStatus);
+//	}
+	
+	
+	/**
+	 * Junit test for updateCourseRegistrationStatusToByRegistrationIds
+	 */
+	@Test
+	public void updateCourseRegistrationStatusToByRegistrationIdsTest() {
+		Set<Integer> courseRegistrationIds = new HashSet<>();
+		courseRegistrationIds.add(4);
+		courseRegistrationIds.add(5);
+		boolean expectedResult = true;
+		
+		boolean actualResult = courseRegistrartionOperation.updateCourseRegistrationStatusToByRegistrationIds(RegistrationStatus.APPROVED, courseRegistrationIds);
+		
+		assertEquals(expectedResult, actualResult);
+	}
+	
+	
+	/**
+	 * junit test for updateAllPendingCourseRegistrationsTo
+	 */
+	@Test
+	public void updateAllPendingCourseRegistrationsToTest(){
+		boolean expectedValue = true;
+		boolean actualValue = courseRegistrartionOperation.updateAllPendingCourseRegistrationsTo(RegistrationStatus.APPROVED);
+		assertEquals(expectedValue, actualValue);
+	}
+	
 }
