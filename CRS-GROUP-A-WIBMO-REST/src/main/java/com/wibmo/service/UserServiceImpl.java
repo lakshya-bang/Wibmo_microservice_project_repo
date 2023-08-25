@@ -11,9 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.dao.UserDAOImpl;
+import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.entity.Admin;
+import com.wibmo.entity.Professor;
 import com.wibmo.entity.Student;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.enums.UserType;
+import com.wibmo.exception.DepartmentCannotBeEmptyException;
+import com.wibmo.exception.SemesterCannotBeEmptyException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
 /**
@@ -57,33 +63,70 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void add(User user) 
-			throws UserWithEmailAlreadyExistsException {
+	public void add(UserRegistrationDTO userRegistrationDTO) 
+		throws 
+			UserWithEmailAlreadyExistsException, 
+			SemesterCannotBeEmptyException, 
+			DepartmentCannotBeEmptyException {
 		
-		if(null != user.getUserId()) {
-			// TODO: Add to logger to reject the incoming request
-			return;
+		// TODO: Add Name Validation using Regex
+		
+		// TODO: Add Email Validation using Regex
+		
+		// TODO: Add Password Validation using Regex
+		
+		if(isEmailAlreadyInUse(
+				userRegistrationDTO.getUserEmail())) {
+			throw new UserWithEmailAlreadyExistsException(
+					userRegistrationDTO.getUserEmail());
 		}
 		
-		if(isEmailAlreadyInUse(user.getUserEmail())) {
-			throw new UserWithEmailAlreadyExistsException(user.getUserEmail());
+		switch(userRegistrationDTO.getUserType()) {
+		case STUDENT:
+			if(userRegistrationDTO.getSemester() == null) {
+				throw new SemesterCannotBeEmptyException();
+			}
+			break;
+		case PROFESSOR:
+			if(userRegistrationDTO.getDepartment() == null) {
+				throw new DepartmentCannotBeEmptyException();
+			}
+			break;
+		default:
 		}
+		
+		User user = new User();
+		user.setUserEmail(userRegistrationDTO.getUserEmail());
+		user.setPassword(userRegistrationDTO.getPassword());
+		user.setUserType(userRegistrationDTO.getUserType());
+		user.setRegistrationStatus(RegistrationStatus.PENDING);
 		
 		userDAO.save(user);
 		
-//		switch(user.getUserType()) {
-//		case STUDENT:
-//			studentService.add(
-//				new Student(
-//					getUserIdByEmail(user.getUserEmail()),
-//					user.getUserEmail(),
-//					user.get));
-//			break;
-//		case ADMIN:
-//			break;
-//		case PROFESSOR:
-//			break;
-//		}
+		Integer userId = userDAO.findUserIdByEmail(user.getUserEmail());
+		
+		switch(user.getUserType()) {
+		case ADMIN:
+			adminService.add(new Admin(
+					userId,
+					user.getUserEmail(),
+					userRegistrationDTO.getUserName()));
+			break;
+		case PROFESSOR:
+			professorService.add(new Professor(
+					userId,
+					user.getUserEmail(),
+					userRegistrationDTO.getUserName(),
+					userRegistrationDTO.getDepartment()
+					));
+			break;
+		case STUDENT:
+			studentService.add(new Student(
+					userId,
+					user.getUserEmail(),
+					userRegistrationDTO.getUserName(),
+					userRegistrationDTO.getSemester()));
+		}
 	}
 	
 	@Override

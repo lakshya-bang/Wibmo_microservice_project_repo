@@ -11,27 +11,13 @@ import com.wibmo.enums.UserType;
  */
 public class UserRegistrationDTO {
 	
-	private Integer userId;
 	private String userName;
+	private String userEmail;
 	private String password;
-	private String name;
-	private RegistrationStatus regStatus;
 	private UserType userType;
 	private String department;
 	private Integer semester;
 	
-	/**
-	 * @return the userId
-	 */
-	public Integer getUserId() {
-		return userId;
-	}
-	/**
-	 * @param userId the userId to set
-	 */
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
 	/**
 	 * @return the userName
 	 */
@@ -45,6 +31,18 @@ public class UserRegistrationDTO {
 		this.userName = userName;
 	}
 	/**
+	 * @return the userEmail
+	 */
+	public String getUserEmail() {
+		return userEmail;
+	}
+	/**
+	 * @param userEmail the userEmail to set
+	 */
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+	/**
 	 * @return the password
 	 */
 	public String getPassword() {
@@ -55,30 +53,6 @@ public class UserRegistrationDTO {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	/**
-	 * @return the regStatus
-	 */
-	public RegistrationStatus getRegStatus() {
-		return regStatus;
-	}
-	/**
-	 * @param regStatus the regStatus to set
-	 */
-	public void setRegStatus(RegistrationStatus regStatus) {
-		this.regStatus = regStatus;
 	}
 	/**
 	 * @return the userTyper

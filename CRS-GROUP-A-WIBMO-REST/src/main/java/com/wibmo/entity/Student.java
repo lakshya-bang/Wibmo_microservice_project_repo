@@ -3,7 +3,7 @@ package com.wibmo.entity;
 import java.util.Objects;
 
 /**
- *
+ * Table name = student
  */
 public class Student {
 

@@ -6,8 +6,11 @@ package com.wibmo.service;
 import java.util.List;
 import java.util.Set;
 
+import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.DepartmentCannotBeEmptyException;
+import com.wibmo.exception.SemesterCannotBeEmptyException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
 /**
@@ -25,11 +28,16 @@ public interface UserService {
 	
 	/**
 	 * 
-	 * @param user
-	 * @return
-	 * @throws UserWithEmailAlreadyExistsException 
+	 * @param userRegistrationDTO
+	 * @throws UserWithEmailAlreadyExistsException
+	 * @throws SemesterCannotBeEmptyException
+	 * @throws DepartmentCannotBeEmptyException
 	 */
-	public void add(User user) throws UserWithEmailAlreadyExistsException;
+	public void add(UserRegistrationDTO userRegistrationDTO)
+		throws 
+			UserWithEmailAlreadyExistsException, 
+			SemesterCannotBeEmptyException, 
+			DepartmentCannotBeEmptyException;
 	
 	/**
 	 * 
