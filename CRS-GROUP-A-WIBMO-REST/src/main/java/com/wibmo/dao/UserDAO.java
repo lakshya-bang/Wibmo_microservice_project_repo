@@ -14,6 +14,9 @@ import com.wibmo.enums.RegistrationStatus;
  */
 public interface UserDAO {
 	
+	public List<Integer> find();
+	
+	public Boolean update(String status,int userId);
 	/**
 	 * 
 	 * @param registrationStatus
@@ -51,4 +54,6 @@ public interface UserDAO {
 	 * @return
 	 */
 	public Boolean existsById(Integer userId);
+
+	User findUserByEmail(String email);
 }

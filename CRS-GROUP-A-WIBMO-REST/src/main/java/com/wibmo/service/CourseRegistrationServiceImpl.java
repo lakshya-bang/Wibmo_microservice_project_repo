@@ -21,6 +21,7 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
+import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Professor;
@@ -91,13 +92,13 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	}
 
 	@Override
-	public void viewRegisteredCoursesByStudent(Student student) 
+	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student) 
 			throws StudentNotRegisteredForSemesterException {
 		
 		if(!isStudentRegistered(student)) {
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
-		
+		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
 		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
@@ -129,23 +130,15 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 					.map(entry -> entry.getValue().getProfessorId())
 					.collect(Collectors.toSet()));
 		
-		System.out.println("Here are registered courses for Student Id: " + student.getStudentId() + " and semester: " + student.getCurrentSemester());
-		System.out.println("+---------------------------------------------------------------------------+");
-		System.out.println(" CourseId | CourseTitle \t| Department | ProfessorName ");
-		System.out.println("+---------------------------------------------------------------------------+");
 		courseIdToCourseMap
 			.entrySet()
 			.stream()
 			.map(entry -> entry.getValue())
 			.forEach(course -> {
-				System.out.format("%5d\t| %10s\t| %7s    | %10s\n", 
-				// System.out.format("%5d%15s%15s%15s\n", 
-						course.getCourseId(),
-						course.getCourseTitle(),
-						course.getDepartment(),
-						professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName());
+				registeredCourses.add(new RegisteredCourse(course.getCourseId(),course.getCourseTitle(),course.getDepartment(),professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()));
 
 			});
+		return registeredCourses;
 	}
 	
 	@Override

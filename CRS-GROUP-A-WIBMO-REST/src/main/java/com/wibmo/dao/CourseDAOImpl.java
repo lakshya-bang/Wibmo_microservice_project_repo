@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.enums.CourseType;
@@ -17,7 +18,7 @@ import com.wibmo.utils.DBUtils;
 
 @Repository
 public class CourseDAOImpl implements CourseDAO {
-	
+	private static Logger logger = Logger.getLogger(CourseDAOImpl.class);
 	@Override
 	public List<Course> findAllByCourseIdIn(Set<Integer> courseIds) {
 
@@ -44,7 +45,7 @@ public class CourseDAOImpl implements CourseDAO {
 				}
 			}
 		}catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		return courses;
@@ -76,7 +77,7 @@ public class CourseDAOImpl implements CourseDAO {
 						CourseType.valueOf(rs.getString("course_type"))));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 		return courses;
@@ -110,7 +111,7 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -138,7 +139,7 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //				e.printStackTrace();
 		}
 	
@@ -164,7 +165,7 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -197,7 +198,7 @@ public class CourseDAOImpl implements CourseDAO {
 						CourseType.valueOf(rs.getString("course_type"))));
 		     }
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -230,7 +231,7 @@ public class CourseDAOImpl implements CourseDAO {
 			return Boolean.TRUE;
 
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			// e.printStackTrace();
 		}
 
@@ -257,7 +258,7 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 		return Boolean.FALSE;
@@ -277,7 +278,7 @@ public class CourseDAOImpl implements CourseDAO {
 				return Boolean.TRUE;
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return Boolean.FALSE;
 	}
@@ -302,7 +303,7 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		

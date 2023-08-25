@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.constant.SQLConstants;
@@ -16,7 +17,7 @@ import com.wibmo.utils.DBUtils;
 
 @Repository
 public class ProfessorDAOImpl implements ProfessorDAO {
-	
+	private static Logger logger = Logger.getLogger(ProfessorDAOImpl.class);
 	@Override
 	public List<Professor> findAllByIdIn(Set<Integer> ids) {
 		
@@ -44,7 +45,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 						rs.getString("department")));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 		return professors;
@@ -69,7 +70,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -94,7 +95,7 @@ public class ProfessorDAOImpl implements ProfessorDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -21,8 +22,7 @@ import com.wibmo.utils.DBUtils;
 
 @Repository
 public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
-	
-	@Override
+	private static Logger logger = Logger.getLogger(CourseDAOImpl.class);	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
 		String sql = "INSERT INTO user.registered_courses("
@@ -55,7 +55,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -95,7 +95,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -125,7 +125,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -155,7 +155,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -196,7 +196,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -230,7 +230,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 				studentIds.add(rs.getInt("student_id"));
 			}
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -320,11 +320,11 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 						rs.getInt("alternative_course_1_id"),
 						rs.getInt("alternative_course_2_id"),
 						RegistrationStatus.valueOf(
-								rs.getString("registration_status")));
+								rs.getString("reg_status")));
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -354,7 +354,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -386,7 +386,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -427,7 +427,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -451,7 +451,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -473,7 +473,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -510,7 +510,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -556,7 +556,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -582,7 +582,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -606,7 +606,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -623,7 +623,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.executeUpdate();
 			return true;
 		}catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			return false;
 		}
 	}
@@ -663,7 +663,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 
 		}catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 		return courseRegistrations;
@@ -693,7 +693,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		

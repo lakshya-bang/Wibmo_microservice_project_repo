@@ -23,6 +23,7 @@ import com.wibmo.application.CrsGroupAWibmoRestApplication;
 import com.wibmo.entity.Professor;
 import com.wibmo.service.ProfessorService;
 import com.wibmo.service.ProfessorServiceImpl;
+import com.wibmo.service.UserServiceImpl;
 
 /**
  * 
@@ -36,6 +37,8 @@ class ProfessorOperationTest {
 	
 	@Autowired
 	private ProfessorServiceImpl professorOperation;
+	@Autowired
+	private UserServiceImpl userOperation;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -68,12 +71,12 @@ class ProfessorOperationTest {
 
 	@Test
 	public void isProfessorExistsByIdTest() {
-		assertTrue(professorOperation.isProfessorExistsById(professorId));
+		assertTrue(userOperation.isUserExistsById(professorId));
 	}
 	
 	@Test
 	public void isProfessorExistByIdTestFail() {
-		assertFalse(professorOperation.isProfessorExistsById(131));
+		assertFalse(userOperation.isUserExistsById(131));
 	}
 	
 	@Test

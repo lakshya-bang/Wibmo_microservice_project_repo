@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.constant.SQLConstants;
@@ -24,7 +25,7 @@ import com.wibmo.utils.DBUtils;
 public class AuthenticationDAOImpl implements AuthenticationDAO {
 	
 	// Plug Logger in AuthenticationDAOImpl
-//	private static Logger logger = Logger.getLogger(AuthenticationDAOImpl.class);
+	private static Logger logger = Logger.getLogger(AuthenticationDAOImpl.class);
 	
 	// NOTE:-
 	// 1. INFO  ----> To get the information (logger.info)
@@ -61,10 +62,10 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
 		   }
 	   }
 	   }catch(SQLException se) {
-//		   logger.error("SQL Exception: " + se.getMessage());
+		   logger.error("SQL Exception: " + se.getMessage());
 //	      se.printStackTrace();
 	   }catch(Exception e){
-		   System.out.println(e.getMessage());
+		   logger.error(e.getMessage());
 //	      e.printStackTrace();
 	   }
 		return false;
@@ -90,9 +91,9 @@ public class AuthenticationDAOImpl implements AuthenticationDAO {
 		   return null;
 	   }
 	   }catch(SQLException se) {
-	      se.printStackTrace();
+		   logger.error(se.getMessage());
 	   }catch(Exception e){
-	      e.printStackTrace();
+		   logger.error(e.getMessage());
 	   }
 		return null;
 	}

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.entity.User;
@@ -23,7 +24,7 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class UserDAOImpl implements UserDAO{
-
+	private static Logger logger = Logger.getLogger(UserDAOImpl.class);
 	@Override
 	public List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus) {
 		
@@ -50,7 +51,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -79,7 +80,7 @@ public class UserDAOImpl implements UserDAO{
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -102,7 +103,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -131,7 +132,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -157,11 +158,63 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
 		return Boolean.FALSE;
+	}
+
+	@Override
+	public List<Integer> find() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'find'");
+	}
+
+	@Override
+	public Boolean update(String status, int userId) {
+		// TODO Auto-generated method stub
+		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
+		Connection conn = DBUtils.getConnection();
+		try{
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, status);
+			stmt.setInt(2, userId);
+
+			stmt.executeUpdate();
+			return true;
+		}
+		catch(SQLException se){
+			System.out.println(se.getMessage());
+			return false;
+		}
+	}
+
+	@Override
+	public User findUserByEmail(String email) {
+		
+		String sql = "SELECT user_id FROM auth_creds "
+				+ "WHERE user_email = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				return new User(rs.getInt("user_id"),
+				rs.getString("user_email"),RegistrationStatus.valueOf(rs.getString("reg_status")),
+				UserType.valueOf(rs.getString("user_type")));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+//			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 }

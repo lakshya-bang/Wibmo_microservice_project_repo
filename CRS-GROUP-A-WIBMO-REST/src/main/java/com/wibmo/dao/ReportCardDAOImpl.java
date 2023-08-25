@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.constant.SQLConstants;
@@ -23,7 +24,7 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class ReportCardDAOImpl implements ReportCardDAO {
-	
+	private static Logger logger = Logger.getLogger(ReportCardDAOImpl.class);
 	@Override
 	public void save(ReportCard reportCard) {
 		
@@ -47,7 +48,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	
@@ -88,7 +89,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		return semesterToReportCardsMap;	
@@ -148,7 +149,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			stmt.executeUpdate();
 		}
 		catch(SQLException se){
-			System.out.println(se.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -183,7 +184,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
