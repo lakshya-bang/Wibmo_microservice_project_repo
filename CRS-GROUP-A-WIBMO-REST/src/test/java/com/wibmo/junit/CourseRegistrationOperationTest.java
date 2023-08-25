@@ -110,10 +110,6 @@ class CourseRegistrationOperationTest {
 		assertThrows(StudentNotRegisteredForSemesterException.class,
 				()->courseRegistrartionOperation.viewRegisteredCoursesByStudent(testStudent));
 	}
-//	@Test
-//	public void viewRegisteredCourseByStudentTest() {
-//		
-//	}
 	
 	/**
 	 * junit test for getRegistrationStatusByStudent
@@ -257,7 +253,6 @@ class CourseRegistrationOperationTest {
 		assertThrows(CourseNotExistsInCatalogException.class,
 				()->courseRegistrartionOperation.getRegisteredStudentsByCourseId(courseId));
 	}
-	//error - fixed
 	@Test
 	public void getRegisteredStudentsByCourseIdTest(){
 		Integer courseId = 2;
@@ -336,7 +331,6 @@ class CourseRegistrationOperationTest {
 				()->courseRegistrartionOperation.viewRegisteredStudentsByProfessorIdAndCourseId(professorId,courseId));
 	
 	}
-	//testing by courseid as professor is same for courseid
 	@Test
 	public void viewRegisteredStudentsByProfessorIdAndCourseIdTest() {
 		Integer professorId = 1007;
@@ -359,33 +353,6 @@ class CourseRegistrationOperationTest {
 		assertEquals(new HashSet<Student>(expectedstudent), new HashSet<Student>(actualStudent));
 
 	}	
-	
-	
-	/**
-	 * junit test for viewCourseRegistrationByRegistrationStatus
-	 */
-	//uses getRegistrationStatusByStudent
-//	@Test
-//	public void viewCourseRegistrationByRegistrationStatus(){	
-//		List<RegistrationStatus> expectedStatus = new ArrayList<>();
-//		expectedStatus.add(RegistrationStatus.PENDING);
-//		expectedStatus.add(RegistrationStatus.PENDING);
-//		
-//		Student student = new Student();
-//		List<RegistrationStatus> actualStatus = new ArrayList<>();
-//		
-//		try {
-//			courseRegistrartionOperation.viewCourseRegistrationByRegistrationStatus(RegistrationStatus.PENDING);
-//			student = new Student(1010, "mohit@stu.user.com", "Mohit", 1);
-//			actualStatus.add(courseRegistrartionOperation.getRegistrationStatusByStudent(student));
-//			student = new Student(1017, "robert@stu.user.com", "Robert", 1);
-//			actualStatus.add(courseRegistrartionOperation.getRegistrationStatusByStudent(student));
-//		} catch (StudentNotRegisteredForSemesterException e) {
-//			e.printStackTrace();
-//		}			
-//		assertEquals(expectedStatus, actualStatus);
-//	}
-	
 	
 	/**
 	 * Junit test for updateCourseRegistrationStatusToByRegistrationIds
