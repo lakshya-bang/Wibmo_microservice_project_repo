@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.entity.User;
@@ -23,7 +24,7 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class UserDAOImpl implements UserDAO{
-
+	private static Logger logger = Logger.getLogger(UserDAOImpl.class);
 	@Override
 	public List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus) {
 		
@@ -50,7 +51,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -79,7 +80,7 @@ public class UserDAOImpl implements UserDAO{
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -102,7 +103,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -131,7 +132,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
@@ -157,7 +158,7 @@ public class UserDAOImpl implements UserDAO{
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 //			e.printStackTrace();
 		}
 		
