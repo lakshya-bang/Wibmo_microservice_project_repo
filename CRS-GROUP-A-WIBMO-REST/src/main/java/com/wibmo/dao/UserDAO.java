@@ -54,4 +54,6 @@ public interface UserDAO {
 	 * @return
 	 */
 	public Boolean existsById(Integer userId);
+
+	User findUserByEmail(String email);
 }

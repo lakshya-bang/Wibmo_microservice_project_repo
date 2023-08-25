@@ -7,12 +7,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.bean.CourseRegistration;
-import com.wibmo.bean.User;
+import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 import com.wibmo.utils.DBUtils;
@@ -141,8 +142,8 @@ public class UserDAOImpl implements UserDAO{
 	}
 	
 	@Override
-	public Integer findUserByEmail(String email) {
-		User user;
+	public User findUserByEmail(String email) {
+		User user = null;
 		String sql = "SELECT * FROM auth_creds "
 				+ "WHERE user_email = ?";
 		
@@ -166,6 +167,24 @@ public class UserDAOImpl implements UserDAO{
 //			e.printStackTrace();
 		}
 		
+		return null;
+	}
+
+	@Override
+	public List<Integer> find() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean updateRegistrationStatusAsByIdIn(RegistrationStatus registrationStatus, Set<Integer> userIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean existsById(Integer userId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

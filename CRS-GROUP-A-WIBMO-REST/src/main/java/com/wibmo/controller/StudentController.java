@@ -34,7 +34,7 @@ public class StudentController {
 		// and inject the dependency without
 		// using new keyword.
 		@Autowired
-		private StudentOperationImpl studentOperation;
+		private StudentServiceImpl studentOperation;
 
 		
 		

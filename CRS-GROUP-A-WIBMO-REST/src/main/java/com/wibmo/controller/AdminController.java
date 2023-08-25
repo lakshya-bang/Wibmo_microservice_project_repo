@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.wibmo.service.UserOperationImpl;
+import com.wibmo.service.UserServiceImpl;
 
 /**
  * 
@@ -24,7 +23,7 @@ import com.wibmo.service.UserOperationImpl;
 @RequestMapping("/admin")
 public class AdminController {
 	@Autowired
-	UserOperationImpl userOperation;
+	UserServiceImpl userOperation;
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
