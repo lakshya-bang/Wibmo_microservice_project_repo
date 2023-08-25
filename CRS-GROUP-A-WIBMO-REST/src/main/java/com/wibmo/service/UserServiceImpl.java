@@ -3,6 +3,7 @@
  */
 package com.wibmo.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,25 @@ public class UserServiceImpl implements UserService{
 	private UserDAOImpl userDAO;
 
 	@Override
-	public void viewAccountsPendingForApproval() {
-		 userDAO
-		 	.findAllByRegistrationStatus(
-		 			RegistrationStatus.PENDING)
-		 	.stream()
-		 	.forEach(System.out::println);
+	public List<User> viewAccountsPendingForApproval() {
+			// TODO Auto-generated method stub
+		List<User> pendingAccounts = userDAO.findAllByRegistrationStatus(RegistrationStatus.PENDING);
+			return pendingAccounts;
+		}
+	
+	@Override //Will go in Admin route
+	public boolean approveLoginById(int userId) {
+		// TODO Auto-generated method stub
+		boolean flag = userDAO.update("APPROVED", userId);
+		return flag;
+	}
+
+	@Override //Will go in Admin route
+	public boolean rejectLoginById(int userId) {
+		// TODO Auto-generated method stub
+		boolean flag = userDAO.update("REJECTED", userId);
+		return flag;
+		
 	}
 
 	@Override

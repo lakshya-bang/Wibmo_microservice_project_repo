@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.entity.Student;
 import com.wibmo.dto.CourseRegistrationDTO;
+import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.dto.StudentCourseIdDTO;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
@@ -78,22 +79,22 @@ public class CourseRegistrationController {
 		}
 	}
 	
-	// TODO: View method needs Projection Mapping
-//	@RequestMapping(
-//			produces = MediaType.APPLICATION_JSON, 
-//		    method = RequestMethod.GET,
-//		    value = "/view-registered-courses/{studentId}/{semester}")	
-//	public ResponseEntity viewRegisteredCoursesByStudentId(@PathVariable Integer studentId, @PathVariable Integer semester) {
-//		List<RegisteredCourse> registeredCourses;
-//		try {
-//			registeredCourses = courseRegistrationService
-//					.viewRegisteredCoursesByStudent(new Student(studentId,null,null,semester));
-//			return new ResponseEntity(registeredCourses,HttpStatus.OK);
-//		}
-//		catch(Exception e) {
-//			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
+	 //TODO: View method needs Projection Mapping
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.GET,
+		    value = "/view-registered-courses/{studentId}/{semester}")	
+	public ResponseEntity viewRegisteredCoursesByStudentId(@PathVariable Integer studentId, @PathVariable Integer semester) {
+		List<RegisteredCourse> registeredCourses;
+		try {
+			registeredCourses = courseRegistrationService
+					.viewRegisteredCoursesByStudent(new Student(studentId,null,null,semester));
+			return new ResponseEntity(registeredCourses,HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	
 	@RequestMapping(

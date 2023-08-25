@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
@@ -42,9 +43,10 @@ public interface CourseRegistrationService {
 	 * 
 	 * @param studentId
 	 * @param semOfStudy
+	 * @return 
 	 * @throws StudentNotRegisteredForSemesterException 
 	 */
-	public void viewRegisteredCoursesByStudent(Student student)
+	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student)
 			throws StudentNotRegisteredForSemesterException;
 	
 	/**
