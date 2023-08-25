@@ -34,14 +34,6 @@ class ReportCardServiceTest {
 	private ReportCardServiceImpl reportCardService;
 	
 	/**
-	 * Junit test for viewReportCardByStudent
-	 */
-//	@Test
-//	public void viewReportCardByStudentTest() {
-//		
-//	}
-	
-	/**
 	 * Junit test for uploadReportCards
 	 */
 	@Test
@@ -61,7 +53,6 @@ class ReportCardServiceTest {
 	/**
 	 * Junit test for getSemesterToReportCardMapByStudentId
 	 */
-	//error brackets missing
 	@Test
 	public void getSemesterToReportCardMapByStudentId() {
 		Map<Integer, ArrayList<ReportCard>> expectedMap = new HashMap<>();
@@ -82,7 +73,6 @@ class ReportCardServiceTest {
 	/**
 	 * Junit test for getReportCardByStudentForCourse
 	 */
-	//fetching correct report card but some error
 	@Test
 	public void getReportCardByStudentForCourse() {
 		Student testStudent = new Student(1001, "abhi@stu.user.com", "Abhishek", 1);

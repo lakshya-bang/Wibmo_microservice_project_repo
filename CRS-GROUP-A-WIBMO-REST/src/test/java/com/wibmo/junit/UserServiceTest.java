@@ -51,7 +51,6 @@ class UserServiceTest {
 		try {
 			userService.add(testUser);
 		} catch (UserWithEmailAlreadyExistsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		boolean expectedRes = true;
@@ -64,6 +63,7 @@ class UserServiceTest {
 	public void add_shouldThrowExceptionTest() {
 		User testUser = new User(1001, "abhi@stu.user.com", 
 				RegistrationStatus.APPROVED, UserType.STUDENT);
+		testUser.setPassword("abhi@123");
 		
 		assertThrows(UserWithEmailAlreadyExistsException.class, 
 				()->userService.add(testUser));
