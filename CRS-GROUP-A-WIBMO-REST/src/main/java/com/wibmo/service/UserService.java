@@ -21,10 +21,10 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 public interface UserService {
 	
 	/**
-	 * Used for viewing the accounts that require approval from Admin
-	 * @return List<Integer> 
+	 * Gets the accounts that require approval from Admin
+	 * @return List<User> 
 	 * */
-	public List<User> viewAccountsPendingForApproval();
+	public List<User> getAccountsPendingForApproval();
 	
 	/**
 	 * 
@@ -48,6 +48,13 @@ public interface UserService {
 
 	/**
 	 * 
+	 * @param email
+	 * @return
+	 */
+	public User getUserByEmail(String email);
+	
+	/**
+	 * 
 	 * @param approved
 	 * @param userIds
 	 */
@@ -68,17 +75,5 @@ public interface UserService {
 	 * @return
 	 */
 	public Boolean isUserExistsById(Integer userId);
-	
-	/**
-	 * used for approving the registration of the new user
-	 * @param userId
-	 * */
-	public boolean approveLoginById(int userId);
-	
-	/**
-	 * used for Rejecting the registration of the new user
-	 * @param userId
-	 * */
-	public boolean rejectLoginById(int userId);
 	
 }

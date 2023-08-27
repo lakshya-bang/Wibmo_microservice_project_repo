@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.entity.Admin;
@@ -16,7 +18,9 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class AdminDAOImpl implements AdminDAO {
-	private static Logger logger = Logger.getLogger(AdminDAOImpl.class);
+	
+	private static final Logger logger = LogManager.getLogger(AdminDAOImpl.class);
+	
 	@Override
 	public Admin findById(Integer adminId) {
 		
@@ -41,7 +45,6 @@ public class AdminDAOImpl implements AdminDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return admin;
@@ -64,7 +67,6 @@ public class AdminDAOImpl implements AdminDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 	}

@@ -41,27 +41,11 @@ public class UserServiceImpl implements UserService{
 	private UserDAOImpl userDAO;
 
 	@Override
-	public List<User> viewAccountsPendingForApproval() {
-			// TODO Auto-generated method stub
-		List<User> pendingAccounts = userDAO.findAllByRegistrationStatus(RegistrationStatus.PENDING);
-			return pendingAccounts;
-		}
+	public List<User> getAccountsPendingForApproval() {
+		return userDAO.findAllByRegistrationStatus(
+				RegistrationStatus.PENDING);
+	}
 	
-	@Override //Will go in Admin route
-	public boolean approveLoginById(int userId) {
-		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("APPROVED", userId);
-		return flag;
-	}
-
-	@Override //Will go in Admin route
-	public boolean rejectLoginById(int userId) {
-		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("REJECTED", userId);
-		return flag;
-		
-	}
-
 	@Override
 	public void add(UserRegistrationDTO userRegistrationDTO) 
 		throws 
@@ -144,7 +128,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return userDAO.updateRegistrationStatusAsByIdIn(
-								registrationStatus, userIds);
+					registrationStatus, userIds);
 		
 	}
 	
@@ -167,10 +151,15 @@ public class UserServiceImpl implements UserService{
 		return userDAO.existsById(userId);
 	}
 	
-
+	@Override
+	public User getUserByEmail(String email) {
+		return userDAO.findUserByEmail(email);
+	}
+	
 	/*************************** Utility Methods ***************************/
 	
 	private boolean isEmailAlreadyInUse(String email) {
 		return null != userDAO.findUserIdByEmail(email);
 	}
+
 }
