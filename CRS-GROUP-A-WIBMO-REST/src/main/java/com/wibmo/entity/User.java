@@ -7,7 +7,7 @@ import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
 /**
- * Table name = "auth_creds"
+ * Table name = auth_creds
  */
 public class User {
 	

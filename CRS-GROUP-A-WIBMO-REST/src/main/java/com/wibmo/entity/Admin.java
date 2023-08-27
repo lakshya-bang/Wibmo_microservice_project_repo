@@ -1,7 +1,7 @@
 package com.wibmo.entity;
 
 /**
- * 
+ * Table name = admin
  */
 public class Admin {
 

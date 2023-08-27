@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.wibmo.enums.CourseType;
 
 /**
- * 
+ * Table name = course
  */
 public class Course {
 	

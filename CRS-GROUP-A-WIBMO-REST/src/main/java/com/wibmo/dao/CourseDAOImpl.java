@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.enums.CourseType;
@@ -18,7 +20,9 @@ import com.wibmo.utils.DBUtils;
 
 @Repository
 public class CourseDAOImpl implements CourseDAO {
-	private static Logger logger = Logger.getLogger(CourseDAOImpl.class);
+	
+	private static final Logger logger = LogManager.getLogger(CourseDAOImpl.class);
+	
 	@Override
 	public List<Course> findAllByCourseIdIn(Set<Integer> courseIds) {
 
@@ -46,7 +50,6 @@ public class CourseDAOImpl implements CourseDAO {
 			}
 		}catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		return courses;
 	}
@@ -112,7 +115,6 @@ public class CourseDAOImpl implements CourseDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return courses;
@@ -140,7 +142,6 @@ public class CourseDAOImpl implements CourseDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//				e.printStackTrace();
 		}
 	
 		return courseType;
@@ -166,7 +167,6 @@ public class CourseDAOImpl implements CourseDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return Boolean.FALSE;
@@ -199,7 +199,6 @@ public class CourseDAOImpl implements CourseDAO {
 		     }
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return courses;
@@ -232,7 +231,6 @@ public class CourseDAOImpl implements CourseDAO {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-			// e.printStackTrace();
 		}
 
 		return Boolean.FALSE;
@@ -304,7 +302,6 @@ public class CourseDAOImpl implements CourseDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return professorId;

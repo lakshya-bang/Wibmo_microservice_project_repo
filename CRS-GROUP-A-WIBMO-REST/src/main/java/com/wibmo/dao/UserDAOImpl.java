@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.entity.User;
@@ -23,8 +25,10 @@ import com.wibmo.utils.DBUtils;
  * 
  */
 @Repository
-public class UserDAOImpl implements UserDAO{
-	private static Logger logger = Logger.getLogger(UserDAOImpl.class);
+public class UserDAOImpl implements UserDAO {
+	
+	private static final Logger logger = LogManager.getLogger(UserDAOImpl.class);
+	
 	@Override
 	public List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus) {
 		
@@ -52,7 +56,6 @@ public class UserDAOImpl implements UserDAO{
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return users;
@@ -81,7 +84,6 @@ public class UserDAOImpl implements UserDAO{
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	}
 
@@ -104,7 +106,6 @@ public class UserDAOImpl implements UserDAO{
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return null;
@@ -133,7 +134,6 @@ public class UserDAOImpl implements UserDAO{
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return Boolean.FALSE;
@@ -159,23 +159,17 @@ public class UserDAOImpl implements UserDAO{
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return Boolean.FALSE;
 	}
 
 	@Override
-	public List<Integer> find() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'find'");
-	}
-
-	@Override
 	public Boolean update(String status, int userId) {
-		// TODO Auto-generated method stub
+		
 		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
 		Connection conn = DBUtils.getConnection();
+		
 		try{
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, status);
@@ -184,10 +178,10 @@ public class UserDAOImpl implements UserDAO{
 			stmt.executeUpdate();
 			return true;
 		}
-		catch(SQLException se){
-			System.out.println(se.getMessage());
-			return false;
+		catch(SQLException e){
+			logger.error(e.getMessage());
 		}
+		return false;
 	}
 
 	@Override
@@ -204,14 +198,17 @@ public class UserDAOImpl implements UserDAO{
 			ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next()) {
-				return new User(rs.getInt("user_id"),
-				rs.getString("user_email"),RegistrationStatus.valueOf(rs.getString("reg_status")),
-				UserType.valueOf(rs.getString("user_type")));
+				return new User(
+						rs.getInt("user_id"),
+						rs.getString("user_email"),
+						RegistrationStatus.valueOf(
+								rs.getString("reg_status")),
+						UserType.valueOf(
+								rs.getString("user_type")));
 			}
 			
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-//			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 		return null;

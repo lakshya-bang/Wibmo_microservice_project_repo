@@ -3,14 +3,10 @@ package com.wibmo.entity;
 import java.io.Serializable;
 
 /**
- *
+ * Table name = professor
  */
-public class Professor implements Serializable {
+public class Professor {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private Integer professorId;	// professor_id (FK)
 	private String professorEmail;	// professor_email
 	private String professorName;	// professor_name

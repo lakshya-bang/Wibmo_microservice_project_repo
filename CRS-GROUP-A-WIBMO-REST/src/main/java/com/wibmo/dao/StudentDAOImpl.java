@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.constant.SQLConstants;
@@ -20,7 +22,9 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class StudentDAOImpl implements StudentDAO {
-	private static Logger logger = Logger.getLogger(StudentDAOImpl.class);
+	
+	private static final Logger logger = LogManager.getLogger(StudentDAOImpl.class);
+	
 	@Override
 	public Student findById(Integer studentId) {
 		
@@ -46,7 +50,6 @@ public class StudentDAOImpl implements StudentDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return student;
@@ -70,7 +73,6 @@ public class StudentDAOImpl implements StudentDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	}
 }

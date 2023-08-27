@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -22,7 +24,10 @@ import com.wibmo.utils.DBUtils;
 
 @Repository
 public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
-	private static Logger logger = Logger.getLogger(CourseDAOImpl.class);	@Override
+	
+	private static final Logger logger = LogManager.getLogger(CourseDAOImpl.class);	
+	
+	@Override
 	public void save(CourseRegistration courseRegistration) {
 		
 		String sql = "INSERT INTO user.registered_courses("
@@ -56,7 +61,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 	}
@@ -96,7 +100,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return courseRegistration;
@@ -126,7 +129,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return registrationStatus;
@@ -156,7 +158,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return count == 1;
@@ -197,7 +198,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return count == 1;
@@ -231,56 +231,10 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			}
 		} catch(SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return studentIds;
 	}
-	
-//	public Map<Integer,ArrayList<Integer>> getStudentsByCourseId(Professor professor) {
-//		String sql = "SELECT student_id "
-//				+ "FROM registered_courses "
-//				+ "WHERE"
-//				+ "primary_course_1_id = ?,"
-//				+ "OR"
-//				+ "primary_course_2_id = ?,"
-//				+ "OR"
-//				+ "primary_course_3_id = ?,"
-//				+ "OR"
-//				+ "primary_course_4_id = ?,";
-//		
-//		Map<Integer,ArrayList<Integer>> studentsByCourseID = new HashMap<Integer,ArrayList<Integer>>();
-//
-//		Connection conn = DBUtils.getConnection();
-//		ArrayList<Integer> courseIds = new ArrayList<Integer>();
-//		professor.getCoursesTaught().forEach(course -> courseIds.add(course.getCourseId()));
-//		try {
-//			for(Integer courseId : courseIds){
-//				PreparedStatement stmt = conn.prepareStatement(sql);
-//				stmt.setInt(1, courseId);
-//				stmt.setInt(2, courseId);
-//				stmt.setInt(3, courseId);
-//				stmt.setInt(4, courseId);
-//				ResultSet rs = stmt.executeQuery(sql);
-//				while(rs.next()){
-//					if(studentsByCourseID.containsKey(courseId)){
-//						studentsByCourseID.get(courseId).add(rs.getInt("student_id"));
-//					}
-//					else{
-//						ArrayList<Integer> temp = new ArrayList<Integer>();
-//						temp.add(rs.getInt("student_id"));
-//						studentsByCourseID.put(courseId, temp);
-//					}
-//				}
-//			}
-//			
-//		} catch (SQLException e) {
-//			System.out.println(e.getMessage());
-////			e.printStackTrace();
-//		}
-//		
-//		return studentIds;
-//	}
 
 	@Override
 	public CourseRegistration findByCourseIdAndSemesterAndYear(Integer courseId, Integer semester, Integer year) {
@@ -325,7 +279,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return courseRegistration;
@@ -355,7 +308,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return courseRegistrationId;
@@ -387,7 +339,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch(SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return -1;
@@ -428,7 +379,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch(SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return -1;
@@ -452,7 +402,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 	}
@@ -474,7 +423,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	}
 
@@ -511,7 +459,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return -1;
@@ -557,7 +504,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch(SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return -1;
@@ -583,7 +529,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	}
 
@@ -607,7 +552,6 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	}
 	
@@ -622,10 +566,10 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			stmt.setInt(2, courseRegId);
 			stmt.executeUpdate();
 			return true;
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			logger.error(e.getMessage());
-			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -662,7 +606,7 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 						RegistrationStatus.valueOf(rs.getString("reg_status"))));
 			}
 
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		}
 		
@@ -694,12 +638,9 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return Boolean.FALSE;
 	}
-//	
-//	@Override
-//	public boolean 
+	
 }

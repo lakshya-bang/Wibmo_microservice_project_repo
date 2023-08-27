@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.constant.SQLConstants;
@@ -24,7 +26,9 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class ReportCardDAOImpl implements ReportCardDAO {
-	private static Logger logger = Logger.getLogger(ReportCardDAOImpl.class);
+	
+	private static final Logger logger = LogManager.getLogger(ReportCardDAOImpl.class);
+	
 	@Override
 	public void save(ReportCard reportCard) {
 		
@@ -49,7 +53,6 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 	
 	}
@@ -90,40 +93,9 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		return semesterToReportCardsMap;	
 	}
-
-//	// TODO: Invalid renaming and redundant functionality
-//	@Override
-//	public boolean checkGradeDetails(ReportCard reportCard) {
-//		String sql = SQLConstants.FETCH_REPORT_CARD_BY_REPORT_DETAILS;
-//		Connection conn = com.wibmo.utils.DBUtils.getConnection();
-//		try {
-//			PreparedStatement stmt = conn.prepareStatement(sql);
-//			stmt.setInt(1,reportCard.getStudentId());
-//			stmt.setInt(2,reportCard.getCourseId());
-//			stmt.setInt(3, reportCard.getSemester());
-//			stmt.setInt(4, reportCard.getYear());
-//			ResultSet rs = stmt.executeQuery();
-//			
-//			// TODO: Should use .equals() method instead.
-//			if(rs.next() 
-//					&& (rs.getInt("student_id") == reportCard.getStudentId() 
-//						&& rs.getInt("course_id") == reportCard.getCourseId()  
-//						&& rs.getInt("semester") == reportCard.getSemester() 
-//						&& rs.getInt("year") == reportCard.getYear())){
-//				return true;
-//			}
-//
-//		} catch (SQLException e) {
-//			System.out.println(e.getMessage());
-////			e.printStackTrace();
-//		}
-//		
-//		return false;
-//	}
 
 	@Override
 	public void update(ReportCard reportCard) {
@@ -148,7 +120,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			
 			stmt.executeUpdate();
 		}
-		catch(SQLException se){
+		catch(SQLException e){
 			logger.error(e.getMessage());
 		}
 	}
@@ -164,6 +136,7 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 				+ "AND course_id = ? ";
 		
 		Connection conn = DBUtils.getConnection();
+		
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			
@@ -185,7 +158,6 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-//			e.printStackTrace();
 		}
 		
 		return reportCard;

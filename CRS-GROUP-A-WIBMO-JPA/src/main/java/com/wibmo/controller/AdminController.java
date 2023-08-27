@@ -22,16 +22,16 @@ import com.wibmo.service.UserServiceImpl;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
+	
 	@Autowired
-	UserServiceImpl userService;
+	private UserServiceImpl userService;
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
 		    value = "/user/pending-approval")
 	public ResponseEntity viewPendingApprovals() {
 		try {
-			return new ResponseEntity(userService.viewAccountsPendingForApproval(),HttpStatus.OK);
+			return new ResponseEntity(userService.getAccountsPendingForApproval(),HttpStatus.OK);
 		}
 		catch(Exception e) {
 			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
