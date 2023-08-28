@@ -1,0 +1,6 @@
+.classpath
+config.properties
+*.properties
+CRS-GROUP-A-WIBMO-JPA/src/main/resources/application.properties
+.settings/
+target/
