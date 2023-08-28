@@ -19,7 +19,8 @@ import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 
 /**
- * 
+ * Defines the contracts that to support all required operations
+ * on CourseRegistration.
  */
 public interface CourseRegistrationService {
 
