@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.dao.ProfessorDAO;
 import com.wibmo.dao.ProfessorDAOImpl;
 import com.wibmo.entity.Professor;
 
@@ -58,15 +57,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 	
 	@Override
 	public void add(Professor professor) {
-		
-		// TODO
-//		if(!userOperation.isUserExistsById(professor.getProfessorId())) {
-//			
-//		}
-		
 		professorDAO.save(professor);
-		
-		System.out.println("Account Registration sent to Admin for Approval.");
 	}
 	
 }

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -31,6 +32,11 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 	
 	@Override
 	public void save(ReportCard reportCard) {
+		
+		if(null != reportCard.getReportId()) {
+			update(reportCard);
+			return;
+		}
 		
 		String sql = "INSERT INTO report_card("
 				+ "student_id,"
@@ -57,11 +63,10 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 	
 	}
 
-	// TODO: Rename to findAllByStudentIdGroupedBySemester
 	@Override
-	public Map<Integer, ArrayList<ReportCard>> findAllByStudentId(Integer studentId) {
+	public List<ReportCard> findAllByStudentId(Integer studentId) {
 		
-		Map<Integer,ArrayList<ReportCard>> semesterToReportCardsMap = new HashMap<Integer,ArrayList<ReportCard>>();
+		List<ReportCard> reportCards = new ArrayList<>();
 		
 		String sql = SQLConstants.FETCH_REPORT_CARD_BY_STUDENT_ID;
 		
@@ -75,54 +80,21 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 			
 			while(rs.next()) {
 				
-				ReportCard reportCard = new ReportCard(
+				reportCards.add(new ReportCard(
 						rs.getInt("report_id"),
 						rs.getInt("student_id"),
 						rs.getInt("course_id"),
 						rs.getString("grade"),
 						rs.getInt("semester"),
-						rs.getInt("year"));
+						rs.getInt("year")));
 				
-				Integer semester = reportCard.getSemester();
-				
-				if(!semesterToReportCardsMap.containsKey(semester)) {
-					semesterToReportCardsMap.put(semester, new ArrayList<>());
-				}
-				semesterToReportCardsMap.get(semester).add(reportCard);
 			}
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		}
-		return semesterToReportCardsMap;	
-	}
-
-	@Override
-	public void update(ReportCard reportCard) {
 		
-		String sql = "UPDATE report_card "
-				+ "SET student_id = ?, "
-				+ "course_id = ?, "
-				+ "grade = ?, "
-				+ "semester = ?, "
-				+ "year = ? "
-				+ "WHERE report_id = ?";
-		
-		Connection conn = DBUtils.getConnection();
-		try{
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, reportCard.getStudentId());
-			stmt.setInt(2, reportCard.getCourseId());
-			stmt.setString(3, reportCard.getGrade());
-			stmt.setInt(4, reportCard.getSemester());
-			stmt.setInt(5, reportCard.getYear());
-			stmt.setInt(6, reportCard.getReportId());
-			
-			stmt.executeUpdate();
-		}
-		catch(SQLException e){
-			logger.error(e.getMessage());
-		}
+		return reportCards;	
 	}
 
 	@Override
@@ -163,4 +135,99 @@ public class ReportCardDAOImpl implements ReportCardDAO {
 		return reportCard;
 	}
 
+	@Override
+	public ReportCard findByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+		
+		ReportCard reportCard = null;
+		
+		String sql = "SELECT * FROM report_card "
+				+ "WHERE student_id = ? "
+				+ "AND course_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			stmt.setInt(2, courseId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				reportCard = new ReportCard(
+						rs.getInt("report_id"),
+						rs.getInt("student_id"),
+						rs.getInt("course_id"),
+						rs.getString("grade"),
+						rs.getInt("semester"),
+						rs.getInt("year"));
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		}
+		
+		return reportCard;
+	}
+	
+	@Override
+	public List<ReportCard> findByStudentIdAndSemester(Integer studentId, Integer semester) {
+		
+		List<ReportCard> reportCards = new ArrayList<>();
+		
+		String sql = "SELECT * FROM report_card "
+				+ "WHERE student_id = ? "
+				+ "AND semester = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			stmt.setInt(2, semester);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				reportCards.add(new ReportCard(
+						rs.getInt("report_id"),
+						rs.getInt("student_id"),
+						rs.getInt("course_id"),
+						rs.getString("grade"),
+						rs.getInt("semester"),
+						rs.getInt("year")));
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		}
+		
+		return reportCards;
+	}
+	
+	private void update(ReportCard reportCard) {
+		
+		String sql = "UPDATE report_card "
+				+ "SET student_id = ?, "
+				+ "course_id = ?, "
+				+ "grade = ?, "
+				+ "semester = ?, "
+				+ "year = ? "
+				+ "WHERE report_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try{
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, reportCard.getStudentId());
+			stmt.setInt(2, reportCard.getCourseId());
+			stmt.setString(3, reportCard.getGrade());
+			stmt.setInt(4, reportCard.getSemester());
+			stmt.setInt(5, reportCard.getYear());
+			stmt.setInt(6, reportCard.getReportId());
+			
+			stmt.executeUpdate();
+		}
+		catch(SQLException e){
+			logger.error(e.getMessage());
+		}
+	}
 }
+ 

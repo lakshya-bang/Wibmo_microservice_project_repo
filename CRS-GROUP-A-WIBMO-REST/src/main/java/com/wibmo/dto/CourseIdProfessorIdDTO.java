@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * 
  */
-public class ProfessorIdCourseIdDTO implements Serializable {
+public class CourseIdProfessorIdDTO implements Serializable {
 	/**
 	 * 
 	 */

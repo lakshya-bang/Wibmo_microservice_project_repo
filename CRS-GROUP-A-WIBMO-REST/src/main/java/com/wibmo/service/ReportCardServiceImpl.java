@@ -3,23 +3,28 @@
  */
 package com.wibmo.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.dao.ReportCardDAO;
 import com.wibmo.dao.ReportCardDAOImpl;
+import com.wibmo.dto.ReportCardRequestDTO;
+import com.wibmo.dto.ReportCardResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.ReportCard;
 import com.wibmo.entity.Student;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.StudentNotRegisteredForCourseException;
+import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 
 /**
  * 
@@ -28,99 +33,172 @@ import com.wibmo.exception.CourseNotExistsInCatalogException;
 public class ReportCardServiceImpl implements ReportCardService {
 
 	@Autowired
-	private CourseServiceImpl courseOperation;
+	private UserServiceImpl userService;
+	
+	@Autowired
+	private CourseServiceImpl courseService;
+	
+	@Autowired
+	private CourseRegistrationServiceImpl courseRegistrationService;
 	
 	@Autowired
 	private ReportCardDAOImpl reportCardDAO;
-	
-	@Override
-	public void viewReportCardByStudent(Student student) {
-		
-		// TODO: Map should be a TreeMap
-		Map<Integer, ArrayList<ReportCard>> semesterToReportCardMap = getSemesterToReportCardMapByStudentId(student.getStudentId());
-		
-		Set<Integer> courseIds = new HashSet<>();
-		
-		semesterToReportCardMap
-			.entrySet()
-			.stream()
-			.map(entry -> entry.getValue())
-			.forEach(semWiseReportCards -> {
-				semWiseReportCards
-					.forEach(reportCard -> {
-						courseIds.add(reportCard.getCourseId());
-					});
-			});
-		
-		Map<Integer, Course> courseIdToCourseMap = courseOperation.getCourseIdToCourseMap(courseIds);
-		
-		System.out.println("**** Student Report Card:- ****\n");
-		semesterToReportCardMap
-			.entrySet()
-			.stream()
-			.forEach(entry -> {
-				System.out.print(
-						  "\n+---------------+\n"
-						+ "Semester = " + entry.getKey() 
-						+ "\n+---------------+\n");
-				
-				System.out.println(" CourseId |\tCourseTitle\t| CourseType\t| Dept.\t| Grade\n"
-						+ "+------------------------------------------------------------------+");
-				
-				entry
-					.getValue()
-					.forEach(reportCard -> {
-						System.out.format("    %d\t| %s\t| %s\t| %s\t| %s\n", 
-							reportCard.getCourseId(),
-							courseIdToCourseMap.get(
-								reportCard.getCourseId()).getCourseTitle(), // C Programming Lang.
-							courseIdToCourseMap.get(
-								reportCard.getCourseId()).getCourseType(),	// PRIMARY						
-							courseIdToCourseMap.get(
-								reportCard.getCourseId()).getDepartment(),  // CSE, ECE 									
-							reportCard.getGrade());						// "A"
-					});
-				
-				System.out.println("+------------------------------------------------------------------+\n");
-			});
-	}
 
 	@Override
-	public void uploadReportCards(List<ReportCard> reportCards) {
+	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs) {
 		
-		if(null == reportCards || reportCards.isEmpty()) {
+		if(null == reportCardRequestDTOs) {
 			return;
 		}
 		
-		// TODO: Should use Batch-insert functionality
-		reportCards
-			.forEach(reportCard -> {
-				if(hasEntry(reportCard)) {
-					reportCardDAO.update(reportCard); //particular gradeID in DB.
+		// TODO: Add Input values validations
+		
+		Map<Integer, Course> courseIdToCourseMap = courseService
+				.getCourseIdToCourseMap(
+						reportCardRequestDTOs
+							.stream()
+							.map(reportCardRequestDTO -> reportCardRequestDTO.getCourseId())
+							.filter(Objects::nonNull)
+							.collect(Collectors.toSet()));
+		
+		List<ReportCard> reportCards = new ArrayList<>();
+		
+		reportCardRequestDTOs
+			.stream()
+			.forEach(reportCardRequestDTO -> {
+				ReportCard reportCard = reportCardDAO
+						.findByStudentIdAndCourseId(
+								reportCardRequestDTO.getStudentId(),
+								reportCardRequestDTO.getCourseId());
+				if(null != reportCard) {
+					reportCard.setGrade(reportCardRequestDTO.getGrade());
+					reportCards.add(reportCard);
 				} else {
-					reportCardDAO.save(reportCard);
+					// TODO: Use a Converter
+					reportCard = new ReportCard();
+					reportCard.setCourseId(reportCardRequestDTO.getCourseId());
+					reportCard.setStudentId(reportCardRequestDTO.getStudentId());
+					reportCard.setGrade(reportCardRequestDTO.getGrade());
+					reportCard.setSemester(
+							courseIdToCourseMap
+								.get(reportCardRequestDTO.getCourseId())
+								.getSemester());
+					reportCard.setYear(LocalDate.now().getYear());
+					reportCards.add(reportCard);
 				}
 			});
 		
-		System.out.println("Grade Upload Success.");
+		// TODO: Should use saveAll() instead
+		reportCards.forEach(reportCard -> reportCardDAO.save(reportCard));
 	}
 	
 	@Override
-	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId) { //ArrayList of grades
-		return reportCardDAO.findAllByStudentId(studentId);
+	public Map<Integer, List<ReportCardResponseDTO>> getSemesterToReportCardMapByStudentId(Integer studentId)
+		throws UserNotFoundException { //ArrayList of grades
+		
+		if(!userService.isUserExistsById(studentId)) {
+			throw new UserNotFoundException(studentId);
+		}
+		
+		List<ReportCard> reportCards = reportCardDAO.findAllByStudentId(studentId);
+		
+		// We will sort the Map by semester
+		Map<Integer, List<ReportCardResponseDTO>> semesterToReportCardDTOMap = new TreeMap<>();
+		
+		Map<Integer, Course> courseIdToCourseMap = courseService
+				.getCourseIdToCourseMap(
+						reportCards
+							.stream()
+							.map(reportCard -> reportCard.getCourseId())
+							.collect(Collectors.toSet()));
+		
+		reportCards
+			.forEach(reportCard -> {
+				int semester = reportCard.getSemester();
+				if(!semesterToReportCardDTOMap.containsKey(semester)) {
+					semesterToReportCardDTOMap.put(semester, new ArrayList<>());
+				}
+				semesterToReportCardDTOMap
+					.get(semester)
+					.add(new ReportCardResponseDTO(
+							reportCard.getCourseId(),
+							courseIdToCourseMap.get(
+									reportCard.getCourseId()).getCourseTitle(),
+							reportCard.getGrade()));
+			});
+		
+		return semesterToReportCardDTOMap;
+	}
+	
+	@Override
+	public String getGradeByStudentIdAndCourseId(Integer studentId, Integer courseId)
+		throws 
+			UserNotFoundException, 
+			CourseNotExistsInCatalogException, 
+			StudentNotRegisteredForCourseException {
+		
+		if(!userService.isUserExistsById(studentId)) {
+			throw new UserNotFoundException(studentId);
+		}
+		
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		if(!courseRegistrationService.hasRegistrationByStudentIdAndCourseId(studentId, courseId)) {
+			throw new StudentNotRegisteredForCourseException(studentId, courseId);
+		}
+		
+		return reportCardDAO
+				.findByStudentIdAndCourseId(studentId, courseId) 
+				.getGrade();
+	}
 
+	@Override
+	public List<ReportCardResponseDTO> getReportCardByStudentIdAndSemester(Integer studentId, Integer semester) 
+			throws 
+			UserNotFoundException, 
+			StudentNotRegisteredForSemesterException {
+		
+		if(!userService.isUserExistsById(studentId)) {
+			throw new UserNotFoundException(studentId);
+		}
+		
+		if(!courseRegistrationService
+				.hasRegistrationByStudentIdAndSemester(
+						studentId, semester)) {
+			throw new StudentNotRegisteredForSemesterException(studentId, semester);
+		}
+		
+		List<ReportCard> reportCards = reportCardDAO.findByStudentIdAndSemester(studentId, semester);
+		
+		Map<Integer, Course> courseIdToCourseMap = courseService
+				.getCourseIdToCourseMap(
+						reportCards
+							.stream()
+							.map(reportCard -> reportCard.getCourseId())
+							.collect(Collectors.toSet()));
+		
+		return reportCards
+				.stream()
+				.map(reportCard -> new ReportCardResponseDTO(
+						reportCard.getCourseId(),
+						courseIdToCourseMap.get(reportCard.getCourseId()).getCourseTitle(),
+						reportCard.getGrade()))
+				.collect(Collectors.toList());
 	}
 	
 	@Override
-	public ReportCard getReportCardByStudentForCourse(Student student, Integer courseId) {
-		return reportCardDAO.findByStudentAndCourseId(student, courseId);
+	public ReportCardResponseDTO getReportCardByStudentForCourse(Student student, Integer courseId) {
+		ReportCard reportCard = reportCardDAO.findByStudentAndCourseId(student, courseId);
+		Course course = courseService.getCourseIdToCourseMap(
+							Set.of(courseId))
+						.get(courseId);
+		return new ReportCardResponseDTO(
+				course.getCourseId(),
+				course.getCourseTitle(),
+				reportCard.getGrade());
 	}
 	
-	
-	/**************************** Utility Methods *****************************/
-	
-	private boolean hasEntry(ReportCard reportCard) {
-		return null != reportCard.getReportId();
-	}
 
 }

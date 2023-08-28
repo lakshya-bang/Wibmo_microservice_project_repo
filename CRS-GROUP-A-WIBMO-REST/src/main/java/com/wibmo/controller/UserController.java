@@ -16,6 +16,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.entity.Admin;
+import com.wibmo.entity.Professor;
+import com.wibmo.entity.Student;
+import com.wibmo.entity.User;
+import com.wibmo.exception.UserWithEmailAlreadyExistsException;
+import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.service.AdminServiceImpl;
+import com.wibmo.service.ProfessorServiceImpl;
+import com.wibmo.service.StudentServiceImpl;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;

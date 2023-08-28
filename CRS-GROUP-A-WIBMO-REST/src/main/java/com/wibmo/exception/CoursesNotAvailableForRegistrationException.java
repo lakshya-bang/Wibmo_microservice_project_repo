@@ -1,12 +1,10 @@
-/**
- * 
- */
 package com.wibmo.exception;
 
 import java.util.Set;
 
 /**
- * 
+ * Throws exception when the total seats are exhausted for the 
+ * given set of courseIds.
  */
 public class CoursesNotAvailableForRegistrationException extends Exception {
 
