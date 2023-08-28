@@ -13,9 +13,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.ReportCardDAO;
-import com.wibmo.dao.ReportCardDAOImpl;
+import com.wibmo.repository.*;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.ReportCard;
 import com.wibmo.entity.Student;
@@ -29,9 +27,8 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 	@Autowired
 	private CourseServiceImpl courseOperation;
-	
-	@Autowired
-	private ReportCardDAOImpl reportCardDAO;
+
+	private ReportCardRepository reportCardRepository;
 	
 	@Override
 	public void viewReportCardByStudent(Student student) {
@@ -96,9 +93,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 		reportCards
 			.forEach(reportCard -> {
 				if(hasEntry(reportCard)) {
-					reportCardDAO.update(reportCard); //particular gradeID in DB.
+					reportCardRepository.update(reportCard); //particular gradeID in DB.
 				} else {
-					reportCardDAO.save(reportCard);
+					reportCardRepository.save(reportCard);
 				}
 			});
 		
@@ -107,13 +104,13 @@ public class ReportCardServiceImpl implements ReportCardService {
 	
 	@Override
 	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId) { //ArrayList of grades
-		return reportCardDAO.findAllByStudentId(studentId);
+		return reportCardRepository.findAllByStudentId(studentId);
 
 	}
 	
 	@Override
 	public ReportCard getReportCardByStudentForCourse(Student student, Integer courseId) {
-		return reportCardDAO.findByStudentAndCourseId(student, courseId);
+		return reportCardRepository.findByStudentAndCourseId(student, courseId);
 	}
 	
 	

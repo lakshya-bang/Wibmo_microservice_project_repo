@@ -8,14 +8,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.CourseDAOImpl;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.repository.CourseRepository;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -25,14 +24,13 @@ public class CourseServiceImpl implements CourseService {
 	
 	@Autowired
 	private ProfessorServiceImpl professorOperation;
-	
-	@Autowired
-	private CourseDAOImpl courseDAO;
+
+	private CourseRepository courseRepository;
 	
 	// TODO: This implementation can be moved to Join query in Database
 	@Override
 	public void viewCourseDetailsBySemester(Integer currentSemester) {
-		List<Course> courses = courseDAO.findAllBySemester(currentSemester);
+		List<Course> courses = courseRepository.findAllBySemester(currentSemester);
 		Map<Integer, Professor> professorIdToProfessorMap = professorOperation
 				.getProfessorIdToProfessorMap(
 						courses
@@ -63,7 +61,7 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds) {
-		return courseDAO
+		return courseRepository
 				.findAllByCourseIdIn(courseIds)
 				.stream()
 				.collect(Collectors.toMap(
@@ -79,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
 			throw new UserNotFoundException(professorId);
 		}
 		
-		return courseDAO
+		return courseRepository
 				.findAllByProfessorId(professorId);
 	}
 	
@@ -91,30 +89,30 @@ public class CourseServiceImpl implements CourseService {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		return courseDAO
+		return courseRepository
 				.findCourseTypeByCourseId(courseId);
 	}
 
 	@Override
 	public Boolean isCourseExistsInCatalog(Integer courseId) {
-		return courseDAO
+		return courseRepository
 				.existsByCourseId(courseId);
 	}
 
 	@Override
 	public List<Course> getAllCourses() {
-		return courseDAO.findAll();
+		return (List<Course>) courseRepository.findAll();
 	}
 
 	@Override
-	public Boolean add(Course course) {
+	public Course add(Course course) {
 		
 		// TODO: Move to Validator
 		if(null == course || null != course.getCourseId()) {
-			return Boolean.FALSE;
+			return null;
 		}
 		
-		return courseDAO.save(course); 
+		return courseRepository.save(course); 
 	}
 
 	@Override
@@ -127,13 +125,13 @@ public class CourseServiceImpl implements CourseService {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		Integer professorId = courseDAO.findProfessorIdByCourseId(courseId);
+		Integer professorId = courseRepository.findProfessorIdByCourseId(courseId);
 		
 		if(null != professorId) {
 			throw new CannotDropCourseAssignedToProfessorException(courseId, professorId);
 		}
 		
-		return courseDAO.deleteCourseById(courseId);
+		return courseRepository.deleteCourseById(courseId);
 	}
 
 	@Override
@@ -150,7 +148,7 @@ public class CourseServiceImpl implements CourseService {
 			throw new UserNotFoundException(professorId);
 		}
 		
-		courseDAO.setProfessorIdAsWhereCourseIdIs(professorId, courseId);
+		courseRepository.setProfessorIdAsWhereCourseIdIs(professorId, courseId);
 	}
 
 	@Override
@@ -199,13 +197,13 @@ public class CourseServiceImpl implements CourseService {
 		
 		return null != professorId
 				&& professorId.equals(
-						courseDAO.findProfessorIdByCourseId(courseId));
+						courseRepository.findProfessorIdByCourseId(courseId));
 	}
 
 	/************************** Utility Methods **************************/
 	
 	private boolean isCourseAssignedToAnyProfessor(Integer courseId) {
-		return courseDAO.findProfessorIdByCourseId(courseId) != null;
+		return courseRepository.findProfessorIdByCourseId(courseId) != null;
 	}
 	
 	

@@ -2,20 +2,17 @@ package com.wibmo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.StudentDAOImpl;
 import com.wibmo.entity.Student;
-import com.wibmo.dao.StudentDAO;
+import com.wibmo.repository.StudentRepository;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-	@Autowired
-	private StudentDAOImpl studentDAO;
+	private StudentRepository studentRepository;
 	
 	@Override
 	public Student getStudentById(Integer studentId) {
-		return studentDAO.findById(studentId);
+		return studentRepository.findById(studentId);
 	}
 
 	@Override
@@ -25,7 +22,7 @@ public class StudentServiceImpl implements StudentService {
 			return;
 		}
 		
-		studentDAO.save(student);
+		studentRepository.save(student);
 		
 		System.out.println("Account Registration sent to Admin for Approval");
 	}

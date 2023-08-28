@@ -19,7 +19,7 @@ import com.wibmo.service.UserServiceImpl;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/admin")
 public class AdminController {
 	

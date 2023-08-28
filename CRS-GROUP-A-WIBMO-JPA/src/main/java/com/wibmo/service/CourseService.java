@@ -62,7 +62,7 @@ public interface CourseService {
 	 * @param course
 	 * @return
 	 */
-	public Boolean add(Course course);
+	public Course add(Course course);
 	
 	/**
 	 * 

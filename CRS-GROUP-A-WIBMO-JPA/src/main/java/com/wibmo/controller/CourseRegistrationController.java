@@ -34,7 +34,7 @@ import com.wibmo.service.CourseRegistrationServiceImpl;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/course-registration")
 public class CourseRegistrationController {
 	

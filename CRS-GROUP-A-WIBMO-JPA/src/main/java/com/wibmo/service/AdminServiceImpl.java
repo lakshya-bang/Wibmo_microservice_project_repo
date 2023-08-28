@@ -1,10 +1,11 @@
 package com.wibmo.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.AdminDAOImpl;
 import com.wibmo.entity.Admin;
+import com.wibmo.repository.AdminRepository;
 
 /**
  * 
@@ -12,17 +13,16 @@ import com.wibmo.entity.Admin;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-	@Autowired
-	private AdminDAOImpl adminDAO;
+	private AdminRepository adminRepository;
 	
 	@Override
-	public Admin getAdminById(int adminId) {
-		return adminDAO.findById(adminId);
+	public Optional<Admin> getAdminById(int adminId) {
+		return adminRepository.findById(adminId);
 	}
 	
 	@Override
 	public void add(Admin admin) {
-		adminDAO.save(admin);
+		adminRepository.save(admin);
 	}
 	
 }

@@ -29,7 +29,7 @@ import com.wibmo.entity.Professor;
 /**
  * 
  */
-@RestController
+
 @RequestMapping(value="/professor")
 public class ProfessorController {
 	

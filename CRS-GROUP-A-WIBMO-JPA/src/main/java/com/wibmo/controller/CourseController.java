@@ -66,6 +66,7 @@ public class CourseController {
 		
 	}
 	
+	
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method=RequestMethod.GET,
@@ -116,8 +117,8 @@ public class CourseController {
 			@RequestBody Course course) {
 //		try {
 		System.out.println("Course is :"+course);
-			Boolean response = courseService.add(course);
-			return new ResponseEntity(response, HttpStatus.OK);
+			Course savedCourse = courseService.add(course);
+			return new ResponseEntity(savedCourse, HttpStatus.OK);
 //		}
 //		catch(Exception e) {
 //			return new ResponseEntity("Internal Server Error !!",HttpStatus.NOT_FOUND);

@@ -19,8 +19,8 @@ import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
-import com.wibmo.dao.CourseRegistrationDAOImpl;
 import com.wibmo.dto.RegisteredCourse;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
@@ -44,8 +44,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	@Autowired
 	private CourseServiceImpl courseOperation;
 	
-	@Autowired
-	private CourseRegistrationDAOImpl courseRegistrationDAO;
+	private CourseRegistrationRepository courseRegistrationRepository;
 	
 	@Override
 	public void register(List<Integer> primaryCourseIds, List<Integer> alternativeCourseIds, Student student)
@@ -85,7 +84,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		courseRegistration.setAlternativeCourse2Id(alternativeCourseIds.get(1));
 		courseRegistration.setRegistrationStatus(RegistrationStatus.PENDING);
 		
-		courseRegistrationDAO.save(courseRegistration);
+		courseRegistrationRepository.save(courseRegistration);
 		
 		System.out.println("Course Registration Request sent to Admin for Approval.");
 		
@@ -99,7 +98,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
 		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
-		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
+		CourseRegistration courseRegistration = courseRegistrationRepository.findByStudent(student);
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
 		// TODO: Move to Join Query to avoid redundant code
@@ -149,7 +148,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new StudentNotRegisteredForSemesterException(student);
 		}
 		
-		return courseRegistrationDAO.findRegistrationStatusByStudent(student);
+		return courseRegistrationRepository.findRegistrationStatusByStudent(student);
 	}
 	
 	@Override
@@ -190,27 +189,27 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			}
 		}
 		
-		Integer courseRegistrationId = courseRegistrationDAO
+		Integer courseRegistrationId = courseRegistrationRepository
 				.findCourseRegistrationIdByStudent(student);
 		
 		
 		switch(courseType) {
 			
 		case ALTERNATIVE:
-			courseRegistrationDAO
+			courseRegistrationRepository
 				.setAlternativeCourseIdAsAtIndexByCourseRegistrationId(
 					courseId,
-					courseRegistrationDAO
+					courseRegistrationRepository
 						.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
 							courseRegistrationId),
 					courseRegistrationId);
 			break;
 			
 		case PRIMARY:
-			courseRegistrationDAO
+			courseRegistrationRepository
 				.setPrimaryCourseIdAsAtIndexByCourseRegistrationId(
 					courseId,
-					courseRegistrationDAO
+					courseRegistrationRepository
 						.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
 							courseRegistrationId),
 					courseRegistrationId);
@@ -234,24 +233,24 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new StudentNotRegisteredForCourseInSemesterException(student, courseId);
 		}
 		
-		Integer courseRegistrationId = courseRegistrationDAO.findCourseRegistrationIdByStudent(student);
+		Integer courseRegistrationId = courseRegistrationRepository.findCourseRegistrationIdByStudent(student);
 		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
 		
 		switch(courseType) {
 		
 		case ALTERNATIVE:
-			courseRegistrationDAO
+			courseRegistrationRepository
 				.setAlternativeCourseIdAsNullAtIndexByCourseRegistrationId(
-					courseRegistrationDAO
+					courseRegistrationRepository
 						.findAlternativeCourseIdIndexByCourseRegistrationIdForCourse(
 							courseRegistrationId, courseId), 
 					courseRegistrationId);
 			break;
 		
 		case PRIMARY:
-			courseRegistrationDAO
+			courseRegistrationRepository
 				.setPrimaryCourseIdAsNullAtIndexByCourseRegistrationId(
-					courseRegistrationDAO
+					courseRegistrationRepository
 						.findPrimaryCourseIdIndexByCourseRegistrationIdForCourse(
 							courseRegistrationId, courseId),
 					courseRegistrationId);
@@ -267,7 +266,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 					.findAllStudentIdsByCourseId(courseId)
 					.stream()
 					.map(studentId -> studentOperation.getStudentById(studentId))
@@ -281,7 +280,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
 		courses
 			.forEach(course -> {
-				CourseRegistration courseRegistration = courseRegistrationDAO
+				CourseRegistration courseRegistration = courseRegistrationRepository
 						.findByCourseIdAndSemesterAndYear(
 								course.getCourseId(), 
 								course.getSemester(),
@@ -298,7 +297,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	@Override
 	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus){
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 			.findAllByRegistrationStatus(registrationStatus);
 	}
 	
@@ -313,7 +312,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 //			throw new InvalidCourseRegistrationIdArgumentException(invalidCourseRegistrationId.get());
 //		}
 		
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 					.updateRegistrationStatusAsByIdIn(
 						registrationStatus,
 						courseRegistrationIds);
@@ -322,10 +321,10 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	@Override
 	public Boolean updateAllPendingCourseRegistrationsTo(
 			RegistrationStatus registrationStatus) {
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 					.updateRegistrationStatusAsByIdIn(
 							registrationStatus, 
-							courseRegistrationDAO
+							courseRegistrationRepository
 								.findAllByRegistrationStatus(RegistrationStatus.PENDING)
 								.stream()
 								.map(courseRegistration -> courseRegistration.getCourseRegId())
@@ -374,23 +373,23 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	/*************************** Utility Methods ********************************/
 	
 	private Boolean isStudentRegistered(Student student) {
-		return courseRegistrationDAO.existsByStudent(student);
+		return courseRegistrationRepository.existsByStudent(student);
 	}
 	
 	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 				.existsByStudentAndCourseId(student, courseId);
 	}
 	
 	private Boolean isStudentRegisteredForAllAlternativeCourses(Student student) {
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 				.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
-					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+					courseRegistrationRepository.findCourseRegistrationIdByStudent(student)) == -1;
 	}
 	
 	private Boolean isStudentRegisteredForAllPrimaryCourses(Student student) {
-		return courseRegistrationDAO
+		return courseRegistrationRepository
 				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
-					courseRegistrationDAO.findCourseRegistrationIdByStudent(student)) == -1;
+					courseRegistrationRepository.findCourseRegistrationIdByStudent(student)) == -1;
 	}	
 }

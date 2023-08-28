@@ -23,7 +23,7 @@ import com.wibmo.service.StudentServiceImpl;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/student")
 public class StudentController {
 

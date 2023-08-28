@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.ProfessorDAO;
-import com.wibmo.dao.ProfessorDAOImpl;
+import com.wibmo.repository.*;
 import com.wibmo.entity.Professor;
 
 /**
@@ -18,8 +16,7 @@ import com.wibmo.entity.Professor;
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
 
-	@Autowired
-	private ProfessorDAOImpl professorDAO;
+	private ProfessorRepository professorRepository;
 	
 	/**
 	 * @param professorId (Integer)
@@ -27,7 +24,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 */
 	@Override
 	public Professor getProfessorById(Integer professorId) {
-		return professorDAO
+		return professorRepository
 				.findAllByIdIn(Set.of(professorId))
 				.get(0);
 	}
@@ -39,7 +36,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 	@Override
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
-		return professorDAO
+		return professorRepository
 				.findAllByIdIn(professorIds)
 				.stream()
 				.collect(Collectors.toMap(
@@ -64,7 +61,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 //			
 //		}
 		
-		professorDAO.save(professor);
+		professorRepository.save(professor);
 		
 		System.out.println("Account Registration sent to Admin for Approval.");
 	}

@@ -9,12 +9,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.wibmo.dao.UserDAOImpl;
 import com.wibmo.entity.Student;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
+import com.wibmo.repository.UserRepository;
 
 /**
  * 
@@ -31,27 +30,26 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	public AdminServiceImpl adminService;
 	
-	@Autowired
-	private UserDAOImpl userDAO;
+	private UserRepository userRepository;
 
 	@Override
 	public List<User> viewAccountsPendingForApproval() {
 			// TODO Auto-generated method stub
-		List<User> pendingAccounts = userDAO.findAllByRegistrationStatus(RegistrationStatus.PENDING);
+		List<User> pendingAccounts = userRepository.findAllByRegistrationStatus(RegistrationStatus.PENDING);
 			return pendingAccounts;
 		}
 	
 	@Override //Will go in Admin route
 	public boolean approveLoginById(int userId) {
 		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("APPROVED", userId);
+		boolean flag = userRepository.update("APPROVED", userId);
 		return flag;
 	}
 
 	@Override //Will go in Admin route
 	public boolean rejectLoginById(int userId) {
 		// TODO Auto-generated method stub
-		boolean flag = userDAO.update("REJECTED", userId);
+		boolean flag = userRepository.update("REJECTED", userId);
 		return flag;
 		
 	}
@@ -69,7 +67,7 @@ public class UserServiceImpl implements UserService{
 			throw new UserWithEmailAlreadyExistsException(user.getUserEmail());
 		}
 		
-		userDAO.save(user);
+		userRepository.save(user);
 		
 //		switch(user.getUserType()) {
 //		case STUDENT:
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public Integer getUserIdByEmail(String email) {
-		return userDAO.findUserIdByEmail(email);
+		return userRepository.findUserIdByEmail(email);
 	}
 	
 	@Override
@@ -100,7 +98,7 @@ public class UserServiceImpl implements UserService{
 			return Boolean.FALSE;
 		}
 		
-		return userDAO.updateRegistrationStatusAsByIdIn(
+		return userRepository.updateRegistrationStatusAsByIdIn(
 								registrationStatus, userIds);
 		
 	}
@@ -109,9 +107,9 @@ public class UserServiceImpl implements UserService{
 	public Boolean updateAllPendingAccountRegistrationsTo(
 			RegistrationStatus registrationStatus) {
 		
-		return userDAO.updateRegistrationStatusAsByIdIn(
+		return userRepository.updateRegistrationStatusAsByIdIn(
 				registrationStatus,
-				userDAO
+				userRepository
 					.findAllByRegistrationStatus(
 						RegistrationStatus.PENDING)
 					.stream()
@@ -121,13 +119,13 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public Boolean isUserExistsById(Integer userId) {
-		return userDAO.existsById(userId);
+		return userRepository.existsById(userId);
 	}
 	
 
 	/*************************** Utility Methods ***************************/
 	
 	private boolean isEmailAlreadyInUse(String email) {
-		return null != userDAO.findUserIdByEmail(email);
+		return null != userRepository.findUserIdByEmail(email);
 	}
 }

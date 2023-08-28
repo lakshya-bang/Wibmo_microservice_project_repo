@@ -30,7 +30,7 @@ import com.wibmo.utils.UserControllerUtils;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/user")
 public class UserController {
 	

@@ -23,8 +23,7 @@ import com.wibmo.service.AuthenticationServiceImpl;
 /**
  * 
  */
-@RestController
-@Component
+
 
 public class AuthenticationController {
 	
