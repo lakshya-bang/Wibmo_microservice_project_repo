@@ -11,12 +11,8 @@ import com.wibmo.entity.Student;
 /**
  * 
  */
-@Repository
-@Component
+
 public interface StudentRepository {
 
-	Student findById(Integer studentId);
-
-	void save(Student student);
 
 }

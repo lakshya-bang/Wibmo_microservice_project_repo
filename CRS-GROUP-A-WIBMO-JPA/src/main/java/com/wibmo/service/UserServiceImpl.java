@@ -18,7 +18,7 @@ import com.wibmo.repository.UserRepository;
 /**
  * 
  */
-@Service
+
 public class UserServiceImpl implements UserService{
 	
 	@Autowired

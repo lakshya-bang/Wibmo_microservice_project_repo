@@ -13,8 +13,7 @@ import com.wibmo.entity.Professor;
 /**
  * 
  */
-@Repository
-@Component
+
 public interface ProfessorRepository extends CrudRepository<Professor, Integer>{
 
 }

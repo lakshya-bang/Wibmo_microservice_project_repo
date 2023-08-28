@@ -9,8 +9,7 @@ import com.wibmo.entity.Admin;
 /**
  * 
  */
-@Repository
-@Component
+
 public interface AdminRepository extends CrudRepository<Admin, Integer>{
-	
+
 }

@@ -22,7 +22,7 @@ import com.wibmo.exception.CourseNotExistsInCatalogException;
 /**
  * 
  */
-@Service
+
 public class ReportCardServiceImpl implements ReportCardService {
 
 	@Autowired

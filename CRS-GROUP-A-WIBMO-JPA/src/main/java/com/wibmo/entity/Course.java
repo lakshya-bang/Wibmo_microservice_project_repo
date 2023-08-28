@@ -47,7 +47,7 @@ public class Course {
     @NotNull
 	private String department;		// department
     
-    @Column(name = "professor_id")
+    @Column(name = "professor_id", insertable=false, updatable = false)
     private Integer professorId;
     
     /**

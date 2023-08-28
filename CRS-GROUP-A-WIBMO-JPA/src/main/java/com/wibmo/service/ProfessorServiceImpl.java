@@ -13,7 +13,7 @@ import com.wibmo.entity.Professor;
 /**
  * 
  */
-@Service
+
 public class ProfessorServiceImpl implements ProfessorService {
 
 	private ProfessorRepository professorRepository;

@@ -31,7 +31,7 @@ public class AdminController {
 		    value = "/user/pending-approval")
 	public ResponseEntity viewPendingApprovals() {
 		try {
-			return new ResponseEntity(userService.getAccountsPendingForApproval(),HttpStatus.OK);
+			return new ResponseEntity(userService.viewAccountsPendingForApproval(),HttpStatus.OK);
 		}
 		catch(Exception e) {
 			return new ResponseEntity("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);

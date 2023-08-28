@@ -88,7 +88,7 @@ public class CourseRegistrationController {
 		List<RegisteredCourse> registeredCourses;
 		try {
 			registeredCourses = courseRegistrationService
-					.viewRegisteredCoursesByStudent(new Student(studentId,null,null,semester));
+					.viewRegisteredCoursesByStudent(new Student());
 			return new ResponseEntity(registeredCourses,HttpStatus.OK);
 		}
 		catch(Exception e) {

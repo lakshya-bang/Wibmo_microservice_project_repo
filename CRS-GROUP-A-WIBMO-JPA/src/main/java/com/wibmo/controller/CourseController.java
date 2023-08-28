@@ -27,7 +27,7 @@ import com.wibmo.exception.UserNotFoundException;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/course")
 public class CourseController {
 	

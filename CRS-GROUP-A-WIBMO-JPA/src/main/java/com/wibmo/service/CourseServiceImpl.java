@@ -16,7 +16,6 @@ import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.repository.CourseRepository;
 
-@Service
 public class CourseServiceImpl implements CourseService {
 
 	@Autowired

@@ -11,8 +11,7 @@ import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 
-@Repository
-@Component
+
 public interface CourseRegistrationRepository {
 
 	RegistrationStatus findRegistrationStatusByStudent(Student student);

@@ -20,12 +20,8 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 	
 	@Override
 	public User login(String userEmail, String userPassword) {
-		if(authenticationRepository.authenticate(userEmail, userPassword)) {
-			// TODO: move to userOperation.getUserByEmail()
-			return authenticationRepository
-					.getUserDetails(userEmail);
-		}
-		return null;
+		User user = authenticationRepository.authenticate(userEmail, userPassword);
+		return user != null && user.getRegistrationStatus().toString() == "APPROVED" ? user : null;
 	}
 
 }

@@ -35,25 +35,25 @@ public class CourseRegistration {
 	 @Column(name = "semester")
 	 private Integer semester;
 	 
-	 @Column(name = "primary_course_1_id")
+	 @Column(name = "primary_course_1_id", insertable=false, updatable = false)
 	    private Integer primaryCourse1Id;
 
-	    @Column(name = "primary_course_2_id")
+	    @Column(name = "primary_course_2_id", insertable=false, updatable = false)
 	    private Integer primaryCourse2Id;
 
-	    @Column(name = "primary_course_3_id")
+	    @Column(name = "primary_course_3_id", insertable=false, updatable = false)
 	    private Integer primaryCourse3Id;
 
-	    @Column(name = "primary_course_4_id")
+	    @Column(name = "primary_course_4_id", insertable=false, updatable = false)
 	    private Integer primaryCourse4Id;
 
-	    @Column(name = "alternative_course_1_id")
+	    @Column(name = "alternative_course_1_id", insertable=false, updatable = false)
 	    private Integer alternativeCourse1Id;
 
-	    @Column(name = "alternative_course_2_id")
+	    @Column(name = "alternative_course_2_id", insertable=false, updatable = false)
 	    private Integer alternativeCourse2Id;
 
-	    @Column(name = "student_id", nullable = false)
+	    @Column(name = "student_id", nullable = false, insertable=false, updatable = false)
 	    private int studentId;
 	    
 	    @Column(name = "reg_status")

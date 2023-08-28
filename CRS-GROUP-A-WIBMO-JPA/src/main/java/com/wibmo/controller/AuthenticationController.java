@@ -24,7 +24,7 @@ import com.wibmo.service.AuthenticationServiceImpl;
  * 
  */
 
-
+@RestController
 public class AuthenticationController {
 	
 	@Autowired

@@ -29,7 +29,6 @@ import com.wibmo.entity.Student;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.RegistrationStatus;
 
-@Service
 public class CourseRegistrationServiceImpl implements CourseRegistrationService {
 	
 	@Autowired

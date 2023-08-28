@@ -17,16 +17,8 @@ import com.wibmo.enums.RegistrationStatus;
 /**
  * 
  */
-@Repository
-@Component
+
 public interface UserRepository extends CrudRepository<User, Integer>{
 
-	List<User> findAllByRegistrationStatus(RegistrationStatus pending);
-
-	boolean update(String string, int userId);
-
-	Integer findUserIdByEmail(String email);
-
-	Boolean updateRegistrationStatusAsByIdIn(RegistrationStatus registrationStatus, Set<Integer> userIds);
 
 }

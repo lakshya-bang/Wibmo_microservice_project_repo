@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.wibmo.entity.Student;
 import com.wibmo.repository.StudentRepository;
 
-@Service
+
 public class StudentServiceImpl implements StudentService {
 
 	private StudentRepository studentRepository;

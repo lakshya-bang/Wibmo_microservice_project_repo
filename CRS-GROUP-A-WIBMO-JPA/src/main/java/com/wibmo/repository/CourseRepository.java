@@ -17,24 +17,9 @@ import com.wibmo.enums.CourseType;
 /**
  * 
  */
-@Repository
-@Component
+
 public interface CourseRepository extends CrudRepository<Course, Integer>{
 
-	List<Course> findAllBySemester(Integer currentSemester);
 
-	Collection<Course> findAllByCourseIdIn(Set<Integer> courseIds);
-
-	List<Course> findAllByProfessorId(Integer professorId);
-
-	CourseType findCourseTypeByCourseId(Integer courseId);
-
-	Boolean existsByCourseId(Integer courseId);
-
-	Integer findProfessorIdByCourseId(Integer courseId);
-
-	void setProfessorIdAsWhereCourseIdIs(Integer professorId, Integer courseId);
-
-	Boolean deleteCourseById(Integer courseId);
 
 }
