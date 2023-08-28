@@ -3,21 +3,22 @@
  */
 package com.wibmo.exception;
 
-import com.wibmo.entity.Student;
-
 /**
  * 
  */
 public class StudentNotRegisteredForSemesterException extends Exception {
 
-	private Student student;
+	private Integer studentId;
+	private Integer semester;
 	
-	public StudentNotRegisteredForSemesterException(Student student) {
-		this.student = student;
+	public StudentNotRegisteredForSemesterException(
+			Integer studentId, Integer semester) {
+		this.studentId = studentId;
+		this.semester = semester;
 	}
 	
 	@Override
 	public String getMessage() {
-		return "Student Id: " + student.getStudentId() + " NOT Registered for Semester: " + student.getCurrentSemester();
+		return "Student Id: " + studentId + " NOT Registered for Semester: " + semester + ".";
 	}
 }

@@ -642,5 +642,62 @@ public class CourseRegistrationDAOImpl implements CourseRegistrationDAO {
 		
 		return Boolean.FALSE;
 	}
+
+	@Override
+	public Boolean existsByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+		
+		String sql = "SELECT COUNT(*) AS count "
+				+ "FROM registered_courses "
+				+ "WHERE student_id = ? "
+				+ "AND course_id = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			stmt.setInt(2, courseId);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()
+				&& rs.getInt("count") == 1) {
+				return Boolean.TRUE;
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		}
+		
+		return Boolean.FALSE;
+	}
+
+	@Override
+	public Boolean existsByStudentIdAndSemester(Integer studentId, Integer semester) {
+		
+		String sql = "SELECT COUNT(*) AS count "
+				+ "FROM registered_courses "
+				+ "WHERE student_id = ? "
+				+ "AND semester = ?";
+		
+		Connection conn = DBUtils.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			stmt.setInt(2, semester);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()
+				&& rs.getInt("count") == 1) {
+				return Boolean.TRUE;
+				
+			}
+			
+		} catch (SQLException e) {
+			logger.info(e.getMessage());
+		}
+		
+		return Boolean.FALSE;
+	}
 	
 }

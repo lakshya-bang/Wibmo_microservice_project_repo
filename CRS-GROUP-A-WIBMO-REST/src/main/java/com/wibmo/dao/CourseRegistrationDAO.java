@@ -169,4 +169,24 @@ public interface CourseRegistrationDAO {
 			RegistrationStatus registrationIds,
 			Set<Integer> courseRegistrationIds);
 
+	/**
+	 * 
+	 * @param studentId
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean existsByStudentIdAndCourseId(
+			Integer studentId,
+			Integer courseId);
+
+	/**
+	 * 
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 */
+	public Boolean existsByStudentIdAndSemester(
+			Integer studentId, 
+			Integer semester);
+	
 }

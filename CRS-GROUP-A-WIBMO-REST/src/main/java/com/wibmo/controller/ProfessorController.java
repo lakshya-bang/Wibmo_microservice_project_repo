@@ -30,7 +30,7 @@ import com.wibmo.entity.Professor;
  * 
  */
 @RestController
-@RequestMapping(value="/professor")
+@RequestMapping("/professor")
 public class ProfessorController {
 	
 	private static final Logger logger = LogManager.getLogger(ProfessorController.class);
@@ -38,18 +38,10 @@ public class ProfessorController {
 	@Autowired
 	private ProfessorServiceImpl professorService;
 	
-//	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
-//		    method = RequestMethod.GET,
-//		    value = "/hello")
-//	@ResponseBody
-//	public String hello() {
-//		return "hello";
-//	}
-	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/{id}")
+		    value = "/get/{id}")
 	public ResponseEntity getProfessorByID(@PathVariable("id") Integer professorId) {
 
 		Professor professor = professorService.getProfessorById(professorId);
@@ -58,29 +50,5 @@ public class ProfessorController {
 		}
 		return new ResponseEntity(professor, HttpStatus.OK);
 	}
-	
-	
-	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
-		    method = RequestMethod.GET,
-		    value = "/mapping")
-	@ResponseBody
-	public ResponseEntity getProfessorMappingbyProfessorId(@RequestBody Set<Integer> professorIds) {
 
-		Map<Integer, Professor> professorMap = professorService.getProfessorIdToProfessorMap(professorIds);
-		if (professorMap == null) {
-			return new ResponseEntity("No Professor mapping found for ID " + professorIds, HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity(professorMap, HttpStatus.OK);
-	}
-	
-	
-//	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
-//		    method = RequestMethod.POST,
-//		    value = "/add")
-//	@ResponseBody
-//	public ResponseEntity createProfessor(@RequestBody Professor professor) {
-//		professorService.add(professor);
-//		return new ResponseEntity(professor, HttpStatus.OK);
-//	}
-	
 }
