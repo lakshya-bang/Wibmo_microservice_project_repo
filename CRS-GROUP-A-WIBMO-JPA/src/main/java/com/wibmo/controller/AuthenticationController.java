@@ -23,55 +23,23 @@ import com.wibmo.service.AuthenticationServiceImpl;
 /**
  * 
  */
-
-
-public class AuthenticationController {
-	
-	@Autowired
-	private AuthenticationServiceImpl authenticationService;
-	
-	@RequestMapping(
-			produces = MediaType.APPLICATION_JSON, 
-		    method = RequestMethod.POST,
-		    value = "/login")
-	public ResponseEntity login(@RequestBody Creds creds) {
-		User user = authenticationService.login(creds.userName, creds.password);
-		if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(
-				user.getRegistrationStatus())) {
-			return new ResponseEntity("User Account Not Approved by Admin", HttpStatus.OK);
-		}
-		return new ResponseEntity(user,HttpStatus.OK);
-	}
-	
-}
-
-@Component
-class Creds{
-	String userName;
-	String password;
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-} 
+//@RestController
+//public class AuthenticationController {
+//	
+//	@Autowired
+//	private AuthenticationServiceImpl authenticationService;
+//	
+//	@RequestMapping(
+//			produces = MediaType.APPLICATION_JSON, 
+//		    method = RequestMethod.POST,
+//		    value = "/login")
+//	public ResponseEntity login(@RequestBody Creds creds) {
+//		User user = authenticationService.login(creds.userName, creds.password);
+//		if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(
+//				user.getRegistrationStatus())) {
+//			return new ResponseEntity("User Account Not Approved by Admin", HttpStatus.OK);
+//		}
+//		return new ResponseEntity(user,HttpStatus.OK);
+//	}
+//	
+//}

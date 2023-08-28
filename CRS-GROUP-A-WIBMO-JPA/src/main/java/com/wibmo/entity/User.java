@@ -30,30 +30,49 @@ public class User {
 	@Column(name = "user_id")
 	private Integer userId;							// user_id (PK)
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-	private Student student;
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-	private Admin admin;
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-	private Professor professor;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+//	private Student student;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+//	private Admin admin;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+//	private Professor professor;
 	
 	@Column(name = "user_email")
-	@NotNull
+//	@NotNull
 	private String userEmail;	// user_email
 	
 	@Column(name = "user_type")
-	@NotNull
+//	@NotNull
 	@Enumerated(EnumType.STRING)
 	private UserType userType;	// user_type
 	
 	@Column(name = "reg_status")
-	@NotNull
+//	@NotNull
 	@Enumerated(EnumType.STRING)
 	private RegistrationStatus registrationStatus;	// reg_status
 	
 	@Column(name = "user_password")
-	@NotNull
+//	@NotNull
 	private String password;
+
+	public User() {}
+	
+	public User(
+			Integer userId, 
+//			@NotNull 
+			String userEmail, 
+//			@NotNull 
+			UserType userType,
+//			@NotNull 
+			RegistrationStatus registrationStatus, 
+//			@NotNull 
+			String password) {
+		this.userId = userId;
+		this.userEmail = userEmail;
+		this.userType = userType;
+		this.registrationStatus = registrationStatus;
+		this.password = password;
+	}
 
 	/**
 	 * @return the userId

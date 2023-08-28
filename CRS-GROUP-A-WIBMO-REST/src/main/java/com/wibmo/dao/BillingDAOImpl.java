@@ -8,7 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.dto.PaymentDebitDTO;
@@ -23,7 +24,9 @@ import com.wibmo.utils.DBUtils;
  */
 @Repository
 public class BillingDAOImpl implements BillingDAO{
-	private Logger logger = Logger.getLogger(BillingDAOImpl.class);
+	
+	private Logger logger = LogManager.getLogger(BillingDAOImpl.class);
+	
 	@Override
 	public Bill findByStudentId(Integer studentId) {
 		// TODO Auto-generated method stub
@@ -52,6 +55,7 @@ public class BillingDAOImpl implements BillingDAO{
 		}
 		return bill;
 	}
+	
 	@Override
 	public boolean verifyDebitDetails(PaymentDebitDTO paymentDebitDTO,Integer studentId) {
 		// TODO Auto-generated method stub
@@ -79,6 +83,7 @@ public class BillingDAOImpl implements BillingDAO{
 		
 		return false;
 	}
+	
 	@Override
 	public boolean verifyNetBankingDetails(PaymentNetBankingDTO paymentNetBankingDTO, Integer studentId) {
 		// TODO Auto-generated method stub
@@ -104,6 +109,7 @@ public class BillingDAOImpl implements BillingDAO{
 		}
 		return false;
 	}
+	
 	@Override
 	public boolean verifyUPIDetails(PaymentUPIDTO paymentUPIDTO, Integer studentId) {
 		// TODO Auto-generated method stub
@@ -127,6 +133,7 @@ public class BillingDAOImpl implements BillingDAO{
 		}
 		return false;
 	}
+	
 	@Override
 	public boolean payBill(Integer studentId) {
 		// TODO Auto-generated method stub

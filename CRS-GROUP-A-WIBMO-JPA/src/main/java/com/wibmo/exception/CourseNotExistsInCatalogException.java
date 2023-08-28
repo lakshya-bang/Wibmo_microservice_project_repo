@@ -4,7 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Throws exception when Course does not exist for a given courseId.
  */
 public class CourseNotExistsInCatalogException extends Exception {
 

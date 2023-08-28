@@ -22,10 +22,10 @@ import com.wibmo.exception.UserNotFoundException;
 public class CourseServiceImpl implements CourseService {
 
 	@Autowired
-	private UserServiceImpl userOperation;
+	private UserServiceImpl userService;
 	
 	@Autowired
-	private ProfessorServiceImpl professorOperation;
+	private ProfessorServiceImpl professorService;
 	
 	@Autowired
 	private CourseDAOImpl courseDAO;
@@ -35,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
 	public List<CourseProfessorDTO> getCourseDetailsBySemester(Integer semester) {
 		
 		List<Course> courses = courseDAO.findAllBySemester(semester);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation
+		Map<Integer, Professor> professorIdToProfessorMap = professorService
 				.getProfessorIdToProfessorMap(
 						courses
 							.stream()
@@ -67,7 +67,7 @@ public class CourseServiceImpl implements CourseService {
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId) 
 			throws UserNotFoundException {
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
@@ -138,7 +138,7 @@ public class CourseServiceImpl implements CourseService {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
@@ -155,7 +155,7 @@ public class CourseServiceImpl implements CourseService {
 			return false;
 		}
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		

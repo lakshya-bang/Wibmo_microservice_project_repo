@@ -28,56 +28,69 @@ import com.wibmo.enums.CourseType;
 @Entity
 @Table(name = "course")
 public class Course {
-    @Column(name = "course_id")
+    
     @Id
+    @Column(name = "course_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+//    @NotNull
     private Integer courseId;		// course_id (PK)
 
 	@Column(name = "course_title")
-    @NotNull
+//    @NotNull
 	private String courseTitle;		// course_title
+	
     @Column(name = "semester")
-    @NotNull
+//    @NotNull
 	private Integer semester;		// semester
+    
     @Column(name = "year")
-    @NotNull
+//    @NotNull
 	private Integer year;			// year
+    
     @Column(name = "department")
-    @NotNull
+//    @NotNull
 	private String department;		// department
     
     @Column(name = "professor_id")
-    private Integer professorId;
-    
-    /**
-	 * @param professorId the professorId to set
-	 */
-	public void setProfessorId(Integer professorId) {
-		this.professorId = professorId;
-	}
+    private Integer professorId;	// professor_id
 
-	@ManyToOne
-    @JoinColumn(name = "professor_id")
-	private Professor professor = null;	// professor_id
+//	@ManyToOne
+//    @JoinColumn(name = "professor_id")
+//	private Professor professor = null;	
+	
     @Column(name = "is_cancelled")
-    @NotNull
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+//    @NotNull
+//    @Type(type = "org.hibernate.type.NumericBooleanType")
 	private Boolean isCancelled = false;	// is_cancelled
+    
     @Column(name = "no_of_seats")
-    @NotNull
+//    @NotNull
 	private Integer noOfSeats = 10;		// no_of_seats
+    
     @Column(name = "course_type")
-    @NotNull
+//    @NotNull
     @Enumerated(EnumType.STRING)
-	private CourseType courseType;	// course_type
-
-    @Override
-	public String toString() {
-		return "Course [courseId=" + courseId + ", courseTitle=" + courseTitle + ", semester=" + semester + ", year="
-				+ year + ", department=" + department + ", professorId=" //Add here 
-				+ ", isCancelled=" + isCancelled
-				+ ", noOfSeats=" + noOfSeats + ", courseType=" + courseType + "]";
+	private CourseType courseType;		// course_type
+    
+    public Course(
+			Integer courseId, 
+			String courseTitle, 
+			Integer semester, 
+			Integer year, 
+			String department,
+			Integer professorId, 
+			Boolean isCancelled, 
+			Integer noOfSeats,
+			CourseType courseType) {
+		this.courseId = courseId;
+		this.courseTitle = courseTitle;
+		this.semester = semester;
+		this.year = year;
+		this.department = department;
+		this.professorId = professorId;
+		this.isCancelled = isCancelled;
+		this.noOfSeats = noOfSeats;
+		this.courseType = courseType;
 	}
     
     /**
@@ -191,9 +204,27 @@ public class Course {
    	public void setCourseType(CourseType courseType) {
    		this.courseType = courseType;
    	}
+
+	/**
+	 * @return the professorId
+	 */
+	public Integer getProfessorId() {
+		return professorId;
+	}
+
+	/**
+	 * @param professorId the professorId to set
+	 */
+	public void setProfessorId(Integer professorId) {
+		this.professorId = professorId;
+	}
    	
-   	public Integer getProfessorId() {
-   		return professor.getProfessorId();
-   	}
+	@Override
+	public String toString() {
+		return "Course [courseId=" + courseId + ", courseTitle=" + courseTitle + ", semester=" + semester + ", year="
+				+ year + ", department=" + department + ", professorId=" //Add here 
+				+ ", isCancelled=" + isCancelled
+				+ ", noOfSeats=" + noOfSeats + ", courseType=" + courseType + "]";
+	}
 	
 }

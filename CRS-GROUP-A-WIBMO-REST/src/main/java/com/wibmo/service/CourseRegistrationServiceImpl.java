@@ -42,13 +42,13 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	private UserServiceImpl userOperation;
 	
 	@Autowired
-	private StudentServiceImpl studentOperation;
+	private StudentServiceImpl studentService;
 	
 	@Autowired
-	private ProfessorServiceImpl professorOperation;
+	private ProfessorServiceImpl professorService;
 	
 	@Autowired
-	private CourseServiceImpl courseOperation;
+	private CourseServiceImpl courseService;
 	
 	@Autowired
 	private CourseRegistrationDAOImpl courseRegistrationDAO;
@@ -71,12 +71,12 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		}
 		
 		for(Integer courseId : primaryCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
 		for(Integer courseId : alternativeCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
@@ -134,9 +134,9 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		if(null != (courseId = courseRegistration.getAlternativeCourse2Id())) {
 			courseIds.add(courseId);
 		}
-		Map<Integer, Course> courseIdToCourseMap = courseOperation
+		Map<Integer, Course> courseIdToCourseMap = courseService
 				.getCourseIdToCourseMap(courseIds);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation.getProfessorIdToProfessorMap(
+		Map<Integer, Professor> professorIdToProfessorMap = professorService.getProfessorIdToProfessorMap(
 				courseIdToCourseMap
 					.entrySet()
 					.stream()
@@ -187,7 +187,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 					student.getCurrentSemester());
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
@@ -197,7 +197,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		}
 		
 		// TODO: CourseLite object can help avoid redundant DB access
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
 				
 		switch(courseType) {
 		
@@ -262,7 +262,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		}
 		
 		Integer courseRegistrationId = courseRegistrationDAO.findCourseRegistrationIdByStudent(student);
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
 		
 		switch(courseType) {
 		
@@ -290,21 +290,21 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	@Override
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) throws CourseNotExistsInCatalogException {
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
 					.stream()
-					.map(studentId -> studentOperation.getStudentById(studentId))
+					.map(studentId -> studentService.getStudentById(studentId))
 					.collect(Collectors.toList());
 	}
 
 	@Override
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException {
-		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
+		List<Course> courses = courseService.getCoursesAssignedToProfessor(professorId);
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
 		courses
 			.forEach(course -> {
@@ -313,7 +313,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 								course.getCourseId(), 
 								course.getSemester(),
 								course.getYear());
-				Student student = studentOperation.getStudentById(courseRegistration.getStudentId());
+				Student student = studentService.getStudentById(courseRegistration.getStudentId());
 				if(!courseIdToRegisteredStudentsMap.containsKey(course.getCourseId())) {
 					courseIdToRegisteredStudentsMap.put(course.getCourseId(), new ArrayList<>());
 				}
@@ -378,11 +378,11 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new UserNotFoundException(professorId);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		if(!courseOperation.isProfessorAssignedForCourse(professorId, courseId)) {
+		if(!courseService.isProfessorAssignedForCourse(professorId, courseId)) {
 			throw new ProfessorNotAssignedForCourseException(professorId, courseId);
 		}
 		
@@ -400,7 +400,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			throw new UserNotFoundException(studentId);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		

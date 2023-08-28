@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.wibmo.dto.CourseProfessorDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
@@ -16,8 +17,9 @@ public interface CourseService {
 	/**
 	 * 
 	 * @param currentSemester
+	 * @return
 	 */
-	public void viewCourseDetailsBySemester(Integer currentSemester);
+	public List<CourseProfessorDTO> getCourseDetailsBySemester(Integer semester);
 	
 	/**
 	 * 
@@ -62,7 +64,7 @@ public interface CourseService {
 	 * @param course
 	 * @return
 	 */
-	public Course add(Course course);
+	public Boolean add(Course course);
 	
 	/**
 	 * 
@@ -87,13 +89,6 @@ public interface CourseService {
 			throws 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException;
-
-	/**
-	 * 
-	 * @param professor
-	 */
-	public void viewCoursesTaughtByProfessor(Professor professor);
-
 	/**
 	 * 
 	 * @param professor

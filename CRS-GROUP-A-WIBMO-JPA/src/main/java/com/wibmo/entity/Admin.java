@@ -21,15 +21,19 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "admin")
 public class Admin {
+	
 	@Id
 	@Column(name = "admin_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer adminId;		// admin_id
+	private Integer adminId;		// admin_id (PK)
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "admin_id")
-    @MapsId
-	private User user;
+	@Column(name = "user_id")
+	private Integer userId;			// user_id (FK)
+	
+//	@OneToOne(cascade = CascadeType.ALL, optional = false)
+//    @JoinColumn(name = "admin_id")
+//    @MapsId
+//	private User user;
 	
 	@Column(name = "admin_email")
 	@NotNull
@@ -38,6 +42,17 @@ public class Admin {
 	@Column(name = "admin_name")
 	@NotNull
 	private String adminName;		// admin_name
+
+	public Admin() {}
+	
+	public Admin(
+			Integer adminId, 
+			String adminEmail,
+			String adminName) {
+		this.adminId = adminId;
+		this.adminEmail = adminEmail;
+		this.adminName = adminName;
+	}
 
 	/**
 	 * @return the adminId

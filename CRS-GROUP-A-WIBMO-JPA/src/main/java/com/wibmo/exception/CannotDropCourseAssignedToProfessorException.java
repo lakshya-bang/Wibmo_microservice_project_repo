@@ -1,7 +1,8 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Throws exception when the Admin attempts to drop a course
+ * when it is assigned to a Professor.
  */
 public class CannotDropCourseAssignedToProfessorException extends Exception {
 

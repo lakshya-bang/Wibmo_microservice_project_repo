@@ -3,11 +3,15 @@
  */
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.DepartmentCannotBeEmptyException;
+import com.wibmo.exception.SemesterCannotBeEmptyException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
 /**
@@ -18,18 +22,23 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 public interface UserService {
 	
 	/**
-	 * Used for viewing the accounts that require approval from Admin
-	 * @return List<Integer> 
+	 * Gets the accounts that require approval from Admin
+	 * @return List<User> 
 	 * */
-	public List<User> viewAccountsPendingForApproval();
+	public List<User> getAccountsPendingForApproval();
 	
 	/**
 	 * 
-	 * @param user
-	 * @return
-	 * @throws UserWithEmailAlreadyExistsException 
+	 * @param userRegistrationDTO
+	 * @throws UserWithEmailAlreadyExistsException
+	 * @throws SemesterCannotBeEmptyException
+	 * @throws DepartmentCannotBeEmptyException
 	 */
-	public void add(User user) throws UserWithEmailAlreadyExistsException;
+	public void add(UserRegistrationDTO userRegistrationDTO)
+		throws 
+			UserWithEmailAlreadyExistsException, 
+			SemesterCannotBeEmptyException, 
+			DepartmentCannotBeEmptyException;
 	
 	/**
 	 * 
@@ -40,12 +49,19 @@ public interface UserService {
 
 	/**
 	 * 
+	 * @param email
+	 * @return
+	 */
+	public User getUserByEmail(String email);
+	
+	/**
+	 * 
 	 * @param approved
 	 * @param userIds
 	 */
 	public Boolean updateAccountRegistrationStatusToByUserIds(
 			RegistrationStatus registrationStatus, 
-			Set<Integer> userIds);
+			Collection<Integer> userIds);
 
 	/**
 	 * 
@@ -60,17 +76,5 @@ public interface UserService {
 	 * @return
 	 */
 	public Boolean isUserExistsById(Integer userId);
-	
-	/**
-	 * used for approving the registration of the new user
-	 * @param userId
-	 * */
-	public boolean approveLoginById(int userId);
-	
-	/**
-	 * used for Rejecting the registration of the new user
-	 * @param userId
-	 * */
-	public boolean rejectLoginById(int userId);
 	
 }

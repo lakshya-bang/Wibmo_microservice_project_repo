@@ -3,14 +3,13 @@
  */
 package com.wibmo.repository;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.entity.Course;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 
@@ -18,15 +17,15 @@ import com.wibmo.enums.RegistrationStatus;
  * 
  */
 @Repository
-@Component
 public interface UserRepository extends CrudRepository<User, Integer>{
-
-	List<User> findAllByRegistrationStatus(RegistrationStatus pending);
-
-	boolean update(String string, int userId);
-
-	Integer findUserIdByEmail(String email);
-
-	Boolean updateRegistrationStatusAsByIdIn(RegistrationStatus registrationStatus, Set<Integer> userIds);
-
+	
+	Optional<User> findByUserId(Integer userId);
+	
+	Optional<User> findByUserEmail(String userEmail);
+	
+	List<User> findAllByUserIdIn(Collection<Integer> userIds);
+	
+	List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus);
+	
+	Boolean existsByUserEmail(String userEmail);
 }

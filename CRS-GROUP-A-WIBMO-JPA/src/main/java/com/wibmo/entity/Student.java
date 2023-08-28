@@ -21,27 +21,47 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "student")
 public class Student {
+	
 	@Id
 	@Column(name = "student_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer studentId;			// student_id (FK)
+	private Integer studentId;			// student_id (PK)
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "student_id")
-    @MapsId
-	private User user;
+	@Column(name = "user_id")
+	private Integer userId;				// user_id (FK)
+	
+//	@OneToOne(cascade = CascadeType.ALL, optional = false)
+//    @JoinColumn(name = "student_id")
+//    @MapsId
+//	private User user;
 	
 	@Column(name = "student_email")
-	@NotNull
+//	@NotNull
 	private String studentEmail;		// student_email
 	
 	@Column(name = "student_name")
-	@NotNull
+//	@NotNull
 	private String studentName;			// student_name
 	
 	@Column(name = "semester")
-	@NotNull
+//	@NotNull
 	private Integer currentSemester;	// semester
+
+	public Student() {}
+	
+	public Student(
+			Integer studentId, 
+//			@NotNull 
+			String studentEmail, 
+//			@NotNull 
+			String studentName,
+//			@NotNull 
+			Integer currentSemester) {
+		this.studentId = studentId;
+		this.studentEmail = studentEmail;
+		this.studentName = studentName;
+		this.currentSemester = currentSemester;
+	}
 
 	/**
 	 * @return the studentId

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.wibmo.dto.RegisteredCourse;
+import com.wibmo.dto.CourseProfessorDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
@@ -19,7 +19,8 @@ import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 
 /**
- * 
+ * Defines the contracts that to support all required operations
+ * on CourseRegistration.
  */
 public interface CourseRegistrationService {
 
@@ -45,9 +46,11 @@ public interface CourseRegistrationService {
 	 * @param semOfStudy
 	 * @return 
 	 * @throws StudentNotRegisteredForSemesterException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws UserNotFoundException 
 	 */
-	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student)
-			throws StudentNotRegisteredForSemesterException;
+	public List<CourseProfessorDTO> getRegisteredCoursesByStudent(Student student)
+			throws StudentNotRegisteredForSemesterException, UserNotFoundException, CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -134,15 +137,40 @@ public interface CourseRegistrationService {
 	 * 
 	 * @param professorId
 	 * @param courseId
+	 * @return 
 	 * @throws CourseNotExistsInCatalogException 
 	 * @throws ProfessorNotExistsInSystemException 
 	 * @throws ProfessorNotAssignedForCourseException 
 	 * @throws ProfessorNotAssignedForCourseException 
 	 */
-	public void viewRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
+	public List<Student> getRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException,
 				ProfessorNotAssignedForCourseException;
-		
+
+	/**
+	 * 
+	 * @param studentId
+	 * @param courseId
+	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
+	 */
+	public Boolean hasRegistrationByStudentIdAndCourseId(
+			Integer studentId, Integer courseId) 
+				throws 
+					UserNotFoundException, 
+					CourseNotExistsInCatalogException;
+
+	/**
+	 * 
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 */
+	public Boolean hasRegistrationByStudentIdAndSemester(
+			Integer studentId, Integer semester);
+	
+	
 }

@@ -14,7 +14,6 @@ import com.wibmo.enums.RegistrationStatus;
  */
 public interface UserDAO {
 	
-	public Boolean update(String status,int userId);
 	/**
 	 * 
 	 * @param registrationStatus
