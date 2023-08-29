@@ -2,14 +2,14 @@ package com.wibmo.exception;
 
 public class UserNotFoundException extends Exception {
 
-	private Integer studentId;
+	private Integer userId;
 	
-	public UserNotFoundException(Integer professorId) {
-		this.studentId = professorId;
+	public UserNotFoundException(Integer userId) {
+		this.userId = userId;
 	}
 	
 	@Override
 	public String getMessage() {
-		return "Student with Id = " + studentId + " NOT Found.";
+		return "User with Id = " + userId + " NOT Found.";
 	}
 }

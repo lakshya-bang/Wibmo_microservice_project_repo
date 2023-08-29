@@ -71,4 +71,8 @@ public class ProfessorServiceImpl implements ProfessorService {
 		professorRepository.save(professor);
 	}
 	
+	@Override
+	public Boolean isProfessorExistsById(Integer professorId) {
+		return professorRepository.existsByProfessorId(professorId);
+	}
 }

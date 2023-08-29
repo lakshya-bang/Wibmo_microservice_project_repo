@@ -23,4 +23,6 @@ public interface ProfessorRepository extends CrudRepository<Professor, Integer>{
 	List<Professor> findAll();
 	
 	List<Professor> findAllByProfessorIdIn(Collection<Integer> professorIds);
+
+	Boolean existsByProfessorId(Integer professorId);
 }

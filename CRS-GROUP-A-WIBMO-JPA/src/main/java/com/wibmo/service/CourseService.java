@@ -1,10 +1,12 @@
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.wibmo.dto.CourseProfessorDTO;
+import com.wibmo.dto.CourseResponseDTO;
+import com.wibmo.dto.CourseRequestDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
@@ -19,7 +21,7 @@ public interface CourseService {
 	 * @param currentSemester
 	 * @return
 	 */
-	public List<CourseProfessorDTO> getCourseDetailsBySemester(Integer semester);
+	public List<CourseResponseDTO> getCourseDetailsBySemester(Integer semester);
 	
 	/**
 	 * 
@@ -57,14 +59,21 @@ public interface CourseService {
 	 * 
 	 * @return
 	 */
-	public List<Course> getAllCourses();
+	public List<CourseResponseDTO> getAllCourses();
 	
 	/**
 	 * 
 	 * @param course
 	 * @return
 	 */
-	public Boolean add(Course course);
+	public Boolean add(CourseRequestDTO courseRequestDTO);
+	
+	/**
+	 * 
+	 * @param courseRequestDTO
+	 * @return
+	 */
+	public Boolean addAll(Collection<CourseRequestDTO> courseRequestDTO);
 	
 	/**
 	 * 
@@ -102,4 +111,11 @@ public interface CourseService {
 			UserNotFoundException, 
 			CourseNotExistsInCatalogException;
 
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public CourseResponseDTO getCourseById(Integer courseId);
+	
 }

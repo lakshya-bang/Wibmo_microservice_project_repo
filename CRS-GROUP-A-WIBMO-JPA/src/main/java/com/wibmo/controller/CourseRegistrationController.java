@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.dto.CourseRegistrationDTO;
-import com.wibmo.dto.CourseProfessorDTO;
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.dto.StudentCourseIdDTO;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;

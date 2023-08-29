@@ -25,7 +25,7 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
-import com.wibmo.dto.CourseProfessorDTO;
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Professor;

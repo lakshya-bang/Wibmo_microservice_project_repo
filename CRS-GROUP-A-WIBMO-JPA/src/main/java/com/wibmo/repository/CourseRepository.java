@@ -5,6 +5,7 @@ package com.wibmo.repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
@@ -17,23 +18,19 @@ import com.wibmo.enums.CourseType;
 /**
  * 
  */
-//@Repository
-//public interface CourseRepository extends CrudRepository<Course, Integer>{
-//
-//	List<Course> findAllBySemester(Integer currentSemester);
-//
-//	Collection<Course> findAllByCourseIdIn(Set<Integer> courseIds);
-//
-//	List<Course> findAllByProfessorId(Integer professorId);
-//
-//	CourseType findCourseTypeByCourseId(Integer courseId);
-//
-//	Boolean existsByCourseId(Integer courseId);
-//
-//	Integer findProfessorIdByCourseId(Integer courseId);
-//
-//	void setProfessorIdAsWhereCourseIdIs(Integer professorId, Integer courseId);
-//
-//	Boolean deleteCourseById(Integer courseId);
-//
-//}
+@Repository
+public interface CourseRepository extends CrudRepository<Course, Integer>{
+
+	Optional<Course> findByCourseId(Integer courseId);
+	
+	List<Course> findAll();
+	
+	List<Course> findAllBySemester(Integer currentSemester);
+
+	List<Course> findAllByCourseIdIn(Collection<Integer> courseIds);
+
+	List<Course> findAllByProfessorId(Integer professorId);
+
+	Boolean existsByCourseId(Integer courseId);
+
+}

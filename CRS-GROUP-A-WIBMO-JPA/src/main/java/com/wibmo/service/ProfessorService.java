@@ -37,4 +37,11 @@ public interface ProfessorService {
 	 */
 	public void add(Professor professor);
 
+	/**
+	 * 
+	 * @param professorId
+	 * @return
+	 */
+	public Boolean isProfessorExistsById(Integer professorId);
+
 }

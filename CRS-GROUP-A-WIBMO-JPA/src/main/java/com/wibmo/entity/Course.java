@@ -72,6 +72,8 @@ public class Course {
     @Enumerated(EnumType.STRING)
 	private CourseType courseType;		// course_type
     
+    public Course() {}
+    
     public Course(
 			Integer courseId, 
 			String courseTitle, 
@@ -92,8 +94,8 @@ public class Course {
 		this.noOfSeats = noOfSeats;
 		this.courseType = courseType;
 	}
-    
-    /**
+
+	/**
    	 * @return the courseId
    	 */
    	public Integer getCourseId() {

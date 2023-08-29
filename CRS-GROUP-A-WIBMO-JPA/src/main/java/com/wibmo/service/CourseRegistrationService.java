@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.wibmo.dto.CourseProfessorDTO;
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
@@ -49,7 +49,7 @@ public interface CourseRegistrationService {
 	 * @throws CourseNotExistsInCatalogException 
 	 * @throws UserNotFoundException 
 	 */
-	public List<CourseProfessorDTO> getRegisteredCoursesByStudent(Student student)
+	public List<CourseResponseDTO> getRegisteredCoursesByStudent(Student student)
 			throws StudentNotRegisteredForSemesterException, UserNotFoundException, CourseNotExistsInCatalogException;
 	
 	/**
