@@ -18,6 +18,7 @@ import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
+import com.wibmo.enums.UserType;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.UserNotFoundException;
@@ -25,9 +26,6 @@ import com.wibmo.repository.CourseRepository;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-
-	@Autowired
-	private UserServiceImpl userService;
 	
 	@Autowired
 	private ProfessorServiceImpl professorService;
@@ -52,6 +50,33 @@ public class CourseServiceImpl implements CourseService {
 		return courseConverter.convert(course, professor);
 	}
 	
+	@Override
+	public List<CourseResponseDTO> getAllCourses() {
+		List<Course> courses = courseRepository.findAll();
+		Map<Integer, Professor> professorIdToProfessorMap = professorService
+				.getProfessorIdToProfessorMap(
+						courses
+							.stream()
+							.map(Course::getProfessorId)
+							.filter(Objects::nonNull)
+							.collect(Collectors.toSet()));
+		
+		return courseConverter.convertAll(courses, professorIdToProfessorMap);
+	}
+	
+	@Override
+	public List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds) {
+		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
+		Map<Integer, Professor> professorIdToProfessorMap = professorService
+				.getProfessorIdToProfessorMap(
+						courses
+							.stream()
+							.map(Course::getProfessorId)
+							.filter(Objects::nonNull)
+							.collect(Collectors.toSet()));
+		
+		return courseConverter.convertAll(courses, professorIdToProfessorMap);
+	}
 	
 	// TODO: This implementation can be moved to Join query in Database
 	@Override
@@ -62,7 +87,7 @@ public class CourseServiceImpl implements CourseService {
 						courses
 							.stream()
 							.map(course -> course.getProfessorId())
-							.filter(professorId -> professorId != null)
+							.filter(Objects::nonNull)
 							.collect(Collectors.toSet()));
 		
 		return courseConverter.convertAll(courses, professorIdToProfessorMap);
@@ -83,8 +108,8 @@ public class CourseServiceImpl implements CourseService {
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId) 
 			throws UserNotFoundException {
 		
-		if(!userService.isUserExistsById(professorId)) {
-			throw new UserNotFoundException(professorId);
+		if(!professorService.isProfessorExistsById(professorId)) {
+			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
 		return courseRepository
@@ -108,20 +133,6 @@ public class CourseServiceImpl implements CourseService {
 	public Boolean isCourseExistsInCatalog(Integer courseId) {
 		return courseRepository
 				.existsByCourseId(courseId);
-	}
-
-	@Override
-	public List<CourseResponseDTO> getAllCourses() {
-		List<Course> courses = courseRepository.findAll();
-		Map<Integer, Professor> professorIdToProfessorMap = professorService
-				.getProfessorIdToProfessorMap(
-						courses
-							.stream()
-							.map(course -> course.getProfessorId())
-							.filter(Objects::nonNull)
-							.collect(Collectors.toSet()));
-		
-		return courseConverter.convertAll(courses, professorIdToProfessorMap);
 	}
 
 	@Override
@@ -190,7 +201,7 @@ public class CourseServiceImpl implements CourseService {
 		}
 		
 		if(!professorService.isProfessorExistsById(professorId)) {
-			throw new UserNotFoundException(professorId);
+			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
 		// TODO: If professor registration is not approved,
@@ -214,7 +225,7 @@ public class CourseServiceImpl implements CourseService {
 		}
 		
 		if(!professorService.isProfessorExistsById(professorId)) {
-			throw new UserNotFoundException(professorId);
+			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
 		Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);

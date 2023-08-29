@@ -91,12 +91,19 @@ public interface UserService {
 	 * @param userId
 	 * @return
 	 */
-	UserResponseDTO getUserById(Integer userId);
+	public UserResponseDTO getUserById(Integer userId);
 
 	/**
 	 * 
 	 * @return
 	 */
-	List<UserResponseDTO> getAllUsers();
+	public List<UserResponseDTO> getAllUsers();
+
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public RegistrationStatus getRegistrationStatusById(Integer userId);
 	
 }

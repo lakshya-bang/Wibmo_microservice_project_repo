@@ -271,7 +271,14 @@ public class CourseRegistration {
 	public void setRegistrationStatus(RegistrationStatus registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
-	 
 
+	@Override
+	public String toString() {
+		return "CourseRegistration [registrationId=" + registrationId + ", year=" + year + ", semester=" + semester
+				+ ", primaryCourse1Id=" + primaryCourse1Id + ", primaryCourse2Id=" + primaryCourse2Id
+				+ ", primaryCourse3Id=" + primaryCourse3Id + ", primaryCourse4Id=" + primaryCourse4Id
+				+ ", alternativeCourse1Id=" + alternativeCourse1Id + ", alternativeCourse2Id=" + alternativeCourse2Id
+				+ ", studentId=" + studentId + ", registrationStatus=" + registrationStatus + "]";
+	}
 	
 }

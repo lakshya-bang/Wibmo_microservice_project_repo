@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.wibmo.dto.CourseRegistrationRequestDTO;
 import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
-import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
+import com.wibmo.exception.InvalidCourseForCourseTypeException;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
+import com.wibmo.exception.StudentNotEligibleForCourseRegistrationException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
@@ -26,19 +28,20 @@ public interface CourseRegistrationService {
 
 	/**
 	 * 
-	 * @param primaryCourses
-	 * @param alternativeCourses
-	 * @param student
+	 * @param courseRegistrationRequestDTO
 	 * @throws StudentAlreadyRegisteredForSemesterException 
 	 * @throws CourseNotExistsInCatalogException 
+	 * @throws UserNotFoundException 
+	 * @throws StudentNotEligibleForCourseRegistrationException
+	 * @throws InvalidCourseForCourseTypeException 
 	 */
-	public void register(
-			List<Integer> primaryCourses, 
-			List<Integer> alternativeCourses, 
-			Student student) 
+	public void register(CourseRegistrationRequestDTO courseRegistrationRequestDTO) 
 				throws 
 					StudentAlreadyRegisteredForSemesterException, 
-					CourseNotExistsInCatalogException;
+					CourseNotExistsInCatalogException, 
+					UserNotFoundException, 
+					StudentNotEligibleForCourseRegistrationException,
+					InvalidCourseForCourseTypeException;
 	
 	/**
 	 * 
@@ -49,7 +52,8 @@ public interface CourseRegistrationService {
 	 * @throws CourseNotExistsInCatalogException 
 	 * @throws UserNotFoundException 
 	 */
-	public List<CourseResponseDTO> getRegisteredCoursesByStudent(Student student)
+	public List<CourseResponseDTO> getRegisteredCoursesByStudentIdAndSemester(
+			Integer studentId, Integer semester)
 			throws StudentNotRegisteredForSemesterException, UserNotFoundException, CourseNotExistsInCatalogException;
 	
 	/**
@@ -58,7 +62,7 @@ public interface CourseRegistrationService {
 	 * @return
 	 * @throws StudentNotRegisteredForSemesterException 
 	 */
-	public RegistrationStatus getRegistrationStatusByStudent(Student student) 
+	public RegistrationStatus getRegistrationStatusByStudentIdAndSemester(Integer studentId, Integer semester) 
 			throws StudentNotRegisteredForSemesterException;
 	
 	/**
@@ -67,17 +71,17 @@ public interface CourseRegistrationService {
 	 * @param student
 	 * @throws StudentNotRegisteredForSemesterException 
 	 * @throws StudentAlreadyRegisteredForCourseInSemesterException 
-	 * @throws StudentAlreadyRegisteredForAllAlternativeCoursesException 
-	 * @throws StudentAlreadyRegisteredForAllPrimaryCoursesException 
+	 * @throws StudentAlreadyRegisteredForAllCoursesOfTypeException 
 	 * @throws CourseNotExistsInCatalogException 
+	 * @throws UserNotFoundException 
 	 */
-	public void addCourse(Integer courseId, Student student) 
+	public void addCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
-				StudentAlreadyRegisteredForCourseInSemesterException, 
-				StudentAlreadyRegisteredForAllAlternativeCoursesException,
-				StudentAlreadyRegisteredForAllPrimaryCoursesException,
-				CourseNotExistsInCatalogException;
+				StudentAlreadyRegisteredForCourseInSemesterException,
+				StudentAlreadyRegisteredForAllCoursesOfTypeException,
+				CourseNotExistsInCatalogException, 
+				UserNotFoundException;
 	
 	/**
 	 * 
@@ -87,10 +91,11 @@ public interface CourseRegistrationService {
 	 * @throws StudentNotRegisteredForCourseInSemesterException 
 	 * @throws CourseNotExistsInCatalogException 
 	 */
-	public void dropCourse(Integer courseId, Student student) 
+	public void dropCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
-				StudentNotRegisteredForCourseInSemesterException, CourseNotExistsInCatalogException;
+				StudentNotRegisteredForCourseInSemesterException, 
+				CourseNotExistsInCatalogException;
 	
 	/**
 	 * 
@@ -168,9 +173,10 @@ public interface CourseRegistrationService {
 	 * @param studentId
 	 * @param semester
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
 	public Boolean hasRegistrationByStudentIdAndSemester(
-			Integer studentId, Integer semester);
+			Integer studentId, Integer semester) throws UserNotFoundException;
 	
 	
 }

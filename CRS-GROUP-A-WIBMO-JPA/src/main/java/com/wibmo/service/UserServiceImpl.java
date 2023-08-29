@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService{
 	public void delete(Integer userId) throws UserNotFoundException {
 		
 		if(!isUserExistsById(userId)) {
-			throw new UserNotFoundException(userId);
+			return;
 		}
 		
 		User user = userRepository.findByUserId(userId).get();
@@ -243,7 +243,15 @@ public class UserServiceImpl implements UserService{
 		default:
 		}
 		
-		
+	}
+	
+	@Override
+	public RegistrationStatus getRegistrationStatusById(Integer userId) {
+		// TODO: Should throw exception if user does not exist
+		return userRepository
+				.findById(userId)
+				.get()
+				.getRegistrationStatus();
 	}
 	
 	/*************************** Utility Methods ***************************/

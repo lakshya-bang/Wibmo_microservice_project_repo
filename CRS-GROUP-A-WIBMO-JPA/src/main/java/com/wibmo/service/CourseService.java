@@ -18,6 +18,13 @@ public interface CourseService {
 
 	/**
 	 * 
+	 * @param courseIds
+	 * @return
+	 */
+	List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds);
+	
+	/**
+	 * 
 	 * @param currentSemester
 	 * @return
 	 */
@@ -117,5 +124,4 @@ public interface CourseService {
 	 * @return
 	 */
 	public CourseResponseDTO getCourseById(Integer courseId);
-	
 }

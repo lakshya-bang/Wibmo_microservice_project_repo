@@ -23,4 +23,6 @@ public interface StudentRepository extends CrudRepository<Student, Integer>{
 	
 	List<Student> findAll();
 	
+	List<Student> findAllByStudentIdIn(Collection<Integer> studentIds);
+	
 }
