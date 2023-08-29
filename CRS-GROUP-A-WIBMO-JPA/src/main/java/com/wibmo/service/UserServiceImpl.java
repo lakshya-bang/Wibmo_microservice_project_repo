@@ -3,17 +3,19 @@
  */
 package com.wibmo.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
+import com.wibmo.converter.UserConverter;
 import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.dto.UserResponseDTO;
 import com.wibmo.entity.Admin;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.Student;
@@ -22,6 +24,7 @@ import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.repository.UserRepository;
 
@@ -30,6 +33,8 @@ import com.wibmo.repository.UserRepository;
  */
 @Service
 public class UserServiceImpl implements UserService{
+	
+	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	private StudentServiceImpl studentService;
@@ -42,11 +47,29 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserConverter userConverter;
 
 	@Override
-	public List<User> getAccountsPendingForApproval() {
-		return userRepository.findAllByRegistrationStatus(
-				RegistrationStatus.PENDING);
+	public UserResponseDTO getUserById(Integer userId) {
+		Optional<User> userOptional = userRepository.findByUserId(userId);
+		if(!userOptional.isPresent()) {
+			return null;
+		}
+		return userConverter.convert(userOptional.get());
+	}
+	
+	@Override
+	public List<UserResponseDTO> getAllUsers() {
+		return userConverter.convertAll(userRepository.findAll());
+	}
+	
+	@Override
+	public List<UserResponseDTO> getAccountsPendingForApproval() {
+		return userConverter.convertAll(
+				userRepository.findAllByRegistrationStatus(
+						RegistrationStatus.PENDING));
 	}
 	
 	@Override
@@ -88,42 +111,57 @@ public class UserServiceImpl implements UserService{
 		user.setUserType(userRegistrationDTO.getUserType());
 		user.setRegistrationStatus(RegistrationStatus.PENDING);
 		
+		LOG.info(user);
+		
 		userRepository.save(user);
 		
-		Integer userId = getUserIdByEmail(user.getUserEmail());
+		Integer userId = getUserIdByEmail(userRegistrationDTO.getUserEmail());
+		
+		LOG.info("userId: " + userId);
+		
+		// TODO: If userId is null throw Exception
 		
 		switch(user.getUserType()) {
 		case ADMIN:
-			adminService.add(new Admin(
-					userId,
-					user.getUserEmail(),
-					userRegistrationDTO.getUserName()));
+			Admin admin = new Admin();
+			admin.setUserId(userId);
+			admin.setAdminName(userRegistrationDTO.getUserName());
+			admin.setAdminEmail(userRegistrationDTO.getUserEmail());
+			
+			LOG.info(admin);
+			
+			adminService.add(admin);
 			break;
 		case PROFESSOR:
-			professorService.add(new Professor(
-					userId,
-					user.getUserEmail(),
-					userRegistrationDTO.getUserName(),
-					userRegistrationDTO.getDepartment()
-					));
+			Professor professor = new Professor();
+			professor.setUserId(userId);
+			professor.setProfessorName(userRegistrationDTO.getUserName());
+			professor.setProfessorEmail(userRegistrationDTO.getUserEmail());
+			professor.setDepartment(userRegistrationDTO.getDepartment());
+			
+			LOG.info(professor);
+			
+			professorService.add(professor);
 			break;
 		case STUDENT:
-			studentService.add(new Student(
-					userId,
-					user.getUserEmail(),
-					userRegistrationDTO.getUserName(),
-					userRegistrationDTO.getSemester()));
+			Student student = new Student();
+			student.setUserId(userId);
+			student.setStudentName(userRegistrationDTO.getUserName());
+			student.setStudentEmail(userRegistrationDTO.getUserEmail());
+			student.setCurrentSemester(userRegistrationDTO.getSemester());
+			
+			LOG.info(student);
+			
+			studentService.add(student);
 		}
 	}
 	
 	@Override
 	public Integer getUserIdByEmail(String email) {
-		userRepository
+		return userRepository
 			.findByUserEmail(email)
-			.map(user -> {
-				return user.getUserId();
-			});
-		return null;
+			.map(User::getUserId)
+			.orElse(null);
 	}
 	
 	@Override
@@ -169,11 +207,43 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public User getUserByEmail(String email) {
+	public UserResponseDTO getUserByEmail(String email) {
 		Optional<User> userOptional = userRepository.findByUserEmail(email);
-		return userOptional.isPresent()
-				? userOptional.get()
-				: null;
+		if(!userOptional.isPresent()) {
+			return null;
+		}
+		return userConverter.convert(userOptional.get());
+	}
+	
+	@Override
+	public void delete(Integer userId) throws UserNotFoundException {
+		
+		if(!isUserExistsById(userId)) {
+			throw new UserNotFoundException(userId);
+		}
+		
+		User user = userRepository.findByUserId(userId).get();
+		
+		switch(user.getUserType()) {
+		case PROFESSOR:
+			// TODO: Check if this professor is assigned to teach any course.
+			
+			// If yes, throw exception.
+			// Else, delete this professor.
+			
+			break;
+		case STUDENT:
+			// TODO: Check if this student has registered for any course.
+			
+			// TODO: Check if this student has any pending bills.
+			
+			// If yes, throw exception.
+			// Else, delete this professor.
+			break;
+		default:
+		}
+		
+		
 	}
 	
 	/*************************** Utility Methods ***************************/

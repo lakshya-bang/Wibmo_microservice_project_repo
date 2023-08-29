@@ -46,10 +46,12 @@ public class Admin {
 	public Admin() {}
 	
 	public Admin(
-			Integer adminId, 
+			Integer adminId,
+			Integer userId,
 			String adminEmail,
 			String adminName) {
 		this.adminId = adminId;
+		this.userId = userId;
 		this.adminEmail = adminEmail;
 		this.adminName = adminName;
 	}
@@ -66,6 +68,20 @@ public class Admin {
 	 */
 	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -94,6 +110,12 @@ public class Admin {
 	 */
 	public void setAdminName(String adminName) {
 		this.adminName = adminName;
+	}
+
+	@Override
+	public String toString() {
+		return "Admin [adminId=" + adminId + ", userId=" + userId + ", adminEmail=" + adminEmail + ", adminName="
+				+ adminName + "]";
 	}
 	
 }

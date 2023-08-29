@@ -51,10 +51,12 @@ public class Professor {
 	
 	public Professor(
 			Integer professorId, 
+			Integer userId,
 			String professorEmail,
 			String professorName,
 			String department) {
 		this.professorId = professorId;
+		this.userId = userId;
 		this.professorEmail = professorEmail;
 		this.professorName = professorName;
 		this.department = department;
@@ -72,6 +74,20 @@ public class Professor {
 	 */
 	public void setProfessorId(Integer professorId) {
 		this.professorId = professorId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -114,6 +130,12 @@ public class Professor {
 	 */
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+
+	@Override
+	public String toString() {
+		return "Professor [professorId=" + professorId + ", userId=" + userId + ", professorEmail=" + professorEmail
+				+ ", professorName=" + professorName + ", department=" + department + "]";
 	}
 	
 	

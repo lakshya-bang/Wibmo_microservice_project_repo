@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,12 @@ public interface ProfessorService {
 	 * @return	Professor
 	 */
 	public Professor getProfessorById(Integer userId);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	List<Professor> getAllProfessors();
 	
 	/**
 	 * Using the professor Ids fetches the professor details and returns the data as a Map.

@@ -1,7 +1,12 @@
 package com.wibmo.service;
 
+import java.util.List;
+
 import com.wibmo.entity.Student;
 
+/**
+ * 
+ */
 public interface StudentService {
 
 	/**
@@ -9,6 +14,12 @@ public interface StudentService {
 	 * @return
 	 */
 	public Student getStudentById(Integer integer);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Student> getAllStudents();
 
 	/**
 	 * 

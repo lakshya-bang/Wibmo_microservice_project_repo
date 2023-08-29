@@ -27,7 +27,7 @@ public class CourseRegistration {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "reg_id")
+	@Column(name = "registration_id")
 	private Integer registrationId;
 	
 	@Column(name = "year")
@@ -57,7 +57,7 @@ public class CourseRegistration {
     @Column(name = "student_id", nullable = false)
     private Integer studentId;
 	    
-	@Column(name = "reg_status")
+	@Column(name = "registration_status")
 //	@NotNull
 	@Enumerated(EnumType.STRING)
 	private RegistrationStatus registrationStatus = RegistrationStatus.PENDING;

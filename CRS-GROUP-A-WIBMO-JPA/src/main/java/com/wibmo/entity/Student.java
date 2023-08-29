@@ -51,6 +51,7 @@ public class Student {
 	
 	public Student(
 			Integer studentId, 
+			Integer userId,
 //			@NotNull 
 			String studentEmail, 
 //			@NotNull 
@@ -58,6 +59,7 @@ public class Student {
 //			@NotNull 
 			Integer currentSemester) {
 		this.studentId = studentId;
+		this.userId = userId;
 		this.studentEmail = studentEmail;
 		this.studentName = studentName;
 		this.currentSemester = currentSemester;
@@ -75,6 +77,20 @@ public class Student {
 	 */
 	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -118,7 +134,11 @@ public class Student {
 	public void setCurrentSemester(Integer currentSemester) {
 		this.currentSemester = currentSemester;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Student [studentId=" + studentId + ", userId=" + userId + ", studentEmail=" + studentEmail
+				+ ", studentName=" + studentName + ", currentSemester=" + currentSemester + "]";
+	}
 	
 }

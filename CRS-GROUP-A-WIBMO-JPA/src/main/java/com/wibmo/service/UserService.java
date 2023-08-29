@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.wibmo.dto.UserRegistrationDTO;
+import com.wibmo.dto.UserResponseDTO;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
 /**
@@ -23,9 +25,9 @@ public interface UserService {
 	
 	/**
 	 * Gets the accounts that require approval from Admin
-	 * @return List<User> 
+	 * @return List<UserResponseDTO> 
 	 * */
-	public List<User> getAccountsPendingForApproval();
+	public List<UserResponseDTO> getAccountsPendingForApproval();
 	
 	/**
 	 * 
@@ -52,7 +54,7 @@ public interface UserService {
 	 * @param email
 	 * @return
 	 */
-	public User getUserByEmail(String email);
+	public UserResponseDTO getUserByEmail(String email);
 	
 	/**
 	 * 
@@ -76,5 +78,25 @@ public interface UserService {
 	 * @return
 	 */
 	public Boolean isUserExistsById(Integer userId);
+
+	/**
+	 * 
+	 * @param userId
+	 * @throws UserNotFoundException 
+	 */
+	void delete(Integer userId) throws UserNotFoundException;
+
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	UserResponseDTO getUserById(Integer userId);
+
+	/**
+	 * 
+	 * @return
+	 */
+	List<UserResponseDTO> getAllUsers();
 	
 }

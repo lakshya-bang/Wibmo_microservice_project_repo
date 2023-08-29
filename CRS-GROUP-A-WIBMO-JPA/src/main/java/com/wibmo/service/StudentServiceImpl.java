@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,15 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Override
 	public Student getStudentById(Integer studentId) {
-		Optional<Student> studentOptional = studentRepository.findById(studentId);
+		Optional<Student> studentOptional = studentRepository.findByStudentId(studentId);
 		return studentOptional.isPresent()
 				? studentOptional.get()
 				: null;
+	}
+	
+	@Override
+	public List<Student> getAllStudents() {
+		return studentRepository.findAll();
 	}
 
 	@Override

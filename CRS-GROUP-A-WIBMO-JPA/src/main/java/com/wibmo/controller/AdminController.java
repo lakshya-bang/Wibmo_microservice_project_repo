@@ -13,36 +13,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.entity.Student;
-import com.wibmo.service.StudentServiceImpl;
+import com.wibmo.entity.Admin;
+import com.wibmo.service.AdminServiceImpl;
 
 /**
  * 
  */
 @RestController
-@RequestMapping("/student")
-public class StudentController {
+@RequestMapping("/admin")
+public class AdminController {
 
 	@Autowired
-	private StudentServiceImpl studentService;
+	private AdminServiceImpl adminService;
 	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 			method = RequestMethod.GET,
 			value = "/get/{id}")
 	public ResponseEntity getStudent(@PathVariable("id") Integer id) {
-		Student student = studentService.getStudentById(id);
-		if (student == null) {
+		Admin admin = adminService.getAdminById(id);
+		if (admin == null) {
 			return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity(student, HttpStatus.OK);
+		return new ResponseEntity(admin, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 			method = RequestMethod.GET,
 			value = "/get-all")
-	public ResponseEntity getAllStudents() {
-		return new ResponseEntity(studentService.getAllStudents(), HttpStatus.OK);
+	public ResponseEntity getAllAdmins() {
+		return new ResponseEntity(adminService.getAllAdmins(), HttpStatus.OK);
 	}
 }

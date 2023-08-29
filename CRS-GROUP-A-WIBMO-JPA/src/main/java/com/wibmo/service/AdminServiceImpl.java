@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,16 @@ public class AdminServiceImpl implements AdminService {
 	private AdminRepository adminRepository;
 	
 	@Override
-	public Admin getAdminById(int adminId) {
-		Optional<Admin> adminOptional = adminRepository.findById(adminId);
+	public Admin getAdminById(Integer adminId) {
+		Optional<Admin> adminOptional = adminRepository.findByAdminId(adminId);
 		return adminOptional.isPresent()
 				? adminOptional.get()
 				: null;
+	}
+	
+	@Override
+	public List<Admin> getAllAdmins() {
+		return adminRepository.findAll();
 	}
 	
 	@Override

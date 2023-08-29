@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,14 +66,11 @@ public class User {
 //			@NotNull 
 			UserType userType,
 //			@NotNull 
-			RegistrationStatus registrationStatus, 
-//			@NotNull 
-			String password) {
+			RegistrationStatus registrationStatus) {
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.userType = userType;
 		this.registrationStatus = registrationStatus;
-		this.password = password;
 	}
 
 	/**
@@ -142,6 +141,12 @@ public class User {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", userEmail=" + userEmail + ", userType=" + userType
+				+ ", registrationStatus=" + registrationStatus + ", password=" + password + "]";
 	}
 	
 	

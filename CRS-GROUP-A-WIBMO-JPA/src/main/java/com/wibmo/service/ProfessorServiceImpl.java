@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import com.wibmo.entity.Professor;
 import com.wibmo.repository.ProfessorRepository;
@@ -37,7 +39,6 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 * @param professorIds (Integer Set)
 	 * @return Map<Integer,Professor>
 	 */
-
 	@Override
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
 		return professorRepository
@@ -49,14 +50,17 @@ public class ProfessorServiceImpl implements ProfessorService {
 	}
 
 	/**
-	 * @param professorId (Integer)
-	 * @return Boolean
+	 * 
+	 * @return
 	 */
-
+	@Override
+	public List<Professor> getAllProfessors() {
+		return professorRepository.findAll();
+	}
+	
 	/**
 	 * @param Professor
 	 */
-	
 	@Override
 	public void add(Professor professor) {
 		
