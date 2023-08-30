@@ -5,11 +5,12 @@ import java.util.Map;
 
 import com.wibmo.dto.ReportCardRequestDTO;
 import com.wibmo.dto.ReportCardResponseDTO;
-import com.wibmo.entity.ReportCard;
-import com.wibmo.entity.Student;
-import com.wibmo.exception.CannotAddGradeStudentPaymentPendingException;
 import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
+import com.wibmo.exception.CourseIdCannotBeEmptyException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.GradeCannotBeEmptyException;
+import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
@@ -25,15 +26,25 @@ public interface ReportCardService {
 	 * <b>Note</b>: This is a general method for both save and update functionality.
 	 * 
 	 * @param reportCardRequestDTOs
-	 * @throws CannotAddGradeStudentPaymentPendingException 
 	 * @throws StudentNotRegisteredForCourseException 
 	 * @throws CannotAddGradeStudentRegistrationNotApprovedException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws UserNotFoundException 
+	 * @throws StudentIdCannotBeEmptyException 
+	 * @throws CourseIdCannotBeEmptyException 
+	 * @throws GradeCannotBeEmptyException 
+	 * @throws GradeValueInvalidException 
 	 */
 	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs) 
-			throws 
-				CannotAddGradeStudentPaymentPendingException, 
+			throws
 				StudentNotRegisteredForCourseException, 
-				CannotAddGradeStudentRegistrationNotApprovedException;
+				CannotAddGradeStudentRegistrationNotApprovedException,
+				UserNotFoundException,
+				CourseNotExistsInCatalogException,
+				StudentIdCannotBeEmptyException,
+				CourseIdCannotBeEmptyException,
+				GradeCannotBeEmptyException,
+				GradeValueInvalidException;
 	
 	/**
 	 * 

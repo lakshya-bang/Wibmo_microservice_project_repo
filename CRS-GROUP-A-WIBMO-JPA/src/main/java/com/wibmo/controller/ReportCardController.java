@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.dto.ReportCardRequestDTO;
 import com.wibmo.dto.ReportCardResponseDTO;
-import com.wibmo.exception.CannotAddGradeStudentPaymentPendingException;
 import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
+import com.wibmo.exception.CourseIdCannotBeEmptyException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.GradeCannotBeEmptyException;
+import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
@@ -82,9 +86,14 @@ public class ReportCardController {
 			reportCardService.addAll(reportCardRequestDTOs);
 			return new ResponseEntity("Grades added successfully!", HttpStatus.OK);
 			
-		} catch (CannotAddGradeStudentPaymentPendingException 
-				| StudentNotRegisteredForCourseException
-				| CannotAddGradeStudentRegistrationNotApprovedException e) {
+		} catch (StudentNotRegisteredForCourseException
+				| CannotAddGradeStudentRegistrationNotApprovedException 
+				| UserNotFoundException 
+				| CourseNotExistsInCatalogException 
+				| StudentIdCannotBeEmptyException 
+				| CourseIdCannotBeEmptyException 
+				| GradeCannotBeEmptyException 
+				| GradeValueInvalidException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
 		

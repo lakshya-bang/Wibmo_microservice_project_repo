@@ -21,13 +21,14 @@ import com.wibmo.dto.ReportCardResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.ReportCard;
-import com.wibmo.entity.Student;
-import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
-import com.wibmo.exception.CannotAddGradeStudentPaymentPendingException;
 import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
+import com.wibmo.exception.CourseIdCannotBeEmptyException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.GradeCannotBeEmptyException;
+import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
@@ -38,9 +39,6 @@ import com.wibmo.repository.ReportCardRepository;
  */
 @Service
 public class ReportCardServiceImpl implements ReportCardService {
-
-	@Autowired
-	private UserServiceImpl userService;
 	
 	@Autowired
 	private StudentServiceImpl studentService;
@@ -52,9 +50,6 @@ public class ReportCardServiceImpl implements ReportCardService {
 	private CourseRegistrationServiceImpl courseRegistrationService;
 	
 	@Autowired
-	private PaymentServiceImpl paymentService;
-	
-	@Autowired
 	private ReportCardConverter reportCardConverter;
 	
 	@Autowired
@@ -62,18 +57,47 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 	@Override
 	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs)
-			throws 
-				CannotAddGradeStudentPaymentPendingException, 
+			throws
 				StudentNotRegisteredForCourseException,
-				CannotAddGradeStudentRegistrationNotApprovedException {
+				CannotAddGradeStudentRegistrationNotApprovedException, 
+				UserNotFoundException, 
+				CourseNotExistsInCatalogException,
+				StudentIdCannotBeEmptyException,
+				CourseIdCannotBeEmptyException,
+				GradeCannotBeEmptyException,
+				GradeValueInvalidException {
 		
 		if(null == reportCardRequestDTOs) {
 			return;
 		}
 		
-		// TODO: Add Input values validations
+		/*************** Input Values Validations *****************/
 		
-		/****** Check whether these students have paid for their course registrations ********/
+		for(ReportCardRequestDTO reportCardRequestDTO : reportCardRequestDTOs) {
+			Integer studentId = reportCardRequestDTO.getStudentId();
+			Integer courseId = reportCardRequestDTO.getCourseId();
+			String grade = reportCardRequestDTO.getGrade();
+			if(studentId == null) {
+				throw new StudentIdCannotBeEmptyException();
+			}
+			if(courseId == null) {
+				throw new CourseIdCannotBeEmptyException();
+			}
+			if(grade == null) {
+				throw new GradeCannotBeEmptyException();
+			}
+			if(!grade.matches("[abcdef|ABCDEF]")) {
+				throw new GradeValueInvalidException();
+			}
+			if(!studentService.isStudentExistsById(studentId)) {
+				throw new UserNotFoundException(studentId, UserType.STUDENT);
+			}
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
+				throw new CourseNotExistsInCatalogException(courseId);
+			}
+		}
+		
+		/***********************************************************************/
 		
 		// TODO: Should enhance via Join Query
 		for(ReportCardRequestDTO reportCard : reportCardRequestDTOs) {
@@ -88,13 +112,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 				throw new CannotAddGradeStudentRegistrationNotApprovedException(
 						studentId, courseRegistration.getRegistrationStatus());
 			}
-			
-			PaymentStatus paymentStatus = 
-					paymentService.getPaymentStatusByCourseRegistrationId(
-							courseRegistration.getRegistrationId());
-			
-			if(PaymentStatus.UNPAID.equals(paymentStatus)) {
-				throw new CannotAddGradeStudentPaymentPendingException(studentId, semester);
+		
+			if(!courseRegistrationService.hasRegistrationByStudentIdAndCourseId(studentId, courseId)) {
+				throw new StudentNotRegisteredForCourseException(studentId, courseId);
 			}
 		}
 		
@@ -137,7 +157,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 	public Map<Integer, List<ReportCardResponseDTO>> getSemesterToReportCardMapByStudentId(Integer studentId)
 		throws UserNotFoundException {
 		
-		if(!userService.isUserExistsById(studentId)) {
+		if(!studentService.isStudentExistsById(studentId)) {
 			throw new UserNotFoundException(studentId, UserType.STUDENT);
 		}
 		
@@ -175,7 +195,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 	public ReportCardResponseDTO getReportCardByStudentIdAndCourseId(Integer studentId, Integer courseId) 
 			throws UserNotFoundException, CourseNotExistsInCatalogException, StudentNotRegisteredForCourseException {
 		
-		if(!userService.isUserExistsById(studentId)) {
+		if(!studentService.isStudentExistsById(studentId)) {
 			throw new UserNotFoundException(studentId, UserType.STUDENT);
 		}
 		
@@ -222,7 +242,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 			UserNotFoundException, 
 			StudentNotRegisteredForSemesterException {
 		
-		if(!userService.isUserExistsById(studentId)) {
+		if(!studentService.isStudentExistsById(studentId)) {
 			throw new UserNotFoundException(studentId, UserType.STUDENT);
 		}
 		

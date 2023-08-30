@@ -25,6 +25,8 @@ public class ReportCardConverter {
 		reportCard.setCourseId(reportCardRequestDTO.getCourseId());
 		reportCard.setStudentId(reportCardRequestDTO.getStudentId());
 		reportCard.setGrade(reportCardRequestDTO.getGrade());
+		// The semester field should be set based on the semester
+		// in which the course was taught.
 		reportCard.setSemester(
 				courseIdToCourseMap
 					.get(reportCardRequestDTO.getCourseId())
