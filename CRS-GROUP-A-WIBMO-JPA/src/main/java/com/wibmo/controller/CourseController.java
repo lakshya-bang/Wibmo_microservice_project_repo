@@ -67,7 +67,7 @@ public class CourseController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON,
 			method = RequestMethod.GET,
-			value = "/get/{semester}")
+			value = "/get/semester/{semester}")
 	public ResponseEntity viewCourseDetailsBySemester(
 			@PathVariable Integer semester) {
 		try {

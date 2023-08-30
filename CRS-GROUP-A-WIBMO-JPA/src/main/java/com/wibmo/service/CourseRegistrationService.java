@@ -1,14 +1,18 @@
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.wibmo.dto.CourseRegistrationRequestDTO;
+import com.wibmo.dto.CourseRegistrationResponseDTO;
 import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.CannotApproveCourseRegistrationPaymentPendingException;
+import com.wibmo.exception.CourseNotAvailableDueToSeatsFullException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.InvalidCourseForCourseTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
@@ -34,14 +38,16 @@ public interface CourseRegistrationService {
 	 * @throws UserNotFoundException 
 	 * @throws StudentNotEligibleForCourseRegistrationException
 	 * @throws InvalidCourseForCourseTypeException 
+	 * @throws CourseNotAvailableDueToSeatsFullException 
 	 */
 	public void register(CourseRegistrationRequestDTO courseRegistrationRequestDTO) 
-				throws 
-					StudentAlreadyRegisteredForSemesterException, 
-					CourseNotExistsInCatalogException, 
-					UserNotFoundException, 
-					StudentNotEligibleForCourseRegistrationException,
-					InvalidCourseForCourseTypeException;
+			throws 
+				StudentAlreadyRegisteredForSemesterException, 
+				CourseNotExistsInCatalogException, 
+				UserNotFoundException, 
+				StudentNotEligibleForCourseRegistrationException,
+				InvalidCourseForCourseTypeException,
+				CourseNotAvailableDueToSeatsFullException;
 	
 	/**
 	 * 
@@ -119,24 +125,28 @@ public interface CourseRegistrationService {
 	 * @param regStatus
 	 * @return 
 	 */
-	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
+	public List<CourseRegistrationResponseDTO> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus);
 	
 	/**
 	 * 
 	 * @param courseRegId
 	 * @return
+	 * @throws CannotApproveCourseRegistrationPaymentPendingException 
 	 */
 	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
 			RegistrationStatus registrationStatus,
-			Set<Integer> courseRegistrationIds);
+			Collection<Integer> courseRegistrationIds) 
+				throws CannotApproveCourseRegistrationPaymentPendingException;
 
 	/**
 	 * 
 	 * @return
+	 * @throws CannotApproveCourseRegistrationPaymentPendingException 
 	 */
 	public Boolean updateAllPendingCourseRegistrationsTo(
-			RegistrationStatus registrationStatus);
+			RegistrationStatus registrationStatus) 
+					throws CannotApproveCourseRegistrationPaymentPendingException;
 	
 	/**
 	 * 
@@ -148,7 +158,8 @@ public interface CourseRegistrationService {
 	 * @throws ProfessorNotAssignedForCourseException 
 	 * @throws ProfessorNotAssignedForCourseException 
 	 */
-	public List<Student> getRegisteredStudentsByProfessorIdAndCourseId(Integer professorId, Integer courseId)
+	public List<Student> getRegisteredStudentsByProfessorIdAndCourseId(
+			Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException,
@@ -176,7 +187,23 @@ public interface CourseRegistrationService {
 	 * @throws UserNotFoundException 
 	 */
 	public Boolean hasRegistrationByStudentIdAndSemester(
-			Integer studentId, Integer semester) throws UserNotFoundException;
-	
+			Integer studentId, Integer semester) 
+					throws UserNotFoundException;
+
+	/**
+	 * 
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 */
+	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(
+			Integer studentId, Integer semester);
+
+	/**
+	 * 
+	 * @param registrationId
+	 * @return
+	 */
+	List<Integer> getRegisteredCourseIdsByRegistrationId(Integer registrationId);
 	
 }

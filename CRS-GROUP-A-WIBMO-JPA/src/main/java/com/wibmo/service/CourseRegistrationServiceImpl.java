@@ -1,10 +1,12 @@
 package com.wibmo.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -15,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wibmo.exception.CannotApproveCourseRegistrationPaymentPendingException;
+import com.wibmo.exception.CourseNotAvailableDueToSeatsFullException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.InvalidCourseForCourseTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
@@ -28,11 +32,16 @@ import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.converter.CourseRegistrationConverter;
 import com.wibmo.dto.CourseRegistrationRequestDTO;
+import com.wibmo.dto.CourseRegistrationResponseDTO;
 import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
+import com.wibmo.entity.Payment;
 import com.wibmo.entity.Student;
+import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
+import com.wibmo.enums.PaymentMode;
+import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
@@ -54,6 +63,9 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	private CourseServiceImpl courseService;
 	
 	@Autowired
+	private PaymentServiceImpl paymentService;
+	
+	@Autowired
 	private CourseRegistrationRepository courseRegistrationRepository;
 	
 	@Autowired
@@ -66,7 +78,8 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException, 
 				StudentNotEligibleForCourseRegistrationException, 
-				InvalidCourseForCourseTypeException {
+				InvalidCourseForCourseTypeException, 
+				CourseNotAvailableDueToSeatsFullException {
 		
 		logger.info("courseRegistrationRequestDTO: " + courseRegistrationRequestDTO);
 		
@@ -102,15 +115,22 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
+			if(!courseService.isCourseHasVacantSeats(courseId)) {
+				throw new CourseNotAvailableDueToSeatsFullException(courseId);
+			}
 			if(!CourseType.PRIMARY.equals(
 					courseService.getCourseTypeByCourseId(courseId))) {
 				throw new InvalidCourseForCourseTypeException(
 						courseId, CourseType.PRIMARY);
 			}
 		}
+		
 		for(Integer courseId : courseRegistrationRequestDTO.getAlternativeCourseIds()) {
 			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
+			}
+			if(!courseService.isCourseHasVacantSeats(courseId)) {
+				throw new CourseNotAvailableDueToSeatsFullException(courseId);
 			}
 			if(!CourseType.ALTERNATIVE.equals(
 					courseService.getCourseTypeByCourseId(courseId))) {
@@ -122,6 +142,23 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		courseRegistrationRepository.save(
 				courseRegistrationConverter.convert(
 						courseRegistrationRequestDTO));
+		
+		/********************** Save Pending Payment ************************/
+		
+		CourseRegistration courseRegistration = 
+				courseRegistrationRepository.findByStudentIdAndSemester(
+						courseRegistrationRequestDTO.getStudentId(),
+						courseRegistrationRequestDTO.getSemester()).get();
+		
+		Payment payment = new Payment();
+		payment.setCourseRegistrationId(courseRegistration.getRegistrationId());
+		payment.setTotalAmount(4500);
+		payment.setPendingAmount(4500);
+		payment.setPaymentMode(PaymentMode.CASH);
+		
+		paymentService.add(payment);
+		
+		/*********************************************************************/
 	}
 
 	@Override
@@ -503,16 +540,31 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	}
 	
 	@Override
-	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
+	public List<CourseRegistrationResponseDTO> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus){
-		return courseRegistrationRepository
-			.findAllByRegistrationStatus(registrationStatus);
+		List<CourseRegistration> courseRegistrations = courseRegistrationRepository
+				.findAllByRegistrationStatus(registrationStatus);
+		List<Integer> courseIds = getCourseIds(courseRegistrations);
+		Map<Integer, Course> courseIdToCourseMap = courseService.getCourseIdToCourseMap(courseIds);
+		Map<Integer, Professor> professorIdToProfessorMap = professorService.getProfessorIdToProfessorMap(
+				courseIdToCourseMap
+					.entrySet()
+					.stream()
+					.map(entry -> entry.getValue().getProfessorId())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		
+		return courseRegistrationConverter.convertAll(
+				courseRegistrations,
+				courseIdToCourseMap,
+				professorIdToProfessorMap);
 	}
 	
 	@Override
 	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
 			RegistrationStatus registrationStatus,
-			Set<Integer> courseRegistrationIds){
+			Collection<Integer> courseRegistrationIds) 
+					throws CannotApproveCourseRegistrationPaymentPendingException {
 		
 		logger.info("registrationStatus: " + registrationStatus.toString());
 		logger.info("courseRegistrationIds: " + courseRegistrationIds);
@@ -520,8 +572,29 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		List<CourseRegistration> courseRegistrations = 
 				courseRegistrationRepository.findAllByRegistrationIdIn(courseRegistrationIds);
 		
-		courseRegistrations.forEach(courseRegistration -> 
-			courseRegistration.setRegistrationStatus(registrationStatus));
+		/*
+		 * We cannot Approve Registration until the Student's pending dues are clear.
+		 */
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+			for(CourseRegistration courseRegistration : courseRegistrations) {
+				if(PaymentStatus.UNPAID.equals(
+						paymentService.getPaymentStatusByCourseRegistrationId(
+						courseRegistration.getRegistrationId()))) {
+					throw new CannotApproveCourseRegistrationPaymentPendingException(
+							courseRegistration.getRegistrationId());
+				}
+			}
+		}
+		
+		courseRegistrations.forEach(courseRegistration -> {
+			courseRegistration.setRegistrationStatus(registrationStatus);
+			/*
+			 * Also, decrement available seat count
+			 */
+			courseService.decrementNumOfSeatsByCourseIds(
+						getRegisteredCourseIdsByRegistrationId(
+								courseRegistration.getRegistrationId()));
+		});
 		
 		courseRegistrationRepository.saveAll(courseRegistrations);
 		
@@ -530,14 +603,36 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	
 	@Override
 	public Boolean updateAllPendingCourseRegistrationsTo(
-			RegistrationStatus registrationStatus) {
+			RegistrationStatus registrationStatus) 
+					throws CannotApproveCourseRegistrationPaymentPendingException {
 		
 		List<CourseRegistration> courseRegistrations = 
 				courseRegistrationRepository.findAllByRegistrationStatus(
 						RegistrationStatus.PENDING);
 		
-		courseRegistrations.forEach(courseRegistration ->
-				courseRegistration.setRegistrationStatus(registrationStatus));
+		/*
+		 * We cannot Approve Registration until the Student's pending dues are clear.
+		 */
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+			for(CourseRegistration courseRegistration : courseRegistrations) {
+				if(PaymentStatus.UNPAID.equals(
+						paymentService.getPaymentStatusByCourseRegistrationId(
+						courseRegistration.getRegistrationId()))) {
+					throw new CannotApproveCourseRegistrationPaymentPendingException(
+							courseRegistration.getRegistrationId());
+				}
+			}
+		}
+		
+		courseRegistrations.forEach(courseRegistration -> {
+				courseRegistration.setRegistrationStatus(registrationStatus);
+				/*
+				 * Also, decrement available seat count
+				 */
+				courseService.decrementNumOfSeatsByCourseIds(
+							getRegisteredCourseIdsByRegistrationId(
+									courseRegistration.getRegistrationId()));
+		});
 		
 		courseRegistrationRepository.saveAll(courseRegistrations);
 		
@@ -610,7 +705,24 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		return courseRegistrationRepository
 				.existsByStudentIdAndSemester(studentId, semester);
 	}
-
+	
+	@Override
+	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
+		return courseRegistrationRepository
+				.findByStudentIdAndSemester(studentId, semester)
+				.map(courseRegistration -> courseRegistration)
+				.orElse(null);
+		
+	}
+	
+	@Override
+	public List<Integer> getRegisteredCourseIdsByRegistrationId(Integer registrationId) {
+		return courseRegistrationRepository
+				.findByRegistrationId(registrationId)
+				.map(courseRegistration -> getCourseIds(Collections.singletonList(courseRegistration)))
+				.orElse(Collections.emptyList());
+	}
+	
 	/*************************** Utility Methods ********************************/
 	
 	private Boolean isStudentRegisteredForAllAlternativeCourses(CourseRegistration courseRegistration) {
@@ -641,4 +753,46 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 			|| (null != courseRegistration.getAlternativeCourse2Id()
 				&& courseRegistration.getAlternativeCourse2Id().equals(courseId));
 	}
+	
+	private List<Integer> getCourseIds(List<CourseRegistration> courseRegistrations) {
+		List<Integer> courseIds = new ArrayList<>();
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse1Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse2Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse3Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse4Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getAlternativeCourse1Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getAlternativeCourse2Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		return courseIds;
+	}
+
 }

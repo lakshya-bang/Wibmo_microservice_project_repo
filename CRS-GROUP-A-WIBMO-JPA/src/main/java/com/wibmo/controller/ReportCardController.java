@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.dto.ReportCardRequestDTO;
 import com.wibmo.dto.ReportCardResponseDTO;
+import com.wibmo.exception.CannotAddGradeStudentPaymentPendingException;
+import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
+import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.ReportCardServiceImpl;
@@ -26,57 +29,65 @@ import com.wibmo.service.ReportCardServiceImpl;
 /**
  * @author abhishek.sharma
  */
-//@RestController
-//@RequestMapping("/report-card")
-//public class ReportCardController {
-//
-//	@Autowired
-//	private ReportCardServiceImpl reportCardService;
-//	
-//	@RequestMapping(
-//			produces = MediaType.APPLICATION_JSON,
-//			method = RequestMethod.GET,
-//			value = "/get/{studentId}/{semester}")
-//	public ResponseEntity getReportCardForSemester(
-//			@PathVariable(value = "studentId") Integer studentId,
-//			@PathVariable(value = "semester") Integer semester){
-//		try {
-//			List<ReportCardResponseDTO> reportCards = reportCardService
-//					.getReportCardByStudentIdAndSemester(studentId, semester);
-//			return new ResponseEntity(reportCards, HttpStatus.OK);
-//		}
-//		catch(UserNotFoundException 
-//			| StudentNotRegisteredForSemesterException e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//		}
-//		
-//	}
-//	
-//	@RequestMapping(
-//			produces = MediaType.APPLICATION_JSON,
-//			method = RequestMethod.GET,
-//			value = "/get-all/{studentId}")
-//	public ResponseEntity getAllReportCards(
-//			@PathVariable(value = "studentId") Integer studentId){
-//		try {
-//			Map<Integer, List<ReportCardResponseDTO>> semesterToReportCardsMap = reportCardService
-//					.getSemesterToReportCardMapByStudentId(studentId);
-//			return new ResponseEntity(semesterToReportCardsMap, HttpStatus.OK);
-//		}
-//		catch(UserNotFoundException e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//		}
-//		
-//	}
-//	
-//	@RequestMapping(
-//			produces = MediaType.APPLICATION_JSON,
-//			method = RequestMethod.POST,
-//			value = "/upload")
-//	public ResponseEntity upload(
-//			@RequestBody List<ReportCardRequestDTO> reportCardRequestDTOs){
-//		reportCardService.addAll(reportCardRequestDTOs);
-//		return new ResponseEntity(HttpStatus.OK);
-//	}
-//	
-//}
+@RestController
+@RequestMapping("/report-card")
+public class ReportCardController {
+
+	@Autowired
+	private ReportCardServiceImpl reportCardService;
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.GET,
+			value = "/get/{studentId}/{semester}")
+	public ResponseEntity getReportCardForSemester(
+			@PathVariable(value = "studentId") Integer studentId,
+			@PathVariable(value = "semester") Integer semester){
+		try {
+			List<ReportCardResponseDTO> reportCards = reportCardService
+					.getReportCardByStudentIdAndSemester(studentId, semester);
+			return new ResponseEntity(reportCards, HttpStatus.OK);
+		}
+		catch(UserNotFoundException 
+			| StudentNotRegisteredForSemesterException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.GET,
+			value = "/get-all/{studentId}")
+	public ResponseEntity getAllReportCards(
+			@PathVariable(value = "studentId") Integer studentId){
+		try {
+			Map<Integer, List<ReportCardResponseDTO>> semesterToReportCardsMap = reportCardService
+					.getSemesterToReportCardMapByStudentId(studentId);
+			return new ResponseEntity(semesterToReportCardsMap, HttpStatus.OK);
+		}
+		catch(UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.POST,
+			value = "/upload")
+	public ResponseEntity upload(
+			@RequestBody List<ReportCardRequestDTO> reportCardRequestDTOs){
+		try {
+			reportCardService.addAll(reportCardRequestDTOs);
+			return new ResponseEntity("Grades added successfully!", HttpStatus.OK);
+			
+		} catch (CannotAddGradeStudentPaymentPendingException 
+				| StudentNotRegisteredForCourseException
+				| CannotAddGradeStudentRegistrationNotApprovedException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
+		}
+		
+	}
+	
+}

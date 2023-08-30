@@ -35,7 +35,7 @@ public interface CourseService {
 	 * @param courseIds
 	 * @return
 	 */
-	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds);
+	public Map<Integer, Course> getCourseIdToCourseMap(Collection<Integer> courseIds);
 	
 	/**
 	 * 
@@ -124,4 +124,17 @@ public interface CourseService {
 	 * @return
 	 */
 	public CourseResponseDTO getCourseById(Integer courseId);
+
+	/**
+	 * 
+	 * @param courseIds
+	 */
+	public void decrementNumOfSeatsByCourseIds(List<Integer> courseIds);
+
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean isCourseHasVacantSeats(Integer courseId);
 }

@@ -50,4 +50,11 @@ public interface StudentService {
 	 */
 	public Map<Integer, Student> getStudentIdToStudentMap(Collection<Integer> collect);
 
+	/**
+	 * 
+	 * @param studentId
+	 * @return
+	 */
+	public Integer getCurrentSemesterByStudentId(Integer studentId);
+
 }	

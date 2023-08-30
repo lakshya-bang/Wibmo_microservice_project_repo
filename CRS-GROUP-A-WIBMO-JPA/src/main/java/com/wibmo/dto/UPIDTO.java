@@ -6,7 +6,7 @@ package com.wibmo.dto;
 /**
  * 
  */
-public class PaymentUPIDTO {
+public class UPIDTO {
 	private String upiId;
 
 	/**

@@ -7,6 +7,8 @@ import com.wibmo.dto.ReportCardRequestDTO;
 import com.wibmo.dto.ReportCardResponseDTO;
 import com.wibmo.entity.ReportCard;
 import com.wibmo.entity.Student;
+import com.wibmo.exception.CannotAddGradeStudentPaymentPendingException;
+import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
@@ -22,10 +24,16 @@ public interface ReportCardService {
 	 * 
 	 * <b>Note</b>: This is a general method for both save and update functionality.
 	 * 
-	 * @param courseId
-	 * @param studentIdToAssignedGradesMap
+	 * @param reportCardRequestDTOs
+	 * @throws CannotAddGradeStudentPaymentPendingException 
+	 * @throws StudentNotRegisteredForCourseException 
+	 * @throws CannotAddGradeStudentRegistrationNotApprovedException 
 	 */
-	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs);
+	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs) 
+			throws 
+				CannotAddGradeStudentPaymentPendingException, 
+				StudentNotRegisteredForCourseException, 
+				CannotAddGradeStudentRegistrationNotApprovedException;
 	
 	/**
 	 * 
@@ -71,7 +79,14 @@ public interface ReportCardService {
 	 * @param student
 	 * @param courseId
 	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws StudentNotRegisteredForCourseException 
 	 */
-	public ReportCardResponseDTO getReportCardByStudentForCourse(Student student, Integer courseId);
+	public ReportCardResponseDTO getReportCardByStudentIdAndCourseId(Integer studentId, Integer courseId)
+			throws 
+				UserNotFoundException, 
+				CourseNotExistsInCatalogException, 
+				StudentNotRegisteredForCourseException;
 
 }

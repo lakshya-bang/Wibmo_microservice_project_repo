@@ -22,6 +22,8 @@ import com.wibmo.dto.CourseRegistrationRequestDTO;
 import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.dto.AddDropCourseDTO;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.CannotApproveCourseRegistrationPaymentPendingException;
+import com.wibmo.exception.CourseNotAvailableDueToSeatsFullException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.InvalidCourseForCourseTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
@@ -75,7 +77,8 @@ public class CourseRegistrationController {
 			| CourseNotExistsInCatalogException 
 			| UserNotFoundException 
 			| StudentNotEligibleForCourseRegistrationException 
-			| InvalidCourseForCourseTypeException e) {
+			| InvalidCourseForCourseTypeException 
+			| CourseNotAvailableDueToSeatsFullException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -179,11 +182,15 @@ public class CourseRegistrationController {
 		    value = "/approve")
 	public ResponseEntity approveCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
-		return new ResponseEntity(
-				courseRegistrationService
-					.updateCourseRegistrationStatusToByRegistrationIds(
-						RegistrationStatus.APPROVED, 
-				courseRegistrationIds), HttpStatus.OK);
+		try {
+			return new ResponseEntity(
+					courseRegistrationService
+						.updateCourseRegistrationStatusToByRegistrationIds(
+							RegistrationStatus.APPROVED, 
+					courseRegistrationIds), HttpStatus.OK);
+		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
+		}
 	}
 	
 	@RequestMapping(
@@ -191,11 +198,15 @@ public class CourseRegistrationController {
 		    method = RequestMethod.PUT,
 		    value = "/approve-all")
 	public ResponseEntity approveAllCourseRegistrations() {
-		return new ResponseEntity(
-				courseRegistrationService
-					.updateAllPendingCourseRegistrationsTo(
-						RegistrationStatus.APPROVED)
-				, HttpStatus.OK);
+		try {
+			return new ResponseEntity(
+					courseRegistrationService
+						.updateAllPendingCourseRegistrationsTo(
+							RegistrationStatus.APPROVED)
+					, HttpStatus.OK);
+		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
+		}
 	}
 	
 	@RequestMapping(
@@ -204,11 +215,16 @@ public class CourseRegistrationController {
 		    value = "/reject")
 	public ResponseEntity rejectCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
-		return new ResponseEntity(
-				courseRegistrationService
-					.updateCourseRegistrationStatusToByRegistrationIds(
-						RegistrationStatus.REJECTED, 
-				courseRegistrationIds), HttpStatus.OK);
+		try {
+			return new ResponseEntity(
+					courseRegistrationService
+						.updateCourseRegistrationStatusToByRegistrationIds(
+							RegistrationStatus.REJECTED, 
+					courseRegistrationIds), HttpStatus.OK);
+		} catch (Exception e) {
+			// We never reach here in case of Reject
+			return new ResponseEntity(HttpStatus.OK);
+		}
 	}
 	
 	@RequestMapping(
@@ -216,11 +232,16 @@ public class CourseRegistrationController {
 		    method = RequestMethod.PUT,
 		    value = "/reject-all")
 	public ResponseEntity rejectAllCourseRegistrations() {
-		return new ResponseEntity(
-				courseRegistrationService
-					.updateAllPendingCourseRegistrationsTo(
-						RegistrationStatus.REJECTED),
-				HttpStatus.OK);
+		try {
+			return new ResponseEntity(
+					courseRegistrationService
+						.updateAllPendingCourseRegistrationsTo(
+							RegistrationStatus.REJECTED),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			// We never reach here in case of Reject
+			return new ResponseEntity(HttpStatus.OK);
+		}
 	}
 	
 }

@@ -66,6 +66,14 @@ public class StudentServiceImpl implements StudentService {
 						Function.identity()));
 	}
 	
+	@Override
+	public Integer getCurrentSemesterByStudentId(Integer studentId) {
+		return studentRepository
+				.findByStudentId(studentId)
+				.get()
+				.getCurrentSemester();
+	}
+	
 	/***************************** Utility methods ********************************/
 	
 	private Integer getUserId(Integer studentId) {

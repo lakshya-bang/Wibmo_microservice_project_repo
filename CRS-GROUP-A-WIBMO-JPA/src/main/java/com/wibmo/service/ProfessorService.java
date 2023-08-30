@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ public interface ProfessorService {
 	 * @param professorIds
 	 * @return Map<Integer,Professor>
 	 */
-	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds);
+	public Map<Integer, Professor> getProfessorIdToProfessorMap(Collection<Integer> professorIds);
 
 	/**
 	 * Creates a new entry in the professor table.

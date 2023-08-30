@@ -94,7 +94,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds) {
+	public Map<Integer, Course> getCourseIdToCourseMap(Collection<Integer> courseIds) {
 		return courseRepository
 				.findAllByCourseIdIn(courseIds)
 				.stream()
@@ -238,6 +238,21 @@ public class CourseServiceImpl implements CourseService {
 		
 		return null != course.getProfessorId()
 				&& professorId.equals(course.getProfessorId());
+	}
+
+	@Override
+	public void decrementNumOfSeatsByCourseIds(List<Integer> courseIds) {
+		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
+		courses.forEach(course -> course.setNoOfSeats(course.getNoOfSeats() - 1));
+		courseRepository.saveAll(courses);
+	}
+
+	@Override
+	public Boolean isCourseHasVacantSeats(Integer courseId) {
+		return courseRepository
+				.findByCourseId(courseId)
+				.get()
+				.getNoOfSeats() > 0;
 	}
 
 }
