@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import com.wibmo.converter.UserConverter;
+import com.wibmo.dto.UserLogInDTO;
 import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.dto.UserResponseDTO;
 import com.wibmo.entity.Admin;
@@ -24,6 +25,7 @@ import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotAuthorizedForLogIn;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.repository.UserRepository;
@@ -253,6 +255,27 @@ public class UserServiceImpl implements UserService{
 				.get()
 				.getRegistrationStatus();
 	}
+	
+	public void logIn(UserLogInDTO userLoginDTO) 
+			throws UserNotFoundException, UserNotAuthorizedForLogIn{	
+		if(null == userLoginDTO) {
+			return;
+		}
+		
+		Optional<User> user = userRepository.findByUserEmail(userLoginDTO.getUserEmail());
+		if(!user.isPresent()) {
+			throw new UserNotFoundException(user.get().getUserId(), user.get().getUserType());
+		} else if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(user.get().getRegistrationStatus())) {
+			throw new UserNotAuthorizedForLogIn(userLoginDTO.getUserEmail());
+		}
+		else {
+			if(userLoginDTO.getPassword().equals(user.get().getPassword()) ) {
+				LOG.info("LogIn Successful.");
+			}
+			LOG.info("Email or Password is incorrect.");
+		}
+	}
+	
 	
 	/*************************** Utility Methods ***************************/
 	
