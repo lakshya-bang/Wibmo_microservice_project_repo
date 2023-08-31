@@ -161,6 +161,20 @@ public class CourseRegistrationController {
 		
 	}
 	
+	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.GET,
+		    value = "/get/CourseIdToStudents/{professorId}")
+	public ResponseEntity CourseIdToRegisteredStudentsMappingByProfessorId( 
+			@PathVariable Integer professorId) {
+		try {
+			 
+			return new ResponseEntity(courseRegistrationService
+					.getCourseIdToRegisteredStudentsMappingByProfessorId(professorId),HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	/*
 	 * To show all the pending courses registration requests.
 	 */
