@@ -6,7 +6,8 @@ package com.wibmo.dto;
 /**
  * 
  */
-public class PaymentNetBankingDTO {
+public class NetBankingDTO {
+	
 	private String userName;
 	private String password;
 	/**

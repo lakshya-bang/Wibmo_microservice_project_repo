@@ -1,7 +1,0 @@
-/bin
-.classpath
-.DS_store
-.gitignore
-.settings
-config.properties
-contacts.log

@@ -7,7 +7,8 @@ package com.wibmo.enums;
  * 
  */
 public enum PaymentMode {
-	DEBIT,
+	CARD,
 	NETBANKING,
-	UPI
+	UPI,
+	CASH
 }

@@ -1,5 +1,6 @@
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 * @return Map<Integer,Professor>
 	 */
 	@Override
-	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
+	public Map<Integer, Professor> getProfessorIdToProfessorMap(Collection<Integer> professorIds) {
 		return professorRepository
 				.findAllByProfessorIdIn(professorIds)
 				.stream()
