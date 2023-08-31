@@ -7,12 +7,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.wibmo.dto.UserLogInDTO;
 import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.dto.UserResponseDTO;
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotAuthorizedForLogIn;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 
@@ -107,4 +109,12 @@ public interface UserService {
 	 */
 	public RegistrationStatus getRegistrationStatusById(Integer userId);
 	
+	/**
+	 * 
+	 * @param userEmail
+	 * @param password
+	 * @throws UserNotFoundException 
+	 */
+	public void logIn(UserLogInDTO userLoginDTO) 
+			throws UserNotFoundException, UserNotAuthorizedForLogIn;
 }

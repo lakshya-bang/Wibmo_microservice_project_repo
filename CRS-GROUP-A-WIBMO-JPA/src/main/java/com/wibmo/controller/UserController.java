@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wibmo.dto.UserLogInDTO;
 import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.dto.UserResponseDTO;
 import com.wibmo.entity.User;
@@ -24,6 +25,7 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotAuthorizedForLogIn;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.UserServiceImpl;
 
@@ -176,4 +178,16 @@ public class UserController {
 				HttpStatus.OK);
 	}
 	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.GET,
+		    value = "/login")
+	public ResponseEntity logIn(@RequestBody UserLogInDTO userLogInDTO) {
+		try {
+			userService.logIn(userLogInDTO);
+			return new ResponseEntity("LogIn Successful.", HttpStatus.OK);
+		} catch (UserNotFoundException | UserNotAuthorizedForLogIn e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+	}
 }
