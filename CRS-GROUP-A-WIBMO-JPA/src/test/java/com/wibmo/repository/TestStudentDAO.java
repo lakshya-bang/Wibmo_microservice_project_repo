@@ -2,7 +2,9 @@ package com.wibmo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wibmo.entity.Student;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.StudentServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +31,7 @@ public class TestStudentDAO {
 	@Mock
 	private StudentRepository studentRepository;
 	
+	//null case
 	@Test
 	public void findAllStudentTest() {
 		List<Student> expectedStudent = List.of(
@@ -44,6 +48,7 @@ public class TestStudentDAO {
 		assertTrue(expectedStudent.equals(actualStudent));
 	}
 	
+	//TODO: ids more than list
 	@Test
 	public void findAllByStudentIdTest() {
 		List<Student> expectedStudent = List.of(
@@ -51,9 +56,9 @@ public class TestStudentDAO {
 				new Student(2, 1002, "xyz@gmail.com", "xyz", 1),
 				new Student(3, 1003, "bob@gmail.com", "xyz", 1),
 				new Student(4, 1004, "alice@gmail.com", "xyz", 1));
-		Collection<Integer> Ids = List.of(1,2,3,4);
-		when(studentRepository.findAllByStudentIdIn(Ids)).thenReturn(expectedStudent);
+		when(studentRepository.findAllByStudentIdIn(any(List.class))).thenReturn(expectedStudent);
 		
+		Collection<Integer> Ids = List.of(1,2,3,4);
 		List<Student> actualStudent = studentService.getAllStudentsByIds(Ids);
 		
 		assertNotNull(actualStudent);
@@ -61,8 +66,9 @@ public class TestStudentDAO {
 		assertTrue(expectedStudent.equals(actualStudent));
 	}
 	
+	//empty optional
 	@Test
-	public void findByStudentIdTest() {
+	public void findByStudentIdTest() throws UserNotFoundException {
 		Optional<Student> expectedStudent = Optional.of(new Student(1, 1001, "abc@gmail.com", "abc", 1));
 		
 		when(studentRepository.findByStudentId(1)).thenReturn(expectedStudent);
@@ -73,8 +79,9 @@ public class TestStudentDAO {
 		assertEquals(expectedStudent.get(), actualStudent);
 	}
 	
+	//empty optional
 	@Test
-	public void isStudentExistsByIdTest() {
+	public void isStudentExistsByIdTest() throws UserNotFoundException {
 		//Optional<Student> student = Optional.of(new Student(1, 1001, "abc@gmail.com", "abc", 1));
 		Optional<Student> stNull = Optional.ofNullable(null);
 		when(studentRepository.findByStudentId(null)).thenReturn(stNull);
@@ -85,6 +92,7 @@ public class TestStudentDAO {
 		assertEquals(expectedResult, actualResult);
 	}
 	
+	// not null check
 	@Test
 	public void getStudentIdToStudentMapTest() {
 		List<Student> studentList = List.of(
@@ -104,7 +112,7 @@ public class TestStudentDAO {
 	}
 	
 	@Test
-	public void getCurrentSemesterByStudentIdTest() {
+	public void getCurrentSemesterByStudentIdTest() throws UserNotFoundException {
 		Optional<Student> student = Optional.of(new Student(1, 1001, "abc@gmail.com", "abc", 2));
 		when(studentRepository.findByStudentId(1)).thenReturn(student);
 		
@@ -112,5 +120,19 @@ public class TestStudentDAO {
 		Integer actualRes = studentService.getCurrentSemesterByStudentId(1);
 		
 		assertEquals(expectedRes, actualRes);
+	}
+	
+	@Test
+	public void getCurrentSemesterByStudentId_shouldTrowUserNotFoundExceptionTest(){
+		when(studentRepository.findByStudentId(1)).thenReturn(null);
+		
+		assertThrows(
+				UserNotFoundException.class, 
+				() -> studentService.getCurrentSemesterByStudentId(4));
+	}
+	
+	@Test 
+	public void isExistsByStudentIdTest() {
+		List<Student> studentList = List.of(new Student(1, 1001, "abc@gmail.com", "abc", 1));
 	}
 }

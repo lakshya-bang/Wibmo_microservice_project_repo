@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.wibmo.entity.Student;
+import com.wibmo.exception.UserNotFoundException;
 
 /**
  * 
@@ -14,8 +15,9 @@ public interface StudentService {
 	/**
 	 * @param integer
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
-	public Student getStudentById(Integer integer);
+	public Student getStudentById(Integer integer) throws UserNotFoundException;
 	
 	/**
 	 * 
@@ -33,8 +35,9 @@ public interface StudentService {
 	 * 
 	 * @param studentId
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
-	public Boolean isStudentExistsById(Integer studentId);
+	public Boolean isStudentExistsById(Integer studentId) throws UserNotFoundException;
 	
 	/**
 	 * 
@@ -54,7 +57,8 @@ public interface StudentService {
 	 * 
 	 * @param studentId
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
-	public Integer getCurrentSemesterByStudentId(Integer studentId);
+	public Integer getCurrentSemesterByStudentId(Integer studentId) throws UserNotFoundException;
 
 }	
