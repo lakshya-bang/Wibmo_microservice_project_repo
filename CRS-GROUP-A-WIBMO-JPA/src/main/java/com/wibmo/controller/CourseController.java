@@ -3,6 +3,7 @@
  */
 package com.wibmo.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -16,13 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.dto.ProfessorIdCourseIdDTO;
+import com.wibmo.dto.CourseIdProfessorIdDTO;
+import com.wibmo.dto.CourseRequestDTO;
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.enums.CourseType;
-import com.wibmo.service.CourseServiceImpl;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.service.CourseServiceImpl;
 
 /**
  * 
@@ -34,30 +37,57 @@ public class CourseController {
 	@Autowired
 	private CourseServiceImpl courseService;
 	
-	// TODO: View Method needs Projection Mapping
-//	@RequestMapping(produces = MediaType.APPLICATION_JSON,
-//			method = RequestMethod.GET,
-//			value = "/view-Course-Details-By-Semester/{currentSemester}")
-//	public ResponseEntity viewCourseDetailsBySemester(
-//			@PathVariable Integer currentSemester) {
-//		try {
-//			List<Course> courses = courseService.viewCourseDetailsBySemester(currentSemester);
-//			return new ResponseEntity(courses,HttpStatus.OK);
-//		}
-//		catch(Exception e) {
-//			return new ResponseEntity("Internal Server Error",HttpStatus.NOT_FOUND);
-//		}
-//		
-//	}
+	@RequestMapping(
+			produces=MediaType.APPLICATION_JSON,
+			method=RequestMethod.GET,
+			value="/get/{id}")
+	public ResponseEntity getCourseById(@PathVariable("id") Integer courseId) {
+		try {
+			CourseResponseDTO course = courseService.getCourseById(courseId);
+			return new ResponseEntity(course,HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity("Internal Server Error !!",HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping(
+			produces=MediaType.APPLICATION_JSON,
+			method=RequestMethod.GET,
+			value="/get-all")
+	public ResponseEntity getAllCourses() {
+		try {
+			List<CourseResponseDTO> courses = courseService.getAllCourses();
+			return new ResponseEntity(courses,HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity("Internal Server Error !!",HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping(produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.GET,
+			value = "/get/semester/{semester}")
+	public ResponseEntity viewCourseDetailsBySemester(
+			@PathVariable Integer semester) {
+		try {
+			List<CourseResponseDTO> courses = courseService.getCourseDetailsBySemester(semester);
+			return new ResponseEntity(courses,HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity("Internal Server Error",HttpStatus.NOT_FOUND);
+		}
+		
+	}
 	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON,
 			method = RequestMethod.GET,
-			value = "/get-Courses-Assigned-To-Professor/{professorId}")
+			value = "/get/assigned/{professorId}")
 	public ResponseEntity getCoursesAssignedToProfessor(
 			@PathVariable Integer professorId){
 		try {
-			List<Course> courses=courseService.getCoursesAssignedToProfessor(professorId);
+			List<Course> courses = courseService.getCoursesAssignedToProfessor(professorId);
 			return new ResponseEntity(courses,HttpStatus.OK);
 		}
 		catch(UserNotFoundException e) {
@@ -66,11 +96,10 @@ public class CourseController {
 		
 	}
 	
-	
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method=RequestMethod.GET,
-			value="/getCourseTypeByCourseId/{courseId}")
+			value="/get/course-type/{courseId}")
 	public ResponseEntity getCourseTypeByCourseId(
 			@PathVariable Integer courseId) {
 		try {
@@ -85,53 +114,27 @@ public class CourseController {
 	
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
-			method=RequestMethod.GET,
-			value="/isCourseExistsInCatalog/{courseId}")
-	public ResponseEntity isCourseExistsInCatalog(
-			@PathVariable Integer courseId) {
-		Boolean courseExists = courseService.isCourseExistsInCatalog(courseId);
-		return new ResponseEntity(courseExists,HttpStatus.OK);
+			method = RequestMethod.POST,
+			value = "/add")
+	public ResponseEntity addCourse(
+			@RequestBody CourseRequestDTO courseRequestDTO) {
+		return new ResponseEntity(courseService.add(courseRequestDTO), HttpStatus.OK);
 	}
-	
-	// TODO: View Method needs Projection Mapping
-//	@RequestMapping(
-//			produces=MediaType.APPLICATION_JSON,
-//			method=RequestMethod.GET,
-//			value="/viewAllCourses")
-//	public ResponseEntity viewAllCourses() {
-//		List<Course> courses;
-//		try {
-//			courses = courseService.viewAllCourses();
-//			return new ResponseEntity(courses,HttpStatus.OK);
-//		}
-//		catch(Exception e) {
-//			return new ResponseEntity("Internal Server Error !!",HttpStatus.NOT_FOUND);
-//		}
-//	}
 	
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.POST,
-			value = "/add-Course")
-	public ResponseEntity addCourse(
-			@RequestBody Course course) {
-//		try {
-		System.out.println("Course is :"+course);
-			Course savedCourse = courseService.add(course);
-			return new ResponseEntity(savedCourse, HttpStatus.OK);
-//		}
-//		catch(Exception e) {
-//			return new ResponseEntity("Internal Server Error !!",HttpStatus.NOT_FOUND);
-//		}
-		
+			value = "/add-all")
+	public ResponseEntity addAllCourses(
+			@RequestBody Collection<CourseRequestDTO> courseRequestDTOs) {
+		return new ResponseEntity(courseService.addAll(courseRequestDTOs), HttpStatus.OK);
 	}
 	
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.DELETE,
-			value = "/drop-Course/{courseId}")
-	public ResponseEntity removeCourse(
-			@PathVariable Integer courseId) {
+			value = "/drop/{courseId}")
+	public ResponseEntity removeCourse(@PathVariable Integer courseId) {
 		try {
 			Boolean response = courseService.removeCourseById(courseId);
 			return new ResponseEntity(response, HttpStatus.OK);
@@ -143,11 +146,13 @@ public class CourseController {
 		
 	}
 	
+	// TODO: Add /drop-all API
+	
 	@RequestMapping(produces=MediaType.APPLICATION_JSON,
-			method = RequestMethod.POST,
-			value = "/assign-Course-To-Professor")
+			method = RequestMethod.PUT,
+			value = "/assign")
 	public ResponseEntity assignCourseToProfessor(
-			@RequestBody ProfessorIdCourseIdDTO professorIdCourseIdDTO) {
+			@RequestBody CourseIdProfessorIdDTO professorIdCourseIdDTO) {
 		try {
 			courseService.assignCourseToProfessor(
 					professorIdCourseIdDTO.getCourseId(),
@@ -160,21 +165,6 @@ public class CourseController {
 		}
 	}
 	
-	@RequestMapping(
-			produces=MediaType.APPLICATION_JSON,
-			method = RequestMethod.GET,
-			value = "/is-Professor-Assigned-For-Course")
-	public ResponseEntity isProfessorAssignedForCourse(
-			@RequestBody ProfessorIdCourseIdDTO professorIdCourseIdDTO)
-			 {
-		try {
-			Boolean response = courseService.isProfessorAssignedForCourse(professorIdCourseIdDTO.getProfessorId(),professorIdCourseIdDTO.getCourseId());
-			return new ResponseEntity(response,HttpStatus.OK);
-		}
-		catch(UserNotFoundException 
-			| CourseNotExistsInCatalogException e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
-	}
+	// TODO: Add /assign-all API
 	
 }

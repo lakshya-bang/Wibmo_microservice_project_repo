@@ -10,18 +10,19 @@ import com.wibmo.entity.Student;
  */
 public class StudentAlreadyRegisteredForCourseInSemesterException extends Exception {
 
-	private Student student;
+	private Integer studentId;
+	private Integer semester;
 	private Integer courseId;
 	
 	public StudentAlreadyRegisteredForCourseInSemesterException(
-			Student student, Integer courseId) {
-		
-		this.student = student;
+			Integer studentId, Integer semester, Integer courseId) {
+		this.studentId = studentId;
+		this.semester = semester;
 		this.courseId = courseId;
 	}
 	
 	@Override
 	public String getMessage() {
-		return "Student Id: " + student.getStudentId() + " Already Registered for Course Id: " + courseId + " in Semester: " + student.getCurrentSemester();
+		return "Student Id: " + studentId + " Already Registered for Course Id: " + courseId + " in Semester: " + semester;
 	}
 }

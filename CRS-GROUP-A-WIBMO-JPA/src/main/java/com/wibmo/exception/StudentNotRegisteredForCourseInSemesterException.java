@@ -7,16 +7,19 @@ import com.wibmo.entity.Student;
  */
 public class StudentNotRegisteredForCourseInSemesterException extends Exception {
 
-	private Student student;
+	private Integer studentId;
+	private Integer semester;
 	private Integer courseId;
 	
-	public StudentNotRegisteredForCourseInSemesterException(Student student, Integer courseId) {
-		this.student = student;
+	public StudentNotRegisteredForCourseInSemesterException(
+			Integer studentId, Integer semester, Integer courseId) {
+		this.studentId = studentId;
+		this.semester = semester;
 		this.courseId = courseId;
 	}
 	
 	@Override
 	public String getMessage() {
-		return "Student Id: " + student.getStudentId() + " NOT Registered for Course Id: " + courseId + " in Semester: " + student.getCurrentSemester();
+		return "Student Id: " + studentId + " NOT Registered for Course Id: " + courseId + " in Semester: " + semester + ".";
 	}
 }

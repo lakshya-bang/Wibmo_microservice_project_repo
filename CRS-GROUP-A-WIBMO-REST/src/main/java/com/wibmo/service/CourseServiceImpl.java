@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.dao.CourseDAOImpl;
+import com.wibmo.dto.CourseProfessorDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
@@ -21,19 +22,20 @@ import com.wibmo.exception.UserNotFoundException;
 public class CourseServiceImpl implements CourseService {
 
 	@Autowired
-	private UserServiceImpl userOperation;
+	private UserServiceImpl userService;
 	
 	@Autowired
-	private ProfessorServiceImpl professorOperation;
+	private ProfessorServiceImpl professorService;
 	
 	@Autowired
 	private CourseDAOImpl courseDAO;
 	
 	// TODO: This implementation can be moved to Join query in Database
 	@Override
-	public void viewCourseDetailsBySemester(Integer currentSemester) {
-		List<Course> courses = courseDAO.findAllBySemester(currentSemester);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation
+	public List<CourseProfessorDTO> getCourseDetailsBySemester(Integer semester) {
+		
+		List<Course> courses = courseDAO.findAllBySemester(semester);
+		Map<Integer, Professor> professorIdToProfessorMap = professorService
 				.getProfessorIdToProfessorMap(
 						courses
 							.stream()
@@ -41,24 +43,14 @@ public class CourseServiceImpl implements CourseService {
 							.filter(professorId -> professorId != null)
 							.collect(Collectors.toSet()));
 		
-		System.out.println("List of applicable Courses for Semeseter: " + currentSemester);
-		System.out.println(" CourseID  | \t CourseTitle \t|  Course Type  | Seats |   \t   ProfessorName   \t| \tDepartment ");
-		System.out.println("+----------------------------------------------------------------------------------------------------------------------------+");
-		courses
-			.forEach(
-				course -> System.out.format(
-						"|    %d\t| %s\t| %s\t| %d\t| %s \t| %s |\n", 
-						// "%5d%15s%16d%20s%13s\n", 
-							course.getCourseId(),
-							course.getCourseTitle(),
-							course.getCourseType().toString(),
-							course.getNoOfSeats(),
-							null != course.getProfessorId()
-								? professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()
-								: "NULL",
-							null != course.getProfessorId()
-								? professorIdToProfessorMap.get(course.getProfessorId()).getDepartment()
-								: "NULL"));
+		return courses
+				.stream()
+				.map(course -> new CourseProfessorDTO(
+						course, 
+						null != course.getProfessorId() 
+							? professorIdToProfessorMap.get(course.getProfessorId())
+							: null))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -75,7 +67,7 @@ public class CourseServiceImpl implements CourseService {
 	public List<Course> getCoursesAssignedToProfessor(Integer professorId) 
 			throws UserNotFoundException {
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
@@ -146,37 +138,11 @@ public class CourseServiceImpl implements CourseService {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
 		courseDAO.setProfessorIdAsWhereCourseIdIs(professorId, courseId);
-	}
-
-	@Override
-	public void viewCoursesTaughtByProfessor(Professor professor) {
-		
-		// TODO: Move to Validator
-		if(null == professor || null == professor.getProfessorId()) {
-			return;
-		}
-		
-		System.out.print("*** List of Courses Taught:- ***\n"
-				+ "\n+--------------------------------------------+\n"
-				+ "CourseId |\tCourseTitle\t| CourseType "
-				+ "\n+--------------------------------------------+\n");
-		
-		try {
-			getCoursesAssignedToProfessor(professor.getProfessorId())
-				.forEach(course -> System.out.format(
-						"%5d\t | %s \t| %s\n", 
-							course.getCourseId(), 
-							course.getCourseTitle(),
-							course.getCourseType().toString()));
-		} catch (UserNotFoundException e) {
-			System.out.println(e.getMessage());
-//			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -189,7 +155,7 @@ public class CourseServiceImpl implements CourseService {
 			return false;
 		}
 		
-		if(!userOperation.isUserExistsById(professorId)) {
+		if(!userService.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
@@ -202,11 +168,4 @@ public class CourseServiceImpl implements CourseService {
 						courseDAO.findProfessorIdByCourseId(courseId));
 	}
 
-	/************************** Utility Methods **************************/
-	
-	private boolean isCourseAssignedToAnyProfessor(Integer courseId) {
-		return courseDAO.findProfessorIdByCourseId(courseId) != null;
-	}
-	
-	
 }

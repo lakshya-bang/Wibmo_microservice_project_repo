@@ -21,15 +21,19 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "admin")
 public class Admin {
+	
 	@Id
 	@Column(name = "admin_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer adminId;		// admin_id
+	private Integer adminId;		// admin_id (PK)
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "admin_id")
-    @MapsId
-	private User user;
+	@Column(name = "user_id")
+	private Integer userId;			// user_id (FK)
+	
+//	@OneToOne(cascade = CascadeType.ALL, optional = false)
+//    @JoinColumn(name = "admin_id")
+//    @MapsId
+//	private User user;
 	
 	@Column(name = "admin_email")
 	@NotNull
@@ -38,6 +42,19 @@ public class Admin {
 	@Column(name = "admin_name")
 	@NotNull
 	private String adminName;		// admin_name
+
+	public Admin() {}
+	
+	public Admin(
+			Integer adminId,
+			Integer userId,
+			String adminEmail,
+			String adminName) {
+		this.adminId = adminId;
+		this.userId = userId;
+		this.adminEmail = adminEmail;
+		this.adminName = adminName;
+	}
 
 	/**
 	 * @return the adminId
@@ -51,6 +68,20 @@ public class Admin {
 	 */
 	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -79,6 +110,12 @@ public class Admin {
 	 */
 	public void setAdminName(String adminName) {
 		this.adminName = adminName;
+	}
+
+	@Override
+	public String toString() {
+		return "Admin [adminId=" + adminId + ", userId=" + userId + ", adminEmail=" + adminEmail + ", adminName="
+				+ adminName + "]";
 	}
 	
 }

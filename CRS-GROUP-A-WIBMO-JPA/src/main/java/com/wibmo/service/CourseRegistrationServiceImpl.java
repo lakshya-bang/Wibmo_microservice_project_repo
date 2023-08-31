@@ -1,105 +1,184 @@
 package com.wibmo.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wibmo.exception.CannotApproveCourseRegistrationPaymentPendingException;
+import com.wibmo.exception.CourseNotAvailableDueToSeatsFullException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
-import com.wibmo.exception.StudentAlreadyRegisteredForAllAlternativeCoursesException;
-import com.wibmo.exception.StudentAlreadyRegisteredForAllPrimaryCoursesException;
+import com.wibmo.exception.InvalidCourseForCourseTypeException;
+import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
+import com.wibmo.exception.StudentNotEligibleForCourseRegistrationException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
-import com.wibmo.dto.RegisteredCourse;
+import com.wibmo.converter.CourseRegistrationConverter;
+import com.wibmo.dto.CourseRegistrationRequestDTO;
+import com.wibmo.dto.CourseRegistrationResponseDTO;
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
-import com.wibmo.entity.Professor;
+import com.wibmo.entity.Payment;
 import com.wibmo.entity.Student;
+import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
+import com.wibmo.enums.PaymentMode;
+import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.enums.UserType;
 
 public class CourseRegistrationServiceImpl implements CourseRegistrationService {
 	
-	@Autowired
-	private UserServiceImpl userOperation;
+	private static final Logger logger = LogManager.getLogger(CourseRegistrationServiceImpl.class);
 	
 	@Autowired
-	private StudentServiceImpl studentOperation;
+	private UserServiceImpl userService;
 	
 	@Autowired
-	private ProfessorServiceImpl professorOperation;
+	private StudentServiceImpl studentService;
 	
 	@Autowired
-	private CourseServiceImpl courseOperation;
+	private ProfessorServiceImpl professorService;
 	
+	@Autowired
+	private CourseServiceImpl courseService;
+	
+	@Autowired
+	private PaymentServiceImpl paymentService;
+	
+	@Autowired
 	private CourseRegistrationRepository courseRegistrationRepository;
 	
+	@Autowired
+	private CourseRegistrationConverter courseRegistrationConverter;
+	
 	@Override
-	public void register(List<Integer> primaryCourseIds, List<Integer> alternativeCourseIds, Student student)
+	public void register(CourseRegistrationRequestDTO courseRegistrationRequestDTO)
 			throws 
 				StudentAlreadyRegisteredForSemesterException, 
-				CourseNotExistsInCatalogException {
+				CourseNotExistsInCatalogException, 
+				UserNotFoundException, 
+				StudentNotEligibleForCourseRegistrationException, 
+				InvalidCourseForCourseTypeException, 
+				CourseNotAvailableDueToSeatsFullException {
+		
+		logger.info("courseRegistrationRequestDTO: " + courseRegistrationRequestDTO);
 		
 		// TODO: Check if Registration is Enabled by Admin
 
-		if(isStudentRegistered(student)) {
-			throw new StudentAlreadyRegisteredForSemesterException(student);
+		// TODO: Move to Validator
+		
+		if(!studentService
+				.isStudentExistsById(courseRegistrationRequestDTO.getStudentId())) {
+			throw new UserNotFoundException(
+					courseRegistrationRequestDTO.getStudentId(), 
+					UserType.STUDENT);
 		}
 		
-		for(Integer courseId : primaryCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		Student student = studentService.getStudentById(
+				courseRegistrationRequestDTO.getStudentId());
+		
+		if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(
+				userService.getRegistrationStatusById(student.getUserId()))) {
+			throw new StudentNotEligibleForCourseRegistrationException(
+					courseRegistrationRequestDTO.getStudentId());
+		}
+		
+		if(hasRegistrationByStudentIdAndSemester(
+				courseRegistrationRequestDTO.getStudentId(),
+				courseRegistrationRequestDTO.getSemester())) {
+			throw new StudentAlreadyRegisteredForSemesterException(
+					courseRegistrationRequestDTO.getStudentId(), 
+					courseRegistrationRequestDTO.getSemester());
+		}
+		
+		for(Integer courseId : courseRegistrationRequestDTO.getPrimaryCourseIds()) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
-		}
-		for(Integer courseId : alternativeCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
-				throw new CourseNotExistsInCatalogException(courseId);
+			if(!courseService.isCourseHasVacantSeats(courseId)) {
+				throw new CourseNotAvailableDueToSeatsFullException(courseId);
+			}
+			if(!CourseType.PRIMARY.equals(
+					courseService.getCourseTypeByCourseId(courseId))) {
+				throw new InvalidCourseForCourseTypeException(
+						courseId, CourseType.PRIMARY);
 			}
 		}
 		
-		CourseRegistration courseRegistration = new CourseRegistration();
-		courseRegistration.setStudentId(student.getStudentId());
-		courseRegistration.setSemester(student.getCurrentSemester());
+		for(Integer courseId : courseRegistrationRequestDTO.getAlternativeCourseIds()) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
+				throw new CourseNotExistsInCatalogException(courseId);
+			}
+			if(!courseService.isCourseHasVacantSeats(courseId)) {
+				throw new CourseNotAvailableDueToSeatsFullException(courseId);
+			}
+			if(!CourseType.ALTERNATIVE.equals(
+					courseService.getCourseTypeByCourseId(courseId))) {
+				throw new InvalidCourseForCourseTypeException(
+						courseId, CourseType.ALTERNATIVE);
+			}
+		}
+			
+		courseRegistrationRepository.save(
+				courseRegistrationConverter.convert(
+						courseRegistrationRequestDTO));
 		
-		// TODO:
-		courseRegistration.setYear(2021);
+		/********************** Save Pending Payment ************************/
 		
-		courseRegistration.setPrimaryCourse1Id(primaryCourseIds.get(0));
-		courseRegistration.setPrimaryCourse2Id(primaryCourseIds.get(1));
-		courseRegistration.setPrimaryCourse3Id(primaryCourseIds.get(2));
-		courseRegistration.setPrimaryCourse4Id(primaryCourseIds.get(3));
-		courseRegistration.setAlternativeCourse1Id(alternativeCourseIds.get(0));
-		courseRegistration.setAlternativeCourse2Id(alternativeCourseIds.get(1));
-		courseRegistration.setRegistrationStatus(RegistrationStatus.PENDING);
+		CourseRegistration courseRegistration = 
+				courseRegistrationRepository.findByStudentIdAndSemester(
+						courseRegistrationRequestDTO.getStudentId(),
+						courseRegistrationRequestDTO.getSemester()).get();
 		
-		courseRegistrationRepository.save(courseRegistration);
+		Payment payment = new Payment();
+		payment.setCourseRegistrationId(courseRegistration.getRegistrationId());
+		payment.setTotalAmount(4500);
+		payment.setPendingAmount(4500);
+		payment.setPaymentMode(PaymentMode.CASH);
 		
-		System.out.println("Course Registration Request sent to Admin for Approval.");
+		paymentService.add(payment);
 		
+		/*********************************************************************/
 	}
 
 	@Override
-	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student) 
-			throws StudentNotRegisteredForSemesterException {
+	public List<CourseResponseDTO> getRegisteredCoursesByStudentIdAndSemester(
+			Integer studentId, Integer semester) 
+			throws 
+				StudentNotRegisteredForSemesterException, 
+				UserNotFoundException,
+				CourseNotExistsInCatalogException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		Optional<CourseRegistration> courseRegistrationOptional = courseRegistrationRepository
+				.findByStudentIdAndSemester(studentId, semester);
+		
+		if(!courseRegistrationOptional.isPresent()) {
+			throw new StudentNotRegisteredForSemesterException(studentId, semester);
 		}
-		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
-		CourseRegistration courseRegistration = courseRegistrationRepository.findByStudent(student);
+		
+		CourseRegistration courseRegistration = courseRegistrationOptional.get();
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
+		
 		// TODO: Move to Join Query to avoid redundant code
 		if(null != (courseId = courseRegistration.getPrimaryCourse1Id())) {
 			courseIds.add(courseId);
@@ -119,219 +198,448 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		if(null != (courseId = courseRegistration.getAlternativeCourse2Id())) {
 			courseIds.add(courseId);
 		}
-		Map<Integer, Course> courseIdToCourseMap = courseOperation
-				.getCourseIdToCourseMap(courseIds);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation.getProfessorIdToProfessorMap(
-				courseIdToCourseMap
-					.entrySet()
-					.stream()
-					.map(entry -> entry.getValue().getProfessorId())
-					.collect(Collectors.toSet()));
 		
-		courseIdToCourseMap
-			.entrySet()
-			.stream()
-			.map(entry -> entry.getValue())
-			.forEach(course -> {
-				registeredCourses.add(new RegisteredCourse(course.getCourseId(),course.getCourseTitle(),course.getDepartment(),professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()));
-
-			});
-		return registeredCourses;
+		return courseService.getCourseDetailsByIds(courseIds);
 	}
 	
 	@Override
-	public RegistrationStatus getRegistrationStatusByStudent(Student student) 
+	public RegistrationStatus getRegistrationStatusByStudentIdAndSemester(
+			Integer studentId, Integer semester) 
 			throws StudentNotRegisteredForSemesterException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		Optional<CourseRegistration> courseRegistrationOptional = 
+				courseRegistrationRepository.findByStudentIdAndSemester(studentId, semester);
+		
+		if(!courseRegistrationOptional.isPresent()) {
+			throw new StudentNotRegisteredForSemesterException(studentId, semester);
 		}
 		
-		return courseRegistrationRepository.findRegistrationStatusByStudent(student);
+		return courseRegistrationOptional.get().getRegistrationStatus();
 	}
 	
 	@Override
-	public void addCourse(Integer courseId, Student student) 
+	public void addCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
 				StudentAlreadyRegisteredForCourseInSemesterException, 
-				StudentAlreadyRegisteredForAllAlternativeCoursesException, 
-				StudentAlreadyRegisteredForAllPrimaryCoursesException, 
-				CourseNotExistsInCatalogException {
+				StudentAlreadyRegisteredForAllCoursesOfTypeException,  
+				CourseNotExistsInCatalogException, 
+				UserNotFoundException {
 
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		logger.info("courseId: " + courseId + ", studentId: " + studentId + ", semester: " + semester);
+		
+		if(!studentService.isStudentExistsById(studentId)) {
+			throw new UserNotFoundException(studentId, UserType.STUDENT);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		// TODO: Improve dual DB call for same thing. Handle with index. 
-		if(isStudentRegisteredForCourse(student, courseId)) {
-			throw new StudentAlreadyRegisteredForCourseInSemesterException(student, courseId);
+		Optional<CourseRegistration> courseRegistrationOptional = 
+				courseRegistrationRepository.findByStudentIdAndSemester(studentId, semester);
+		
+		if(!courseRegistrationOptional.isPresent()) {
+			throw new StudentNotRegisteredForSemesterException(studentId, semester);
 		}
 		
-		// TODO: CourseLite object can help avoid redundant DB access
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
-				
+		CourseRegistration courseRegistration = courseRegistrationOptional.get();
+		
+		if(hasRegistrationForCourse(courseRegistration, courseId)) {
+			throw new StudentAlreadyRegisteredForCourseInSemesterException(
+					studentId, semester, courseId);
+		}
+		
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
+		
 		switch(courseType) {
 		
 		case ALTERNATIVE:
-			if(isStudentRegisteredForAllAlternativeCourses(student)) {
-				throw new StudentAlreadyRegisteredForAllAlternativeCoursesException(student);
+			if(isStudentRegisteredForAllAlternativeCourses(courseRegistration)) {
+				throw new StudentAlreadyRegisteredForAllCoursesOfTypeException(
+						studentId, courseType);
+			}
+			if(null == courseRegistration.getAlternativeCourse1Id()) {
+				courseRegistration.setAlternativeCourse1Id(courseId);
+			} else {
+				courseRegistration.setAlternativeCourse2Id(courseId);
 			}
 			break;
 		case PRIMARY:
-			if(isStudentRegisteredForAllPrimaryCourses(student)) {
-				throw new StudentAlreadyRegisteredForAllPrimaryCoursesException(student);
+			if(isStudentRegisteredForAllPrimaryCourses(courseRegistration)) {
+				throw new StudentAlreadyRegisteredForAllCoursesOfTypeException(
+						studentId, courseType);
+			}
+			if(null == courseRegistration.getPrimaryCourse1Id()) {
+				courseRegistration.setPrimaryCourse1Id(courseId);
+			} else if(null == courseRegistration.getPrimaryCourse2Id()) {
+				courseRegistration.setPrimaryCourse1Id(courseId);
+			} else if(null == courseRegistration.getPrimaryCourse3Id()) {
+				courseRegistration.setPrimaryCourse3Id(courseId);
+			} else {
+				courseRegistration.setPrimaryCourse4Id(courseId);
 			}
 		}
 		
-		Integer courseRegistrationId = courseRegistrationRepository
-				.findCourseRegistrationIdByStudent(student);
-		
-		
-		switch(courseType) {
-			
-		case ALTERNATIVE:
-			courseRegistrationRepository
-				.setAlternativeCourseIdAsAtIndexByCourseRegistrationId(
-					courseId,
-					courseRegistrationRepository
-						.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
-							courseRegistrationId),
-					courseRegistrationId);
-			break;
-			
-		case PRIMARY:
-			courseRegistrationRepository
-				.setPrimaryCourseIdAsAtIndexByCourseRegistrationId(
-					courseId,
-					courseRegistrationRepository
-						.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
-							courseRegistrationId),
-					courseRegistrationId);
-		}
-		
-		System.out.println("Course Enrollment Success!");
+		courseRegistrationRepository.save(courseRegistration);
 	}
 
 	@Override
-	public void dropCourse(Integer courseId, Student student) 
+	public void dropCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				CourseNotExistsInCatalogException,
 				StudentNotRegisteredForSemesterException, 
 				StudentNotRegisteredForCourseInSemesterException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		logger.info("courseId: " + courseId + ", studentId: " + studentId + ", semester: " + semester);
+		
+		Optional<CourseRegistration> courseRegistrationOptional = 
+				courseRegistrationRepository.findByStudentIdAndSemester(studentId, semester);
+		
+		if(!courseRegistrationOptional.isPresent()) {
+			throw new StudentNotRegisteredForSemesterException(studentId, semester);
 		}
 		
-		if(!isStudentRegisteredForCourse(student, courseId)) {
-			throw new StudentNotRegisteredForCourseInSemesterException(student, courseId);
+		CourseRegistration courseRegistration = courseRegistrationOptional.get();
+		
+		if(!hasRegistrationForCourse(courseRegistration, courseId)) {
+			throw new StudentNotRegisteredForCourseInSemesterException(studentId, semester, courseId);
 		}
 		
-		Integer courseRegistrationId = courseRegistrationRepository.findCourseRegistrationIdByStudent(student);
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
 		
 		switch(courseType) {
 		
 		case ALTERNATIVE:
-			courseRegistrationRepository
-				.setAlternativeCourseIdAsNullAtIndexByCourseRegistrationId(
-					courseRegistrationRepository
-						.findAlternativeCourseIdIndexByCourseRegistrationIdForCourse(
-							courseRegistrationId, courseId), 
-					courseRegistrationId);
+			if(courseRegistration.getAlternativeCourse1Id().equals(courseId)) {
+				courseRegistration.setAlternativeCourse1Id(null);
+			} else {
+				courseRegistration.setAlternativeCourse2Id(null);
+			}
 			break;
 		
 		case PRIMARY:
-			courseRegistrationRepository
-				.setPrimaryCourseIdAsNullAtIndexByCourseRegistrationId(
-					courseRegistrationRepository
-						.findPrimaryCourseIdIndexByCourseRegistrationIdForCourse(
-							courseRegistrationId, courseId),
-					courseRegistrationId);
+			if(courseRegistration.getPrimaryCourse1Id().equals(courseId)) {
+				courseRegistration.setPrimaryCourse1Id(null);
+			} else if(courseRegistration.getPrimaryCourse2Id().equals(courseId)) {
+				courseRegistration.setPrimaryCourse2Id(null);
+			} else if(courseRegistration.getPrimaryCourse3Id().equals(courseId)) {
+				courseRegistration.setPrimaryCourse3Id(null);
+			} else {
+				courseRegistration.setPrimaryCourse4Id(null);
+			}
 		}
 		
-		System.out.println("Course Drop Success!");
+		courseRegistrationRepository.save(courseRegistration);
 	}
 
 	@Override
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) throws CourseNotExistsInCatalogException {
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		return courseRegistrationRepository
-					.findAllStudentIdsByCourseId(courseId)
-					.stream()
-					.map(studentId -> studentOperation.getStudentById(studentId))
-					.collect(Collectors.toList());
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
+		
+		List<CourseRegistration> courseRegistrations = new ArrayList<>();
+		
+		switch(courseType) {
+		case ALTERNATIVE:
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByAlternativeCourse1IdIn(
+								Collections.singletonList(courseId)));
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByAlternativeCourse2IdIn(
+								Collections.singletonList(courseId)));
+			break;
+		case PRIMARY:
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByPrimaryCourse1IdIn(
+								Collections.singletonList(courseId)));
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByPrimaryCourse2IdIn(
+								Collections.singletonList(courseId)));
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByPrimaryCourse3IdIn(
+								Collections.singletonList(courseId)));
+			courseRegistrations.addAll(
+					courseRegistrationRepository
+						.findAllByPrimaryCourse4IdIn(
+								Collections.singletonList(courseId)));
+		}
+		
+		return studentService
+				.getAllStudentsByIds(
+						courseRegistrations
+							.stream()
+							.map(CourseRegistration::getStudentId)
+							.collect(Collectors.toSet()));
 	}
 
+	// TODO: This implementation should be improved using Join query
+	// TODO: This method is NOT tested yet.
 	@Override
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException {
-		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
-		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
-		courses
-			.forEach(course -> {
-				CourseRegistration courseRegistration = courseRegistrationRepository
-						.findByCourseIdAndSemesterAndYear(
-								course.getCourseId(), 
-								course.getSemester(),
-								course.getYear());
-				Student student = studentOperation.getStudentById(courseRegistration.getStudentId());
-				if(!courseIdToRegisteredStudentsMap.containsKey(course.getCourseId())) {
-					courseIdToRegisteredStudentsMap.put(course.getCourseId(), new ArrayList<>());
-				}
-				courseIdToRegisteredStudentsMap.get(course.getCourseId()).add(student);
-			});
+		
+		if(!professorService.isProfessorExistsById(professorId)) {
+			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
+		}
+		
+		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new TreeMap<>();
+		
+		List<Course> courses = courseService.getCoursesAssignedToProfessor(professorId);
+		
+		courses.forEach(course -> courseIdToRegisteredStudentsMap
+						.put(course.getCourseId(), new ArrayList<>()));
+		
+		List<CourseRegistration> courseRegistrations;
+		Map<Integer, Student> studentIdToStudentMap;
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByPrimaryCourse1IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getPrimaryCourse1Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
+//		courseRegistrations.forEach(
+//				courseRegistration -> 
+//					courseIdToRegisteredStudentsMap
+//						.get(courseRegistration.getPrimaryCourse1Id())
+//						.add(studentIdToStudentMap.get(courseRegistration.getStudentId())));
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByPrimaryCourse2IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+		
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getPrimaryCourse2Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByPrimaryCourse3IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+		
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getPrimaryCourse3Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByPrimaryCourse4IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+		
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getPrimaryCourse4Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByAlternativeCourse1IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+		
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getAlternativeCourse1Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
+		courseRegistrations = 
+				courseRegistrationRepository
+					.findAllByAlternativeCourse2IdIn(
+						courses
+							.stream()
+							.map(Course::getCourseId)
+							.collect(Collectors.toSet()));
+		
+		studentIdToStudentMap = studentService
+				.getStudentIdToStudentMap(
+					courseRegistrations
+						.stream()
+						.map(CourseRegistration::getStudentId)
+						.collect(Collectors.toSet()));
+		
+		for(CourseRegistration courseRegistration : courseRegistrations) {
+			courseIdToRegisteredStudentsMap
+				.get(courseRegistration.getAlternativeCourse2Id())
+				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
+		}
+		
 		return courseIdToRegisteredStudentsMap;
+		
 	}
 	
 	@Override
-	public List<CourseRegistration> getCourseRegistrationsByRegistrationStatus(
+	public List<CourseRegistrationResponseDTO> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus){
-		return courseRegistrationRepository
-			.findAllByRegistrationStatus(registrationStatus);
+		List<CourseRegistration> courseRegistrations = courseRegistrationRepository
+				.findAllByRegistrationStatus(registrationStatus);
+		List<Integer> courseIds = getCourseIds(courseRegistrations);
+		Map<Integer, Course> courseIdToCourseMap = courseService.getCourseIdToCourseMap(courseIds);
+		Map<Integer, Professor> professorIdToProfessorMap = professorService.getProfessorIdToProfessorMap(
+				courseIdToCourseMap
+					.entrySet()
+					.stream()
+					.map(entry -> entry.getValue().getProfessorId())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		
+		return courseRegistrationConverter.convertAll(
+				courseRegistrations,
+				courseIdToCourseMap,
+				professorIdToProfessorMap);
 	}
 	
 	@Override
 	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
 			RegistrationStatus registrationStatus,
-			Set<Integer> courseRegistrationIds){
+			Collection<Integer> courseRegistrationIds) 
+					throws CannotApproveCourseRegistrationPaymentPendingException {
 		
-		// TODO: Should add this check
-//		Optional<Integer> invalidCourseRegistrationId = getFirstInvalidCourseRegistrationId(courseRegistrationIds);
-//		if(invalidCourseRegistrationId.isPresent()) {
-//			throw new InvalidCourseRegistrationIdArgumentException(invalidCourseRegistrationId.get());
-//		}
+		logger.info("registrationStatus: " + registrationStatus.toString());
+		logger.info("courseRegistrationIds: " + courseRegistrationIds);
 		
-		return courseRegistrationRepository
-					.updateRegistrationStatusAsByIdIn(
-						registrationStatus,
-						courseRegistrationIds);
+		List<CourseRegistration> courseRegistrations = 
+				courseRegistrationRepository.findAllByRegistrationIdIn(courseRegistrationIds);
+		
+		/*
+		 * We cannot Approve Registration until the Student's pending dues are clear.
+		 */
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+			for(CourseRegistration courseRegistration : courseRegistrations) {
+				if(PaymentStatus.UNPAID.equals(
+						paymentService.getPaymentStatusByCourseRegistrationId(
+						courseRegistration.getRegistrationId()))) {
+					throw new CannotApproveCourseRegistrationPaymentPendingException(
+							courseRegistration.getRegistrationId());
+				}
+			}
+		}
+		
+		courseRegistrations.forEach(courseRegistration -> {
+			courseRegistration.setRegistrationStatus(registrationStatus);
+			/*
+			 * Also, decrement available seat count
+			 */
+			courseService.decrementNumOfSeatsByCourseIds(
+						getRegisteredCourseIdsByRegistrationId(
+								courseRegistration.getRegistrationId()));
+		});
+		
+		courseRegistrationRepository.saveAll(courseRegistrations);
+		
+		return Boolean.TRUE;
 	}
 	
 	@Override
 	public Boolean updateAllPendingCourseRegistrationsTo(
-			RegistrationStatus registrationStatus) {
-		return courseRegistrationRepository
-					.updateRegistrationStatusAsByIdIn(
-							registrationStatus, 
-							courseRegistrationRepository
-								.findAllByRegistrationStatus(RegistrationStatus.PENDING)
-								.stream()
-								.map(courseRegistration -> courseRegistration.getCourseRegId())
-								.collect(Collectors.toSet()));
+			RegistrationStatus registrationStatus) 
+					throws CannotApproveCourseRegistrationPaymentPendingException {
+		
+		List<CourseRegistration> courseRegistrations = 
+				courseRegistrationRepository.findAllByRegistrationStatus(
+						RegistrationStatus.PENDING);
+		
+		/*
+		 * We cannot Approve Registration until the Student's pending dues are clear.
+		 */
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+			for(CourseRegistration courseRegistration : courseRegistrations) {
+				if(PaymentStatus.UNPAID.equals(
+						paymentService.getPaymentStatusByCourseRegistrationId(
+						courseRegistration.getRegistrationId()))) {
+					throw new CannotApproveCourseRegistrationPaymentPendingException(
+							courseRegistration.getRegistrationId());
+				}
+			}
+		}
+		
+		courseRegistrations.forEach(courseRegistration -> {
+				courseRegistration.setRegistrationStatus(registrationStatus);
+				/*
+				 * Also, decrement available seat count
+				 */
+				courseService.decrementNumOfSeatsByCourseIds(
+							getRegisteredCourseIdsByRegistrationId(
+									courseRegistration.getRegistrationId()));
+		});
+		
+		courseRegistrationRepository.saveAll(courseRegistrations);
+		
+		return Boolean.TRUE;
 	}
 
 	@Override
-	public void viewRegisteredStudentsByProfessorIdAndCourseId(
+	public List<Student> getRegisteredStudentsByProfessorIdAndCourseId(
 		Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException,
@@ -339,56 +647,151 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				ProfessorNotAssignedForCourseException {
 		
 		if(null == professorId || null == courseId) {
-			return;
+			return Collections.emptyList();
 		}
 		
-		if(!userOperation.isUserExistsById(professorId)) {
-			throw new UserNotFoundException(professorId);
+		if(!professorService.isProfessorExistsById(professorId)) {
+			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		if(!courseOperation.isProfessorAssignedForCourse(professorId, courseId)) {
+		if(!courseService.isProfessorAssignedForCourse(professorId, courseId)) {
 			throw new ProfessorNotAssignedForCourseException(professorId, courseId);
 		}
 		
-		System.out.println("*** List of Registered Students for Course Id: " + courseId + " :- ***\n");
-		System.out.print(
-				  "+--------------------------------------------------------+\n"
-				+ " StudentId  |  StudentName\t| StudentEmail \n"
-				+ "+--------------------------------------------------------+\n");
-		
-		getRegisteredStudentsByCourseId(courseId)
-			.forEach(student -> System.out.format(
-					"    %d    | %s\t\t| %s\n", 
-						student.getStudentId(), 
-						student.getStudentName(),
-						student.getStudentEmail()));
+		return getRegisteredStudentsByCourseId(courseId);
 	}
-
-
+	
+	@Override
+	public Boolean hasRegistrationByStudentIdAndCourseId(
+			Integer studentId, Integer courseId) 
+				throws 
+					UserNotFoundException, 
+					CourseNotExistsInCatalogException {
+		
+		if(!studentService.isStudentExistsById(studentId)) {
+			throw new UserNotFoundException(studentId, UserType.STUDENT);
+		}
+		
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
+		
+		if(CourseType.ALTERNATIVE.equals(courseType)) {
+			return courseRegistrationRepository.existsByStudentIdAndAlternativeCourse1Id(studentId, courseId)
+				|| courseRegistrationRepository.existsByStudentIdAndAlternativeCourse2Id(studentId, courseId);
+		}
+		
+		return courseRegistrationRepository.existsByStudentIdAndPrimaryCourse1Id(studentId, courseId)
+			|| courseRegistrationRepository.existsByStudentIdAndPrimaryCourse2Id(studentId, courseId)
+			|| courseRegistrationRepository.existsByStudentIdAndPrimaryCourse3Id(studentId, courseId)
+			|| courseRegistrationRepository.existsByStudentIdAndPrimaryCourse4Id(studentId, courseId);
+	}
+	
+	@Override
+	public Boolean hasRegistrationByStudentIdAndSemester(
+			Integer studentId, Integer semester) throws UserNotFoundException {
+		
+		if(!studentService.isStudentExistsById(studentId)) {
+			throw new UserNotFoundException(studentId, UserType.STUDENT);
+		}
+		
+		return courseRegistrationRepository
+				.existsByStudentIdAndSemester(studentId, semester);
+	}
+	
+	@Override
+	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
+		return courseRegistrationRepository
+				.findByStudentIdAndSemester(studentId, semester)
+				.map(courseRegistration -> courseRegistration)
+				.orElse(null);
+		
+	}
+	
+	@Override
+	public List<Integer> getRegisteredCourseIdsByRegistrationId(Integer registrationId) {
+		return courseRegistrationRepository
+				.findByRegistrationId(registrationId)
+				.map(courseRegistration -> getCourseIds(Collections.singletonList(courseRegistration)))
+				.orElse(Collections.emptyList());
+	}
+	
 	/*************************** Utility Methods ********************************/
 	
-	private Boolean isStudentRegistered(Student student) {
-		return courseRegistrationRepository.existsByStudent(student);
+	private Boolean isStudentRegisteredForAllAlternativeCourses(CourseRegistration courseRegistration) {
+		return null != courseRegistration.getAlternativeCourse1Id()
+			&& null != courseRegistration.getAlternativeCourse2Id();
 	}
 	
-	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
-		return courseRegistrationRepository
-				.existsByStudentAndCourseId(student, courseId);
+	private Boolean isStudentRegisteredForAllPrimaryCourses(CourseRegistration courseRegistration) {
+		return null != courseRegistration.getPrimaryCourse1Id()
+			&& null != courseRegistration.getPrimaryCourse2Id()
+			&& null != courseRegistration.getPrimaryCourse3Id()
+			&& null != courseRegistration.getPrimaryCourse4Id();
 	}
 	
-	private Boolean isStudentRegisteredForAllAlternativeCourses(Student student) {
-		return courseRegistrationRepository
-				.findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(
-					courseRegistrationRepository.findCourseRegistrationIdByStudent(student)) == -1;
+	private Boolean hasRegistrationForCourse(
+			CourseRegistration courseRegistration,
+			Integer courseId) {
+		return (null != courseRegistration.getPrimaryCourse1Id()
+				&& courseRegistration.getPrimaryCourse1Id().equals(courseId))
+			|| (null != courseRegistration.getPrimaryCourse2Id()
+				&& courseRegistration.getPrimaryCourse2Id().equals(courseId))
+			|| (null != courseRegistration.getPrimaryCourse3Id()
+				&& courseRegistration.getPrimaryCourse3Id().equals(courseId))
+			|| (null != courseRegistration.getPrimaryCourse4Id()
+				&& courseRegistration.getPrimaryCourse4Id().equals(courseId))
+			|| (null != courseRegistration.getAlternativeCourse1Id()
+				&& courseRegistration.getAlternativeCourse1Id().equals(courseId))
+			|| (null != courseRegistration.getAlternativeCourse2Id()
+				&& courseRegistration.getAlternativeCourse2Id().equals(courseId));
 	}
 	
-	private Boolean isStudentRegisteredForAllPrimaryCourses(Student student) {
-		return courseRegistrationRepository
-				.findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(
-					courseRegistrationRepository.findCourseRegistrationIdByStudent(student)) == -1;
-	}	
+	private List<Integer> getCourseIds(List<CourseRegistration> courseRegistrations) {
+		List<Integer> courseIds = new ArrayList<>();
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse1Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse2Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse3Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getPrimaryCourse4Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getAlternativeCourse1Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		courseIds.addAll(
+				courseRegistrations
+					.stream()
+					.map(courseRegistration -> courseRegistration.getAlternativeCourse2Id())
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet()));
+		return courseIds;
+	}
+
 }

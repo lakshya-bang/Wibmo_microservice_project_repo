@@ -165,26 +165,6 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public Boolean update(String status, int userId) {
-		
-		String sql = "UPDATE auth_creds SET reg_status =? where userId =?";
-		Connection conn = DBUtils.getConnection();
-		
-		try{
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, status);
-			stmt.setInt(2, userId);
-
-			stmt.executeUpdate();
-			return true;
-		}
-		catch(SQLException e){
-			logger.error(e.getMessage());
-		}
-		return false;
-	}
-
-	@Override
 	public User findUserByEmail(String email) {
 		
 		String sql = "SELECT user_id FROM auth_creds "

@@ -21,27 +21,46 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "professor")
 public class Professor {
+	
 	@Id
 	@Column(name = "professor_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer professorId;	// professor_id (FK)
+	private Integer professorId;	// professor_id (PK)
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "professor_id")
-    @MapsId
-	private User user;
+	@Column(name = "user_id")
+	private Integer userId;			// user_id (FK)
+	
+//	@OneToOne(cascade = CascadeType.ALL, optional = false)
+//    @JoinColumn(name = "professor_id")
+//    @MapsId
+//	private User user;
 	
 	@Column(name = "professor_email")
-	@NotNull
+//	@NotNull
 	private String professorEmail;	// professor_email
 	
 	@Column(name = "professor_name")
-	@NotNull
+//	@NotNull
 	private String professorName;	// professor_name
 	
 	@Column(name = "department")
-	@NotNull
+//	@NotNull
 	private String department;		// department
+
+	public Professor() {}
+	
+	public Professor(
+			Integer professorId, 
+			Integer userId,
+			String professorEmail,
+			String professorName,
+			String department) {
+		this.professorId = professorId;
+		this.userId = userId;
+		this.professorEmail = professorEmail;
+		this.professorName = professorName;
+		this.department = department;
+	}
 
 	/**
 	 * @return the professorId
@@ -55,6 +74,20 @@ public class Professor {
 	 */
 	public void setProfessorId(Integer professorId) {
 		this.professorId = professorId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -97,6 +130,12 @@ public class Professor {
 	 */
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+
+	@Override
+	public String toString() {
+		return "Professor [professorId=" + professorId + ", userId=" + userId + ", professorEmail=" + professorEmail
+				+ ", professorName=" + professorName + ", department=" + department + "]";
 	}
 	
 	

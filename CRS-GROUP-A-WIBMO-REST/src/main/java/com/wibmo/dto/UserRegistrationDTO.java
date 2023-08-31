@@ -3,7 +3,6 @@
  */
 package com.wibmo.dto;
 
-import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
 /**

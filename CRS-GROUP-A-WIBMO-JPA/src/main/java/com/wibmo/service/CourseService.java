@@ -1,9 +1,12 @@
 package com.wibmo.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.wibmo.dto.CourseResponseDTO;
+import com.wibmo.dto.CourseRequestDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.Professor;
 import com.wibmo.enums.CourseType;
@@ -15,16 +18,24 @@ public interface CourseService {
 
 	/**
 	 * 
-	 * @param currentSemester
+	 * @param courseIds
+	 * @return
 	 */
-	public void viewCourseDetailsBySemester(Integer currentSemester);
+	List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds);
+	
+	/**
+	 * 
+	 * @param currentSemester
+	 * @return
+	 */
+	public List<CourseResponseDTO> getCourseDetailsBySemester(Integer semester);
 	
 	/**
 	 * 
 	 * @param courseIds
 	 * @return
 	 */
-	public Map<Integer, Course> getCourseIdToCourseMap(Set<Integer> courseIds);
+	public Map<Integer, Course> getCourseIdToCourseMap(Collection<Integer> courseIds);
 	
 	/**
 	 * 
@@ -55,14 +66,21 @@ public interface CourseService {
 	 * 
 	 * @return
 	 */
-	public List<Course> getAllCourses();
+	public List<CourseResponseDTO> getAllCourses();
 	
 	/**
 	 * 
 	 * @param course
 	 * @return
 	 */
-	public Course add(Course course);
+	public Boolean add(CourseRequestDTO courseRequestDTO);
+	
+	/**
+	 * 
+	 * @param courseRequestDTO
+	 * @return
+	 */
+	public Boolean addAll(Collection<CourseRequestDTO> courseRequestDTO);
 	
 	/**
 	 * 
@@ -87,13 +105,6 @@ public interface CourseService {
 			throws 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException;
-
-	/**
-	 * 
-	 * @param professor
-	 */
-	public void viewCoursesTaughtByProfessor(Professor professor);
-
 	/**
 	 * 
 	 * @param professor
@@ -107,4 +118,23 @@ public interface CourseService {
 			UserNotFoundException, 
 			CourseNotExistsInCatalogException;
 
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public CourseResponseDTO getCourseById(Integer courseId);
+
+	/**
+	 * 
+	 * @param courseIds
+	 */
+	public void decrementNumOfSeatsByCourseIds(List<Integer> courseIds);
+
+	/**
+	 * 
+	 * @param courseId
+	 * @return
+	 */
+	public Boolean isCourseHasVacantSeats(Integer courseId);
 }

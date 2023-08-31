@@ -1,47 +1,103 @@
 package com.wibmo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.wibmo.entity.ReportCard;
-import com.wibmo.entity.Student;
+import com.wibmo.dto.ReportCardRequestDTO;
+import com.wibmo.dto.ReportCardResponseDTO;
+import com.wibmo.exception.CannotAddGradeStudentRegistrationNotApprovedException;
+import com.wibmo.exception.CourseIdCannotBeEmptyException;
+import com.wibmo.exception.CourseNotExistsInCatalogException;
+import com.wibmo.exception.GradeCannotBeEmptyException;
+import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.StudentIdCannotBeEmptyException;
+import com.wibmo.exception.StudentNotRegisteredForCourseException;
+import com.wibmo.exception.StudentNotRegisteredForSemesterException;
+import com.wibmo.exception.UserNotFoundException;
 
 /**
  * 
  */
 public interface ReportCardService {
-
-	/**
-	 * 
-	 * @param student
-	 * 
-	 * TODO: Change to viewReportCardForAllSemestersByStudent()
-	 */
-	public void viewReportCardByStudent(Student student);
 	
 	/**
 	 * Uploads the given list of grade cards into the Database.
 	 * 
 	 * <b>Note</b>: This is a general method for both save and update functionality.
 	 * 
-	 * @param courseId
-	 * @param studentIdToAssignedGradesMap
+	 * @param reportCardRequestDTOs
+	 * @throws StudentNotRegisteredForCourseException 
+	 * @throws CannotAddGradeStudentRegistrationNotApprovedException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws UserNotFoundException 
+	 * @throws StudentIdCannotBeEmptyException 
+	 * @throws CourseIdCannotBeEmptyException 
+	 * @throws GradeCannotBeEmptyException 
+	 * @throws GradeValueInvalidException 
 	 */
-	public void uploadReportCards(List<ReportCard> reportCards);
+	public void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs) 
+			throws
+				StudentNotRegisteredForCourseException, 
+				CannotAddGradeStudentRegistrationNotApprovedException,
+				UserNotFoundException,
+				CourseNotExistsInCatalogException,
+				StudentIdCannotBeEmptyException,
+				CourseIdCannotBeEmptyException,
+				GradeCannotBeEmptyException,
+				GradeValueInvalidException;
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param courseId
+	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws StudentNotRegisteredForCourseException 
+	 */
+	public String getGradeByStudentIdAndCourseId(
+			Integer studentId, Integer courseId) 
+				throws 
+					UserNotFoundException, 
+					CourseNotExistsInCatalogException, 
+					StudentNotRegisteredForCourseException;
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws StudentNotRegisteredForSemesterException 
+	 */
+	public List<ReportCardResponseDTO> getReportCardByStudentIdAndSemester(
+			Integer studentId, Integer semester) 
+				throws 
+					UserNotFoundException, 
+					StudentNotRegisteredForSemesterException;
 	
 	/**
 	 * 
 	 * @param studentId
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
-	public Map<Integer, ArrayList<ReportCard>> getSemesterToReportCardMapByStudentId(Integer studentId);
+	public Map<Integer, List<ReportCardResponseDTO>> getSemesterToReportCardMapByStudentId(Integer studentId)
+			throws UserNotFoundException;
+	
 	/**
 	 * 
 	 * @param student
 	 * @param courseId
 	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws CourseNotExistsInCatalogException 
+	 * @throws StudentNotRegisteredForCourseException 
 	 */
-	public ReportCard getReportCardByStudentForCourse(Student student, Integer courseId);
+	public ReportCardResponseDTO getReportCardByStudentIdAndCourseId(Integer studentId, Integer courseId)
+			throws 
+				UserNotFoundException, 
+				CourseNotExistsInCatalogException, 
+				StudentNotRegisteredForCourseException;
 
 }

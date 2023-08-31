@@ -1,6 +1,8 @@
 package com.wibmo.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +25,7 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.dao.CourseRegistrationDAOImpl;
-import com.wibmo.dto.RegisteredCourse;
+import com.wibmo.dto.CourseProfessorDTO;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Professor;
@@ -32,17 +36,19 @@ import com.wibmo.enums.RegistrationStatus;
 @Service
 public class CourseRegistrationServiceImpl implements CourseRegistrationService {
 	
+	private static final Logger logger = LogManager.getLogger(CourseRegistrationServiceImpl.class);
+	
 	@Autowired
 	private UserServiceImpl userOperation;
 	
 	@Autowired
-	private StudentServiceImpl studentOperation;
+	private StudentServiceImpl studentService;
 	
 	@Autowired
-	private ProfessorServiceImpl professorOperation;
+	private ProfessorServiceImpl professorService;
 	
 	@Autowired
-	private CourseServiceImpl courseOperation;
+	private CourseServiceImpl courseService;
 	
 	@Autowired
 	private CourseRegistrationDAOImpl courseRegistrationDAO;
@@ -53,19 +59,24 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				StudentAlreadyRegisteredForSemesterException, 
 				CourseNotExistsInCatalogException {
 		
+		logger.info("primaryCourseIds: " + primaryCourseIds);
+		logger.info("alternativeCourseIds: " + alternativeCourseIds);
+		logger.info("student: " + student);
+		
 		// TODO: Check if Registration is Enabled by Admin
 
-		if(isStudentRegistered(student)) {
+		if(hasRegistrationByStudentIdAndSemester(
+				student.getStudentId(), student.getCurrentSemester())) {
 			throw new StudentAlreadyRegisteredForSemesterException(student);
 		}
 		
 		for(Integer courseId : primaryCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
 		for(Integer courseId : alternativeCourseIds) {
-			if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+			if(!courseService.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
@@ -73,10 +84,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		CourseRegistration courseRegistration = new CourseRegistration();
 		courseRegistration.setStudentId(student.getStudentId());
 		courseRegistration.setSemester(student.getCurrentSemester());
-		
-		// TODO:
-		courseRegistration.setYear(2021);
-		
+		courseRegistration.setYear(LocalDate.now().getYear());
 		courseRegistration.setPrimaryCourse1Id(primaryCourseIds.get(0));
 		courseRegistration.setPrimaryCourse2Id(primaryCourseIds.get(1));
 		courseRegistration.setPrimaryCourse3Id(primaryCourseIds.get(2));
@@ -87,21 +95,26 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		
 		courseRegistrationDAO.save(courseRegistration);
 		
-		System.out.println("Course Registration Request sent to Admin for Approval.");
+		logger.info("Course Registration Request sent to Admin for Approval.");
 		
 	}
 
 	@Override
-	public List<RegisteredCourse> viewRegisteredCoursesByStudent(Student student) 
-			throws StudentNotRegisteredForSemesterException {
+	public List<CourseProfessorDTO> getRegisteredCoursesByStudent(Student student) 
+			throws StudentNotRegisteredForSemesterException, UserNotFoundException, CourseNotExistsInCatalogException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		if(!hasRegistrationByStudentIdAndCourseId(
+				student.getStudentId(), 
+				student.getCurrentSemester())) {
+			throw new StudentNotRegisteredForSemesterException(
+					student.getStudentId(),
+					student.getCurrentSemester());
 		}
-		List<RegisteredCourse> registeredCourses = new ArrayList<RegisteredCourse>();
+		
 		CourseRegistration courseRegistration = courseRegistrationDAO.findByStudent(student);
 		Set<Integer> courseIds = new HashSet<>();
 		Integer courseId;
+		
 		// TODO: Move to Join Query to avoid redundant code
 		if(null != (courseId = courseRegistration.getPrimaryCourse1Id())) {
 			courseIds.add(courseId);
@@ -121,32 +134,35 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		if(null != (courseId = courseRegistration.getAlternativeCourse2Id())) {
 			courseIds.add(courseId);
 		}
-		Map<Integer, Course> courseIdToCourseMap = courseOperation
+		Map<Integer, Course> courseIdToCourseMap = courseService
 				.getCourseIdToCourseMap(courseIds);
-		Map<Integer, Professor> professorIdToProfessorMap = professorOperation.getProfessorIdToProfessorMap(
+		Map<Integer, Professor> professorIdToProfessorMap = professorService.getProfessorIdToProfessorMap(
 				courseIdToCourseMap
 					.entrySet()
 					.stream()
 					.map(entry -> entry.getValue().getProfessorId())
 					.collect(Collectors.toSet()));
 		
-		courseIdToCourseMap
+		return courseIdToCourseMap
 			.entrySet()
 			.stream()
 			.map(entry -> entry.getValue())
-			.forEach(course -> {
-				registeredCourses.add(new RegisteredCourse(course.getCourseId(),course.getCourseTitle(),course.getDepartment(),professorIdToProfessorMap.get(course.getProfessorId()).getProfessorName()));
-
-			});
-		return registeredCourses;
+			.map(course -> new CourseProfessorDTO(
+								course,
+								professorIdToProfessorMap.get(
+									course.getProfessorId())))
+			.collect(Collectors.toList());
 	}
 	
 	@Override
 	public RegistrationStatus getRegistrationStatusByStudent(Student student) 
 			throws StudentNotRegisteredForSemesterException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		if(!hasRegistrationByStudentIdAndSemester(
+				student.getStudentId(), student.getCurrentSemester())) {
+			throw new StudentNotRegisteredForSemesterException(
+					student.getStudentId(),
+					student.getCurrentSemester());
 		}
 		
 		return courseRegistrationDAO.findRegistrationStatusByStudent(student);
@@ -161,11 +177,17 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				StudentAlreadyRegisteredForAllPrimaryCoursesException, 
 				CourseNotExistsInCatalogException {
 
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		logger.info("courseId: " + courseId + ", student: " + student);
+		
+		if(!hasRegistrationByStudentIdAndSemester(
+				student.getStudentId(),
+				student.getCurrentSemester())) {
+			throw new StudentNotRegisteredForSemesterException(
+					student.getStudentId(),
+					student.getCurrentSemester());
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
@@ -175,7 +197,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		}
 		
 		// TODO: CourseLite object can help avoid redundant DB access
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
 				
 		switch(courseType) {
 		
@@ -216,7 +238,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 					courseRegistrationId);
 		}
 		
-		System.out.println("Course Enrollment Success!");
+		logger.info("Course Enrollment Success!");
 	}
 
 	@Override
@@ -226,8 +248,13 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				StudentNotRegisteredForSemesterException, 
 				StudentNotRegisteredForCourseInSemesterException {
 		
-		if(!isStudentRegistered(student)) {
-			throw new StudentNotRegisteredForSemesterException(student);
+		logger.info("courseId: " + courseId + ", student: " + student);
+		
+		if(!hasRegistrationByStudentIdAndSemester(
+				student.getStudentId(), student.getCurrentSemester())) {
+			throw new StudentNotRegisteredForSemesterException(
+					student.getStudentId(),
+					student.getCurrentSemester());
 		}
 		
 		if(!isStudentRegisteredForCourse(student, courseId)) {
@@ -235,7 +262,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 		}
 		
 		Integer courseRegistrationId = courseRegistrationDAO.findCourseRegistrationIdByStudent(student);
-		CourseType courseType = courseOperation.getCourseTypeByCourseId(courseId);
+		CourseType courseType = courseService.getCourseTypeByCourseId(courseId);
 		
 		switch(courseType) {
 		
@@ -257,27 +284,27 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 					courseRegistrationId);
 		}
 		
-		System.out.println("Course Drop Success!");
+		logger.info("Course Drop Success!");
 	}
 
 	@Override
 	public List<Student> getRegisteredStudentsByCourseId(Integer courseId) throws CourseNotExistsInCatalogException {
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
 		return courseRegistrationDAO
 					.findAllStudentIdsByCourseId(courseId)
 					.stream()
-					.map(studentId -> studentOperation.getStudentById(studentId))
+					.map(studentId -> studentService.getStudentById(studentId))
 					.collect(Collectors.toList());
 	}
 
 	@Override
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException {
-		List<Course> courses = courseOperation.getCoursesAssignedToProfessor(professorId);
+		List<Course> courses = courseService.getCoursesAssignedToProfessor(professorId);
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new HashMap<>();
 		courses
 			.forEach(course -> {
@@ -286,7 +313,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 								course.getCourseId(), 
 								course.getSemester(),
 								course.getYear());
-				Student student = studentOperation.getStudentById(courseRegistration.getStudentId());
+				Student student = studentService.getStudentById(courseRegistration.getStudentId());
 				if(!courseIdToRegisteredStudentsMap.containsKey(course.getCourseId())) {
 					courseIdToRegisteredStudentsMap.put(course.getCourseId(), new ArrayList<>());
 				}
@@ -306,6 +333,9 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
 			RegistrationStatus registrationStatus,
 			Set<Integer> courseRegistrationIds){
+		
+		logger.info("registrationStatus: " + registrationStatus.toString());
+		logger.info("courseRegistrationIds: " + courseRegistrationIds);
 		
 		// TODO: Should add this check
 //		Optional<Integer> invalidCourseRegistrationId = getFirstInvalidCourseRegistrationId(courseRegistrationIds);
@@ -333,7 +363,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	}
 
 	@Override
-	public void viewRegisteredStudentsByProfessorIdAndCourseId(
+	public List<Student> getRegisteredStudentsByProfessorIdAndCourseId(
 		Integer professorId, Integer courseId)
 			throws 
 				CourseNotExistsInCatalogException,
@@ -341,41 +371,49 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 				ProfessorNotAssignedForCourseException {
 		
 		if(null == professorId || null == courseId) {
-			return;
+			return Collections.emptyList();
 		}
 		
 		if(!userOperation.isUserExistsById(professorId)) {
 			throw new UserNotFoundException(professorId);
 		}
 		
-		if(!courseOperation.isCourseExistsInCatalog(courseId)) {
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
-		if(!courseOperation.isProfessorAssignedForCourse(professorId, courseId)) {
+		if(!courseService.isProfessorAssignedForCourse(professorId, courseId)) {
 			throw new ProfessorNotAssignedForCourseException(professorId, courseId);
 		}
 		
-		System.out.println("*** List of Registered Students for Course Id: " + courseId + " :- ***\n");
-		System.out.print(
-				  "+--------------------------------------------------------+\n"
-				+ " StudentId  |  StudentName\t| StudentEmail \n"
-				+ "+--------------------------------------------------------+\n");
-		
-		getRegisteredStudentsByCourseId(courseId)
-			.forEach(student -> System.out.format(
-					"    %d    | %s\t\t| %s\n", 
-						student.getStudentId(), 
-						student.getStudentName(),
-						student.getStudentEmail()));
+		return getRegisteredStudentsByCourseId(courseId);
 	}
-
+	
+	@Override
+	public Boolean hasRegistrationByStudentIdAndCourseId(
+			Integer studentId, Integer courseId) 
+				throws 
+					UserNotFoundException, 
+					CourseNotExistsInCatalogException {
+		
+		if(!userOperation.isUserExistsById(studentId)) {
+			throw new UserNotFoundException(studentId);
+		}
+		
+		if(!courseService.isCourseExistsInCatalog(courseId)) {
+			throw new CourseNotExistsInCatalogException(courseId);
+		}
+		
+		return courseRegistrationDAO
+				.existsByStudentIdAndCourseId(studentId, courseId);
+	}
+	
+	@Override
+	public Boolean hasRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
+		return courseRegistrationDAO.existsByStudentIdAndSemester(studentId, semester);
+	}
 
 	/*************************** Utility Methods ********************************/
-	
-	private Boolean isStudentRegistered(Student student) {
-		return courseRegistrationDAO.existsByStudent(student);
-	}
 	
 	private Boolean isStudentRegisteredForCourse(Student student, Integer courseId) {
 		return courseRegistrationDAO

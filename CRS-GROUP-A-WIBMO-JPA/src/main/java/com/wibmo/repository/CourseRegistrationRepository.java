@@ -2,52 +2,51 @@ package com.wibmo.repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.entity.CourseRegistration;
-import com.wibmo.entity.Student;
 import com.wibmo.enums.RegistrationStatus;
 
+@Repository
+public interface CourseRegistrationRepository extends CrudRepository<CourseRegistration, Integer>{
 
-public interface CourseRegistrationRepository {
+	Optional<CourseRegistration> findByRegistrationId(Integer registrationId);
 
-	RegistrationStatus findRegistrationStatusByStudent(Student student);
-
-	Integer findCourseRegistrationIdByStudent(Student student);
-
-	Object findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId(Integer courseRegistrationId);
-
-	void setAlternativeCourseIdAsAtIndexByCourseRegistrationId(Integer courseId,
-			Object findFirstVacantAlternativeCourseIdIndexByCourseRegistrationId, Integer courseRegistrationId);
-
-	Object findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId(Integer courseRegistrationId);
-
-	void setPrimaryCourseIdAsAtIndexByCourseRegistrationId(Integer courseId,
-			Object findFirstVacantPrimaryCourseIdIndexByCourseRegistrationId, Integer courseRegistrationId);
-
-	Object findAlternativeCourseIdIndexByCourseRegistrationIdForCourse(Integer courseRegistrationId, Integer courseId);
-
-	void setAlternativeCourseIdAsNullAtIndexByCourseRegistrationId(
-			Object findAlternativeCourseIdIndexByCourseRegistrationIdForCourse, Integer courseRegistrationId);
-
-	Object findPrimaryCourseIdIndexByCourseRegistrationIdForCourse(Integer courseRegistrationId, Integer courseId);
-
-	void setPrimaryCourseIdAsNullAtIndexByCourseRegistrationId(
-			Object findPrimaryCourseIdIndexByCourseRegistrationIdForCourse, Integer courseRegistrationId);
-
-	Collection<Integer> findAllStudentIdsByCourseId(Integer courseId);
-
-	CourseRegistration findByCourseIdAndSemesterAndYear(Integer courseId, Integer semester, Integer year);
-
+	Optional<CourseRegistration> findByStudentIdAndSemester(Integer studentId, Integer semester);
+	
+	List<CourseRegistration> findAll();
+	
+	List<CourseRegistration> findAllByPrimaryCourse1IdIn(Collection<Integer> primaryCourse1Ids);
+	
+	List<CourseRegistration> findAllByPrimaryCourse2IdIn(Collection<Integer> primaryCourse2Ids);
+	
+	List<CourseRegistration> findAllByPrimaryCourse3IdIn(Collection<Integer> primaryCourse3Ids);
+	
+	List<CourseRegistration> findAllByPrimaryCourse4IdIn(Collection<Integer> primaryCourse4Ids);
+	
+	List<CourseRegistration> findAllByAlternativeCourse1IdIn(Collection<Integer> alternativeCourse1Ids);
+	
+	List<CourseRegistration> findAllByAlternativeCourse2IdIn(Collection<Integer> alternativeCourse2Ids);
+	
+	List<CourseRegistration> findAllByRegistrationIdIn(Collection<Integer> registrationIds);
+	
 	List<CourseRegistration> findAllByRegistrationStatus(RegistrationStatus registrationStatus);
 
-	Boolean updateRegistrationStatusAsByIdIn(RegistrationStatus registrationStatus, Set<Integer> courseRegistrationIds);
+	Boolean existsByStudentIdAndSemester(Integer studentId, Integer semester);
 
-	Boolean existsByStudent(Student student);
-
-	Boolean existsByStudentAndCourseId(Student student, Integer courseId);
+	Boolean existsByStudentIdAndPrimaryCourse1Id(Integer studentId, Integer primaryCourse1Id);
+	
+	Boolean existsByStudentIdAndPrimaryCourse2Id(Integer studentId, Integer primaryCourse2Id);
+	
+	Boolean existsByStudentIdAndPrimaryCourse3Id(Integer studentId, Integer primaryCourse3Id);
+	
+	Boolean existsByStudentIdAndPrimaryCourse4Id(Integer studentId, Integer primaryCourse4Id);
+	
+	Boolean existsByStudentIdAndAlternativeCourse1Id(Integer studentId, Integer alternativeCourse1Id);
+	
+	Boolean existsByStudentIdAndAlternativeCourse2Id(Integer studentId, Integer alternativeCourse2Id);
 
 }
