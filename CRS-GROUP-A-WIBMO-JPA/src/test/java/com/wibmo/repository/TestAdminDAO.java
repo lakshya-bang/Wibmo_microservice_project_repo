@@ -27,8 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
- 
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +54,16 @@ class TestAdminDAO {
     
     @AfterAll
     static void tearDownAfterClass() throws Exception {
+    }
+    @Test
+    void findAdminById() {
+    	Optional<Admin> adminOptional =Optional.empty();
+
+    	
+    	Integer adminId=1;
+    	when(adminRepository.findByAdminId(adminId)).thenReturn(adminOptional);
+    	Admin admin = adminService.getAdminById(adminId);
+    	assertEquals(null, admin);
     }
     
     @Test
