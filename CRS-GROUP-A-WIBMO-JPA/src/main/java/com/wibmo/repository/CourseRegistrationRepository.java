@@ -4,9 +4,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Tuple;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.wibmo.dto.StudentCourseIdDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.enums.RegistrationStatus;
 
@@ -48,5 +52,15 @@ public interface CourseRegistrationRepository extends CrudRepository<CourseRegis
 	Boolean existsByStudentIdAndAlternativeCourse1Id(Integer studentId, Integer alternativeCourse1Id);
 	
 	Boolean existsByStudentIdAndAlternativeCourse2Id(Integer studentId, Integer alternativeCourse2Id);
-
+	
+	@Query(value="SELECT user_v2.student.*,sub.course_id FROM user_v2.student INNER JOIN (SELECT user_v2.course.course_id,user_v2.registered_courses.student_id FROM "
+			+ "user_v2.course INNER JOIN user_v2.registered_courses on "+
+			"user_v2.registered_courses.primary_course_1_id=user_v2.course.course_id or "+
+			"user_v2.registered_courses.primary_course_2_id=user_v2.course.course_id or "+
+			"user_v2.registered_courses.primary_course_3_id=user_v2.course.course_id or "+
+			"user_v2.registered_courses.primary_course_4_id=user_v2.course.course_id or "+
+			"user_v2.registered_courses.alternative_course_1_id=user_v2.course.course_id or "+
+			"user_v2.registered_courses.alternative_course_2_id=user_v2.course.course_id "+
+			"where user_v2.course.professor_id=?1) sub on sub.student_id = user_v2.student.student_id;",nativeQuery=true)
+	List<Tuple> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId);
 }

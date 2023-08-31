@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.persistence.Tuple;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -388,152 +390,29 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException {
 		
-		if(!professorService.isProfessorExistsById(professorId)) {
+		
+		if(null==professorId||!professorService.isProfessorExistsById(professorId)) {
 			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
+		
 		Map<Integer, List<Student>> courseIdToRegisteredStudentsMap = new TreeMap<>();
 		
-		List<Course> courses = courseService.getCoursesAssignedToProfessor(professorId);
 		
-		courses.forEach(course -> courseIdToRegisteredStudentsMap
-						.put(course.getCourseId(), new ArrayList<>()));
-		
-		List<CourseRegistration> courseRegistrations;
-		Map<Integer, Student> studentIdToStudentMap;
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByPrimaryCourse1IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
+		for(Tuple t:courseRegistrationRepository.getCourseIdToRegisteredStudentsMappingByProfessorId(professorId)) {
+			
+			Student student = new Student((int)t.get(0),(int)t.get(1),(String)t.get(2),(String)t.get(3),(int)t.get(4));
+			if(courseIdToRegisteredStudentsMap.containsKey((int)t.get(5))) {
+				courseIdToRegisteredStudentsMap.get((int)t.get(5)).add(student);
+			}
+			else {
+				List<Student> tempStudent= new ArrayList<Student>();
+				tempStudent.add(student);
+				courseIdToRegisteredStudentsMap.put((int)t.get(5), tempStudent);
+			}
 
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getPrimaryCourse1Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
 		}
-		
-//		courseRegistrations.forEach(
-//				courseRegistration -> 
-//					courseIdToRegisteredStudentsMap
-//						.get(courseRegistration.getPrimaryCourse1Id())
-//						.add(studentIdToStudentMap.get(courseRegistration.getStudentId())));
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByPrimaryCourse2IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
-		
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getPrimaryCourse2Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
-		}
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByPrimaryCourse3IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
-		
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getPrimaryCourse3Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
-		}
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByPrimaryCourse4IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
-		
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getPrimaryCourse4Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
-		}
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByAlternativeCourse1IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
-		
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getAlternativeCourse1Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
-		}
-		
-		courseRegistrations = 
-				courseRegistrationRepository
-					.findAllByAlternativeCourse2IdIn(
-						courses
-							.stream()
-							.map(Course::getCourseId)
-							.collect(Collectors.toSet()));
-		
-		studentIdToStudentMap = studentService
-				.getStudentIdToStudentMap(
-					courseRegistrations
-						.stream()
-						.map(CourseRegistration::getStudentId)
-						.collect(Collectors.toSet()));
-		
-		for(CourseRegistration courseRegistration : courseRegistrations) {
-			courseIdToRegisteredStudentsMap
-				.get(courseRegistration.getAlternativeCourse2Id())
-				.add(studentIdToStudentMap.get(courseRegistration.getStudentId()));
-		}
-		
+
 		return courseIdToRegisteredStudentsMap;
 		
 	}

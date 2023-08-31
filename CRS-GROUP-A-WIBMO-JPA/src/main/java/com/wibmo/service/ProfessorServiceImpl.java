@@ -29,7 +29,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 */
 	@Override
 	public Professor getProfessorById(Integer professorId) {
-		Optional<Professor> professorOptional = professorRepository.findById(professorId);
+		Optional<Professor> professorOptional = professorRepository.findByProfessorId(professorId);
 		return professorOptional.isPresent()
 				? professorOptional.get()
 				: null;

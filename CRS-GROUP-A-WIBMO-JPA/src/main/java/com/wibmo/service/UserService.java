@@ -62,10 +62,11 @@ public interface UserService {
 	 * 
 	 * @param approved
 	 * @param userIds
+	 * @throws UserNotFoundException 
 	 */
 	public Boolean updateAccountRegistrationStatusToByUserIds(
 			RegistrationStatus registrationStatus, 
-			Collection<Integer> userIds);
+			Collection<Integer> userIds) throws UserNotFoundException;
 
 	/**
 	 * 

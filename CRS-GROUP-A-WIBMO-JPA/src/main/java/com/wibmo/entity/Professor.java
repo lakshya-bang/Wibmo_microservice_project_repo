@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,21 +32,13 @@ public class Professor {
 	@Column(name = "user_id")
 	private Integer userId;			// user_id (FK)
 	
-//	@OneToOne(cascade = CascadeType.ALL, optional = false)
-//    @JoinColumn(name = "professor_id")
-//    @MapsId
-//	private User user;
-	
 	@Column(name = "professor_email")
-//	@NotNull
 	private String professorEmail;	// professor_email
 	
 	@Column(name = "professor_name")
-//	@NotNull
 	private String professorName;	// professor_name
 	
 	@Column(name = "department")
-//	@NotNull
 	private String department;		// department
 
 	public Professor() {}
@@ -137,6 +131,24 @@ public class Professor {
 		return "Professor [professorId=" + professorId + ", userId=" + userId + ", professorEmail=" + professorEmail
 				+ ", professorName=" + professorName + ", department=" + department + "]";
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(department, professorEmail, professorId, professorName, userId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Professor other = (Professor) obj;
+		return Objects.equals(department, other.department) && Objects.equals(professorEmail, other.professorEmail)
+				&& Objects.equals(professorId, other.professorId) && Objects.equals(professorName, other.professorName)
+				&& Objects.equals(userId, other.userId);
+	}
+
 }
