@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.wibmo.dto.StudentCourseIdDTO;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.enums.RegistrationStatus;
 
