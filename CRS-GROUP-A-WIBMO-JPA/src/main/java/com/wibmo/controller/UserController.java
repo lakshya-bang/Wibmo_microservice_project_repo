@@ -24,6 +24,7 @@ import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.DepartmentCannotBeEmptyException;
 import com.wibmo.exception.SemesterCannotBeEmptyException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.UserServiceImpl;
 
 /**
@@ -43,7 +44,7 @@ public class UserController {
 	public ResponseEntity getUser(@PathVariable("id") Integer id) {
 		UserResponseDTO user = userService.getUserById(id);
 		if (user == null) {
-			return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
+			return new ResponseEntity("No user found for ID " + id, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity(user, HttpStatus.OK);
 	}
@@ -118,11 +119,18 @@ public class UserController {
 		    value = "/approve")
 	public ResponseEntity approveUserAccountRegistrationByIds(
 			@RequestBody Set<Integer> userRegistrationIds) {
-		return new ResponseEntity(
-				userService.
-				updateAccountRegistrationStatusToByUserIds(
-						RegistrationStatus.APPROVED, 
-						userRegistrationIds), HttpStatus.OK);
+		try {
+			return new ResponseEntity(userService.
+					updateAccountRegistrationStatusToByUserIds(
+							RegistrationStatus.APPROVED, 
+							userRegistrationIds),HttpStatus.OK);
+		}
+		catch(UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage()
+					, HttpStatus.NOT_FOUND);
+		}
+		
+		
 //		return new ResponseEntity(HttpStatus.OK);
 	}
 	
@@ -144,11 +152,16 @@ public class UserController {
 		    value = "/reject")
 	public ResponseEntity rejectUserAccountRegistrationByIds(
 			@RequestBody Set<Integer> userRegistrationIds) {
-		return new ResponseEntity(
-				userService
-				.updateAccountRegistrationStatusToByUserIds(
-						RegistrationStatus.REJECTED, 
-						userRegistrationIds), HttpStatus.OK);
+		try {
+			return new ResponseEntity(
+					userService
+					.updateAccountRegistrationStatusToByUserIds(
+							RegistrationStatus.REJECTED, 
+							userRegistrationIds), HttpStatus.OK);
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@RequestMapping(

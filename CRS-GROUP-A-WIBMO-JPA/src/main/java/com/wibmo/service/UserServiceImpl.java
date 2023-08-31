@@ -167,14 +167,19 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Boolean updateAccountRegistrationStatusToByUserIds(
 			RegistrationStatus registrationStatus,
-			Collection<Integer> userIds) {
+			Collection<Integer> userIds) 
+					throws UserNotFoundException {
 		
 		if(null == userIds || userIds.isEmpty()) {
 			return Boolean.FALSE;
 		}
 		
+		
 		List<User> users = userRepository.findAllByUserIdIn(userIds);
 		
+		if(users.size()!=userIds.size()) {
+			return Boolean.FALSE;
+		}
 		users.forEach(user -> user.setRegistrationStatus(registrationStatus));
 		
 		userRepository.saveAll(users);

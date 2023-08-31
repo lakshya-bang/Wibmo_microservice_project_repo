@@ -33,7 +33,7 @@ public class AdminController {
 	public ResponseEntity getStudent(@PathVariable("id") Integer id) {
 		Admin admin = adminService.getAdminById(id);
 		if (admin == null) {
-			return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
+			return new ResponseEntity("No Admin found for ID " + id, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity(admin, HttpStatus.OK);
 	}
