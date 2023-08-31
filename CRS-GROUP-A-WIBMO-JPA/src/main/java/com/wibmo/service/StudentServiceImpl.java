@@ -55,7 +55,8 @@ public class StudentServiceImpl implements StudentService {
 				.findByStudentId(studentId)
 				.isPresent();
 	}
-	
+	//To fill the DTO and avoid looping multiple times on student id in registered_course
+//	table to get student details we are using Map instead of List
 	@Override
 	public Map<Integer, Student> getStudentIdToStudentMap(Collection<Integer> studentIds) {
 		return studentRepository
