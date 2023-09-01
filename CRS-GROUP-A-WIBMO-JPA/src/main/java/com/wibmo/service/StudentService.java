@@ -37,12 +37,13 @@ public interface StudentService {
 	 * @return
 	 * @throws UserNotFoundException 
 	 */
-	public Boolean isStudentExistsById(Integer studentId) throws UserNotFoundException;
+	public Boolean isStudentExistsById(Integer studentId);
 	
 	/**
 	 * 
 	 * @param studentIds
 	 * @return
+	 * @throws UserNotFoundException 
 	 */
 	public List<Student> getAllStudentsByIds(Collection<Integer> studentIds);
 

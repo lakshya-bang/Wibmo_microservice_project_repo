@@ -27,5 +27,4 @@ public interface StudentRepository extends CrudRepository<Student, Integer>{
 	
 	Boolean existsByStudentId(Integer studentId);
 	
-	Boolean existsAllByStudentId(Collection<Integer> studentIds);
 }
