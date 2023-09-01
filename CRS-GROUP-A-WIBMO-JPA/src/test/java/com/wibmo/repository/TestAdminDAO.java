@@ -19,6 +19,7 @@ import com.wibmo.service.AdminServiceImpl;
  
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
- 
+import java.util.Optional;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,35 @@ class TestAdminDAO {
 
     }
 
- 
+    @Test
+    void getAdminById_WhenAdminNotFound_ShouldReturnNullTest() {
+    	Optional<Admin> dummyAdminOptional =Optional.empty();
+
+    	
+    	Integer adminId=1;
+    	when(adminRepository.findByAdminId(adminId)).thenReturn(dummyAdminOptional);
+    	Admin admin = adminService.getAdminById(adminId);
+    	assertEquals(null, admin);
+    }
+    
+    @Test
+    void getAdminById_WhenAdminisFound_ShouldReturnAdminTest() {
+    	Optional<Admin> dummyAdminOptional = Optional.of(
+    			new Admin(
+    						3000,					//adminId
+    						new Random().nextInt(), //userId
+    						"abc@gmail.com",		//adminEmail
+    						"abc"					//adminName
+    					)
+    			);
+    			when(adminRepository.findByAdminId(any(Integer.class)))
+    			.thenReturn(dummyAdminOptional);
+    			
+    			Admin admin=adminService.getAdminById(3000);
+    			
+    			assertNotNull(admin);
+    			assertEquals(dummyAdminOptional.get(), admin);
+    			
+    }
 
 }

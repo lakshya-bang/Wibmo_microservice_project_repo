@@ -148,6 +148,26 @@ public class User {
 		return "User [userId=" + userId + ", userEmail=" + userEmail + ", userType=" + userType
 				+ ", registrationStatus=" + registrationStatus + ", password=" + password + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(password, registrationStatus, userEmail, userId, userType);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(password, other.password) && registrationStatus == other.registrationStatus
+				&& Objects.equals(userEmail, other.userEmail) && Objects.equals(userId, other.userId)
+				&& userType == other.userType;
+	}
+	
 	
 	
 }

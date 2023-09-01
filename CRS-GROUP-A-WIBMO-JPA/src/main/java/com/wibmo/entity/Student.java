@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,13 +17,19 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.wibmo.service.StudentServiceImpl;
+
 /**
  * 
  */
 @Entity
 @Table(name = "student")
 public class Student {
-	
+	private static final Logger logger = LogManager.getLogger(StudentServiceImpl.class);
+
 	@Id
 	@Column(name = "student_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -140,5 +148,26 @@ public class Student {
 		return "Student [studentId=" + studentId + ", userId=" + userId + ", studentEmail=" + studentEmail
 				+ ", studentName=" + studentName + ", currentSemester=" + currentSemester + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(currentSemester, studentEmail, studentId, studentName, userId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		logger.info("Checking equal object.");
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Student other = (Student) obj;
+		return Objects.equals(currentSemester, other.currentSemester)
+				&& Objects.equals(studentEmail, other.studentEmail) && Objects.equals(studentId, other.studentId)
+				&& Objects.equals(studentName, other.studentName) && Objects.equals(userId, other.userId);
+	}
+	
 	
 }

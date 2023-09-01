@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.entity.Student;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.StudentServiceImpl;
 
 /**
@@ -31,11 +32,14 @@ public class StudentController {
 			method = RequestMethod.GET,
 			value = "/get/{id}")
 	public ResponseEntity getStudent(@PathVariable("id") Integer id) {
-		Student student = studentService.getStudentById(id);
-		if (student == null) {
-			return new ResponseEntity("No student found for ID " + id, HttpStatus.NOT_FOUND);
+		Student student;
+		try {
+			student = studentService.getStudentById(id);
+			return new ResponseEntity(student, HttpStatus.OK);
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity(student, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -45,4 +49,5 @@ public class StudentController {
 	public ResponseEntity getAllStudents() {
 		return new ResponseEntity(studentService.getAllStudents(), HttpStatus.OK);
 	}
+	
 }
