@@ -38,7 +38,7 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public CourseResponseDTO getCourseById(Integer courseId) {
 		Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
-		if(!courseOptional.isPresent()) {
+		if(courseOptional.isEmpty()) {
 			return null;
 		}
 		Course course = courseOptional.get();
@@ -121,7 +121,7 @@ public class CourseServiceImpl implements CourseService {
 		
 		Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
 		
-		if(!courseOptional.isPresent()) {
+		if(courseOptional.isEmpty()) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		
