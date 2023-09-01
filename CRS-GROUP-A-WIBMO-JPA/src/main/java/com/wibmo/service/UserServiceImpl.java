@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserResponseDTO getUserById(Integer userId) {
 		Optional<User> userOptional = userRepository.findByUserId(userId);
-		if(!userOptional.isPresent()) {
+		if(userOptional.isEmpty()) {
 			return null;
 		}
 		return userConverter.convert(userOptional.get());

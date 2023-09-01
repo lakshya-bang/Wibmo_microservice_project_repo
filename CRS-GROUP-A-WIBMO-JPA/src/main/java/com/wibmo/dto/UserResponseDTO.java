@@ -1,5 +1,7 @@
 package com.wibmo.dto;
 
+import java.util.Objects;
+
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
@@ -82,4 +84,23 @@ public class UserResponseDTO {
 		this.registrationStatus = registrationStatus;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(registrationStatus, userEmail, userId, userType);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserResponseDTO other = (UserResponseDTO) obj;
+		return registrationStatus == other.registrationStatus && Objects.equals(userEmail, other.userEmail)
+				&& Objects.equals(userId, other.userId) && userType == other.userType;
+	}
+
+	
 }
