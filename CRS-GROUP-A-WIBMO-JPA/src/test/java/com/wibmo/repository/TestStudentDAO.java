@@ -28,6 +28,10 @@ import com.wibmo.enums.UserType;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.StudentServiceImpl;
 
+/**
+ * @author manali.kumari
+ */
+
 @ExtendWith(MockitoExtension.class)
 public class TestStudentDAO {
 
