@@ -33,7 +33,7 @@ import com.wibmo.repository.UserRepository;
 /**
  * 
  */
-@Service
+
 public class UserServiceImpl implements UserService{
 	
 	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);

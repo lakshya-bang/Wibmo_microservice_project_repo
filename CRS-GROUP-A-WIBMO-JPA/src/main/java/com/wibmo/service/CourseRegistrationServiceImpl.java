@@ -47,7 +47,6 @@ import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
 
-@Service
 public class CourseRegistrationServiceImpl implements CourseRegistrationService {
 	
 	private static final Logger logger = LogManager.getLogger(CourseRegistrationServiceImpl.class);

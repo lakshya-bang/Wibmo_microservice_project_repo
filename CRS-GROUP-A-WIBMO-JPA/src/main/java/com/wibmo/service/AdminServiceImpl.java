@@ -12,7 +12,7 @@ import com.wibmo.repository.AdminRepository;
 /**
  * 
  */
-@Service
+
 public class AdminServiceImpl implements AdminService {
 
 	@Autowired

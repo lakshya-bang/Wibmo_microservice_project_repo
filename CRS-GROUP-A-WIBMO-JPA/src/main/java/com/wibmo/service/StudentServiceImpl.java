@@ -22,7 +22,7 @@ import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.repository.StudentRepository;
 
-@Service
+
 public class StudentServiceImpl implements StudentService {
 	
 	private static final Logger logger = LogManager.getLogger(StudentServiceImpl.class);

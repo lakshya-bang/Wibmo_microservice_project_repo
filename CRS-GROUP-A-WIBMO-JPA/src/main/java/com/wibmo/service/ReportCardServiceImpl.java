@@ -37,7 +37,7 @@ import com.wibmo.repository.ReportCardRepository;
 /**
  * 
  */
-@Service
+
 public class ReportCardServiceImpl implements ReportCardService {
 	
 	@Autowired
