@@ -33,7 +33,7 @@ import com.wibmo.repository.UserRepository;
 /**
  * 
  */
-@Service
+
 public class UserServiceImpl implements UserService{
 	
 	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserResponseDTO getUserById(Integer userId) {
 		Optional<User> userOptional = userRepository.findByUserId(userId);
-		if(!userOptional.isPresent()) {
+		if(userOptional.isEmpty()) {
 			return null;
 		}
 		return userConverter.convert(userOptional.get());

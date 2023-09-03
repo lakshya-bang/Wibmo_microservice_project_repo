@@ -25,4 +25,6 @@ public interface StudentRepository extends CrudRepository<Student, Integer>{
 	
 	List<Student> findAllByStudentIdIn(Collection<Integer> studentIds);
 	
+	Boolean existsByStudentId(Integer studentId);
+	
 }

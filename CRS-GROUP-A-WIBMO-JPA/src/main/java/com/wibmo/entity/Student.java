@@ -17,13 +17,19 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.wibmo.service.StudentServiceImpl;
+
 /**
  * 
  */
 @Entity
 @Table(name = "student")
 public class Student {
-	
+	private static final Logger logger = LogManager.getLogger(StudentServiceImpl.class);
+
 	@Id
 	@Column(name = "student_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -150,6 +156,7 @@ public class Student {
 
 	@Override
 	public boolean equals(Object obj) {
+		logger.info("Checking equal object.");
 		if (this == obj)
 			return true;
 		if (obj == null)

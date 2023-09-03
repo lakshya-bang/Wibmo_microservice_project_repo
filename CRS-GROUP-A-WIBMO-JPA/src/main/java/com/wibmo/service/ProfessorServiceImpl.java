@@ -17,7 +17,7 @@ import com.wibmo.repository.ProfessorRepository;
 /**
  * 
  */
-@Service
+
 public class ProfessorServiceImpl implements ProfessorService {
 
 	@Autowired

@@ -30,7 +30,7 @@ import com.wibmo.service.CourseServiceImpl;
 /**
  * 
  */
-@RestController
+
 @RequestMapping("/course")
 public class CourseController {
 	
