@@ -31,7 +31,9 @@ public class ReportCardController {
 	public ResponseEntity upload(
 			@RequestBody List<ReportCardRequestDTO> reportCardRequestDTOs){
 		try {
+			
 			professorService.addAll(reportCardRequestDTOs);
+			
 			return new ResponseEntity("Grades added successfully!", HttpStatus.OK);
 			
 		} catch (StudentNotRegisteredForCourseException

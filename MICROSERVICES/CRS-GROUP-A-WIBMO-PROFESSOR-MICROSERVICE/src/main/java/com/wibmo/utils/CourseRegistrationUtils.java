@@ -42,11 +42,11 @@ public class CourseRegistrationUtils {
 					UserNotFoundException, 
 					CourseNotExistsInCatalogException {
 		
-		if(studentUtils.isStudentExistsById(studentId)) {
+		if(!studentUtils.isStudentExistsById(studentId)) {
 			throw new UserNotFoundException(studentId, UserType.STUDENT);
 		}
 		
-		if(courseUtils.isCourseExistsInCatalog(courseId)) {
+		if(!courseUtils.isCourseExistsInCatalog(courseId)) {
 			throw new CourseNotExistsInCatalogException(courseId);
 		}
 		

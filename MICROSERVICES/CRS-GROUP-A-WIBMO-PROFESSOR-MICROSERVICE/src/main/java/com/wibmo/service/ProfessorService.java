@@ -25,8 +25,9 @@ public interface ProfessorService {
 	 * Fetches the data of the professor saved in the DB by utilising Id as the index.
 	 * @param userId
 	 * @return	Professor
+	 * @throws UserNotFoundException 
 	 */
-	public Professor getProfessorById(Integer userId);
+	public Professor getProfessorById(Integer userId) throws UserNotFoundException;
 	
 	/**
 	 * Using the professor Ids fetches the professor details and returns the data as a Map.

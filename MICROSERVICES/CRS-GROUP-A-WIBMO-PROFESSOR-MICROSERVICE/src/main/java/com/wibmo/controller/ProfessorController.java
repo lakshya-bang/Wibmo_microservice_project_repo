@@ -24,6 +24,7 @@ import com.wibmo.service.ProfessorServiceImpl;
 import com.wibmo.controller.ProfessorController;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.User;
+import com.wibmo.exception.UserNotFoundException;
 
 
 /**
@@ -45,10 +46,14 @@ public class ProfessorController {
 		    value = "/{id}")
 	public ResponseEntity getProfessorByID(@PathVariable("id") Integer professorId) {
 
-		Professor professor = professorService.getProfessorById(professorId);
-		if (professor == null) {
+		Professor professor = null;
+		try {
+			professor = professorService.getProfessorById(professorId);
+		}
+		catch(UserNotFoundException e) {
 			return new ResponseEntity("No Professor found for ID " + professorId, (HttpStatus.NOT_FOUND));
 		}
+
 		return new ResponseEntity(professor, HttpStatus.OK);
 	}
 	

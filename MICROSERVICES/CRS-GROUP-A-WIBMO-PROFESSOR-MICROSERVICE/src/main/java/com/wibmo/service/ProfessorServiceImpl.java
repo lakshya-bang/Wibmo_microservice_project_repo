@@ -69,7 +69,11 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 * @return Professor
 	 */
 	@Override
-	public Professor getProfessorById(Integer professorId) {
+	public Professor getProfessorById(Integer professorId) throws UserNotFoundException{
+		if(!isProfessorExistsById(professorId)) {
+			throw new UserNotFoundException(professorId,UserType.PROFESSOR);
+		}
+		
 		return professorRepository
 				.findAllByProfessorIdIn(Set.of(professorId))
 				.get(0);
@@ -117,7 +121,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 			throws UserNotFoundException {
 		
 		
-		if(null==professorId||isProfessorExistsById(professorId)) {
+		if(null==professorId||!isProfessorExistsById(professorId)) {
 			throw new UserNotFoundException(professorId, UserType.PROFESSOR);
 		}
 		
@@ -162,6 +166,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 		/*************** Input Values Validations *****************/
 		
 		for(ReportCardRequestDTO reportCardRequestDTO : reportCardRequestDTOs) {
+			
 			Integer studentId = reportCardRequestDTO.getStudentId();
 			Integer courseId = reportCardRequestDTO.getCourseId();
 			String grade = reportCardRequestDTO.getGrade();
@@ -177,14 +182,13 @@ public class ProfessorServiceImpl implements ProfessorService {
 			if(!grade.matches("[abcdef|ABCDEF]")) {
 				throw new GradeValueInvalidException();
 			}
-			if(studentUtils.isStudentExistsById(studentId)) {
+			if(!studentUtils.isStudentExistsById(studentId)) {
 				throw new UserNotFoundException(studentId, UserType.STUDENT);
 			}
-			if(courseUtils.isCourseExistsInCatalog(courseId)) {
+			if(!courseUtils.isCourseExistsInCatalog(courseId)) {
 				throw new CourseNotExistsInCatalogException(courseId);
 			}
 		}
-		
 		/***********************************************************************/
 		
 		// TODO: Should enhance via Join Query
@@ -195,17 +199,18 @@ public class ProfessorServiceImpl implements ProfessorService {
 			Integer semester = studentUtils.getCurrentSemesterByStudentId(studentId);
 			CourseRegistration courseRegistration = courseRegistrationUtils
 					.getCourseRegistrationByStudentIdAndSemester(studentId, semester);
-			
+			System.out.println("2.1");	
 			if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(courseRegistration.getRegistrationStatus())) {
 				throw new CannotAddGradeStudentRegistrationNotApprovedException(
 						studentId, courseRegistration.getRegistrationStatus());
 			}
-		
 			if(!courseRegistrationUtils.hasRegistrationByStudentIdAndCourseId(studentId, courseId)) {
+				
 				throw new StudentNotRegisteredForCourseException(studentId, courseId);
 			}
+			
 		}
-		
+
 		/***************************************************************************************/
 		
 		Map<Integer, Course> courseIdToCourseMap = courseUtils
@@ -236,12 +241,11 @@ public class ProfessorServiceImpl implements ProfessorService {
 									courseIdToCourseMap));
 				}
 			});
-		
 		reportCardRepository.saveAll(reportCards);
 		
 	}
 
-	public boolean isProfessorExistsById(Integer professorId) {
+	private boolean isProfessorExistsById(Integer professorId) {
 		// TODO Auto-generated method stub
 		return professorRepository.existsById(professorId);
 	}
