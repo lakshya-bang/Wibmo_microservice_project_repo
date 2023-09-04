@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wibmo.entity;
+package src.main.java.com.wibmo.entity;
 
 import java.lang.annotation.Inherited;
 
