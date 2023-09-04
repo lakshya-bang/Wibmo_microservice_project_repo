@@ -16,6 +16,7 @@ import com.wibmo.service.ProfessorServiceImpl;
 @RestController
 @RequestMapping(value = "/api/professor/course-registration")
 @CrossOrigin
+
 public class CourseRegistrationController {
 	
 	@Autowired
