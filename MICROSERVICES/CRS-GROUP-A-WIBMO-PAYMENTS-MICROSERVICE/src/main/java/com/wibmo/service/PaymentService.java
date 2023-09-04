@@ -20,14 +20,14 @@ import com.wibmo.exceptions.UPIDetailsNotFoundException;
 public interface PaymentService {
 	
 	/**
-	 * 
+	 * This Method gets payment bill using course registration id
 	 * @param studentId
 	 * @return
 	 */
 	public Payment getPaymentByCourseRegistrationId(Integer courseRegistrationId);
 	
 	/**
-	 * 
+	 * This Method is to pay after course registration by Card
 	 * @param cardDTO
 	 * @param courseRegistrationId
 	 * @return
@@ -37,7 +37,7 @@ public interface PaymentService {
 		throws CardDetailsNotFoundException;
 	
 	/**
-	 * 
+	 * This Method is to pay after course registration by Net Banking
 	 * @param paymentNetBankingDTO
 	 * @param courseRegistrationId
 	 * @return
@@ -49,7 +49,7 @@ public interface PaymentService {
 		throws NetBankingDetailsNotFoundException;
 
 	/**
-	 * 
+	 * This Method is to pay after course registration by upi
 	 * @param upiDTO
 	 * @param courseRegistrationId
 	 * @return
@@ -61,37 +61,43 @@ public interface PaymentService {
 		throws UPIDetailsNotFoundException;
 
 	/**
-	 * 
+	 * This Method adds the payments details to database
 	 * @param payment
 	 */
 	public void add(Payment payment);
 
 	/**
-	 * 
+	 * This Method gets payment status using course registration id
 	 * @param courseRegistrationId
 	 * @return
 	 */
 	public PaymentStatus getPaymentStatusByCourseRegistrationId(Integer courseRegistrationId);
 
 	/**
-	 * 
+	 * This Method approves the cash Payment
 	 * @param courseRegistrationId
 	 * @return
 	 */
 	public Boolean approveCashPayment(Integer courseRegistrationId);
 
 	/**
-	 * card Repository services integrated
+	 * This Method verifies Card details
+	 * @param cardDTO
+	 * @return
 	 */
 	Boolean verfiy(CardDTO cardDTO);
 
 	/**
-	 * Net-banking Repository Services integrated
+	 * This Method verifies Net Banking details
+	 * @param netBankingDTO
+	 * @return
 	 */
 	Boolean verify(NetBankingDTO netBankingDTO);
 	
 	/**
-	 * UPI repository Services integrated
+	 * This Method verifies Upi details
+	 * @param upiDTO
+	 * @return
 	 */
 	Boolean verify(UPIDTO upiDTO);
 

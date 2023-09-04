@@ -34,6 +34,11 @@ public class PaymentController {
 	@Autowired
 	private PaymentServiceImpl paymentService;
 	
+	/**
+	 * Api to get Bill for payment made by course registration id
+	 * @param courseRegistrationId
+	 * @return
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -46,9 +51,11 @@ public class PaymentController {
 					.getPaymentByCourseRegistrationId(courseRegistrationId), 
 				HttpStatus.OK);
 	}
-	
-	/*
-	 * This API should only be authorized for Admins
+
+	/**
+	 * This API should only be authorized for Admins to approve cash payments
+	 * @param courseRegistrationId
+	 * @return
 	 */
 	@PreAuthorize("hasAuthority('Role.ADMIN')")
 	@RequestMapping(
@@ -61,6 +68,12 @@ public class PaymentController {
 		return new ResponseEntity(PaymentMode.CASH.toString() + " Payment Approved!", HttpStatus.OK);
 	}
 	
+	/**
+	 * This Api is used to make payment using card
+	 * @param cardDTO
+	 * @param courseRegistrationId
+	 * @return
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -78,6 +91,12 @@ public class PaymentController {
 		}
 	}
 	
+	/**
+	 * This Api is used to make payment using NetBanking
+	 * @param netBankingDTO
+	 * @param courseRegistrationId
+	 * @return
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -94,6 +113,12 @@ public class PaymentController {
 		}
 	}
 	
+	/**
+	 * This Api is used to make payment using Upi
+	 * @param upiDTO
+	 * @param courseRegistrationId
+	 * @return
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
