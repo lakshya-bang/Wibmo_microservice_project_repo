@@ -48,9 +48,9 @@ public class AuthenticationController {
 		
 		try {
 			authenticate(creds.getUserEmail(), creds.getPassword());
-		} catch (Exception e) {
+		} catch (DisabledException|BadCredentialsException e) {
 			// TODO Auto-generated catch block
-			return new ResponseEntity("Incorrect Creditials", HttpStatus.OK);
+			return new ResponseEntity("Incorrect Creditials", HttpStatus.UNAUTHORIZED);
 		}
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(creds.getUserEmail());
@@ -77,13 +77,13 @@ public class AuthenticationController {
 		return ResponseEntity.ok(token);
 	}
 	
-	private void authenticate(String username, String password) throws Exception {
+	private void authenticate(String username, String password) throws DisabledException,BadCredentialsException {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {
-			throw new Exception("USER_DISABLED", e);
+			throw e;
 		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS", e);
+			throw e;
 		}
 	}
 }
