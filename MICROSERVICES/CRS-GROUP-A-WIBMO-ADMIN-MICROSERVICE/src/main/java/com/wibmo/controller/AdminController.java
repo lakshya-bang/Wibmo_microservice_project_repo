@@ -35,7 +35,7 @@ import com.wibmo.service.AdminServiceImpl;
  * 
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
 	@Autowired
