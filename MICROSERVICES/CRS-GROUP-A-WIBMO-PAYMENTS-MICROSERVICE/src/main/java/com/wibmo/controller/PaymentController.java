@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class PaymentController {
 	@Autowired
 	private PaymentServiceImpl paymentService;
 	
+	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
 			method=RequestMethod.GET,
@@ -48,6 +50,7 @@ public class PaymentController {
 	/*
 	 * This API should only be authorized for Admins
 	 */
+	@PreAuthorize("hasAuthority('Role.ADMIN')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
 			method=RequestMethod.PUT,
@@ -58,6 +61,7 @@ public class PaymentController {
 		return new ResponseEntity(PaymentMode.CASH.toString() + " Payment Approved!", HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
 			method=RequestMethod.PUT,
@@ -74,6 +78,7 @@ public class PaymentController {
 		}
 	}
 	
+	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
 			method=RequestMethod.PUT,
@@ -89,6 +94,7 @@ public class PaymentController {
 		}
 	}
 	
+	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
 			method=RequestMethod.PUT,
