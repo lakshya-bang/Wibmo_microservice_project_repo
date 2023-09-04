@@ -27,4 +27,6 @@ public interface UserRepository extends CrudRepository<User, Integer>{
 	List<User> findAllByRegistrationStatus(RegistrationStatus registrationStatus);
 	
 	Boolean existsByUserEmail(String userEmail);
+
+	Optional<User> findByUserEmailAndPassword(String userEmail, String password);
 }

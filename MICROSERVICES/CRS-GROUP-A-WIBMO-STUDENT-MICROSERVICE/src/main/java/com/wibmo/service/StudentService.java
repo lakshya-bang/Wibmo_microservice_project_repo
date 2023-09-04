@@ -350,6 +350,5 @@ public interface StudentService {
 				UserNotFoundException, 
 				CourseNotExistsInCatalogException, 
 				StudentNotRegisteredForCourseException;
-
 	
 }
