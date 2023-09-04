@@ -68,7 +68,7 @@ public class AuthenticationController {
 			userDetailsService.save(userDTO);
 		} catch (UserWithEmailAlreadyExistsException e) {
 			// TODO Auto-generated catch block
-			new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(userDTO.getUserEmail());
 
