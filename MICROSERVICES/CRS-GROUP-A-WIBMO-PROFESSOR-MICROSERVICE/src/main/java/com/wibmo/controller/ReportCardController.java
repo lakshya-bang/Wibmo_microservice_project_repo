@@ -7,6 +7,8 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +20,9 @@ import com.wibmo.service.ProfessorServiceImpl;
 
 
 @RestController
-@RequestMapping(value="/professor")
+@RequestMapping(value = "/api/professor/report-card")
+@CrossOrigin
+@PreAuthorize("hasAuthority('Role.PROFESSOR')")
 public class ReportCardController {
 	
 	@Autowired
@@ -27,7 +31,7 @@ public class ReportCardController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON,
 			method = RequestMethod.POST,
-			value = "/upload")
+			value = "/upload-grades")
 	public ResponseEntity upload(
 			@RequestBody List<ReportCardRequestDTO> reportCardRequestDTOs){
 		try {

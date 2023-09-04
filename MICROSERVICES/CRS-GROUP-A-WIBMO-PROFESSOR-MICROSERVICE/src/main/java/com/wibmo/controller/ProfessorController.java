@@ -13,7 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +33,9 @@ import com.wibmo.exception.UserNotFoundException;
  * 
  */
 @RestController
-@RequestMapping(value="/professor")
+@RequestMapping(value = "/api/professor")
+@CrossOrigin
+@PreAuthorize("hasAuthority('Role.PROFESSOR')")
 public class ProfessorController {
 	
 	private static final Logger logger = LogManager.getLogger(ProfessorController.class);
