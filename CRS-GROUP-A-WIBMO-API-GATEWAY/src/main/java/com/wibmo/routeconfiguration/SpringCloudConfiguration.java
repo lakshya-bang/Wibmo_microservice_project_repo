@@ -22,7 +22,7 @@ public class SpringCloudConfiguration {
 						 .uri("http://localhost:8082/"))
 				.route(r -> r
 						 .path("/api/authentication/**")
-						 .uri("http://localhost:8082/"))
+						 .uri("http://localhost:8081/"))
         		 .build();
     }
 
