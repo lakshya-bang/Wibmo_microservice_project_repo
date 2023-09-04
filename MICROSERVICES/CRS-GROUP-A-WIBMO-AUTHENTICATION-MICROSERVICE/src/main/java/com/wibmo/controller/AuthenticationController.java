@@ -50,7 +50,7 @@ public class AuthenticationController {
 			authenticate(creds.getUserEmail(), creds.getPassword());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity("Incorrect Creditials", HttpStatus.OK);
 		}
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(creds.getUserEmail());
