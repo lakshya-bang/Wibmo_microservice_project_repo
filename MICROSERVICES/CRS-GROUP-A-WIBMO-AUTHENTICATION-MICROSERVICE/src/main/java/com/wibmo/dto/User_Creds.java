@@ -7,19 +7,19 @@ package com.wibmo.dto;
  * 
  */
 public class User_Creds {
-		String userName;
+		String userEmail;
 		String password;
 		/**
 		 * @return the userName
 		 */
-		public String getUserName() {
-			return userName;
+		public String getUserEmail() {
+			return userEmail;
 		}
 		/**
 		 * @param userName the userName to set
 		 */
-		public void setUserName(String userName) {
-			this.userName = userName;
+		public void setUserEmail(String userName) {
+			this.userEmail = userName;
 		}
 		/**
 		 * @return the password

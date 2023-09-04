@@ -29,7 +29,7 @@ import com.wibmo.utils.JwtTokenUtil;
  */
 @RestController
 @Component
-@RequestMappin(value = "/api/authentication")
+@RequestMapping(value = "/api/authentication")
 public class AuthenticationController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -47,13 +47,13 @@ public class AuthenticationController {
 	public ResponseEntity login(@RequestBody User_Creds creds) {
 		
 		try {
-			authenticate(creds.getUserName(), creds.getPassword());
+			authenticate(creds.getUserEmail(), creds.getPassword());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(creds.getUserName());
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(creds.getUserEmail());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
