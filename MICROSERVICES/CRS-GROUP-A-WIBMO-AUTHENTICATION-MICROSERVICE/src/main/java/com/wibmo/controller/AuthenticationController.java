@@ -29,7 +29,7 @@ import com.wibmo.utils.JwtTokenUtil;
  */
 @RestController
 @Component
-
+@RequestMappin(value = "/api/authentication")
 public class AuthenticationController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
