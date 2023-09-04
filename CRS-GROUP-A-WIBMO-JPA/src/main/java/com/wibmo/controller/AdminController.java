@@ -3,6 +3,8 @@
  */
 package com.wibmo.controller;
 
+import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Admin;
+import com.wibmo.enums.RegistrationStatus;
+import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.service.AdminServiceImpl;
 
 /**
@@ -45,4 +50,5 @@ public class AdminController {
 	public ResponseEntity getAllAdmins() {
 		return new ResponseEntity(adminService.getAllAdmins(), HttpStatus.OK);
 	}
+	
 }
