@@ -59,11 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("payment/get/{courseRegistrationId}",
-						"payment/pay/card/{courseRegistrationId}", 
-						"payment/pay/net-banking/{courseRegistrationId}", 
-						"payment/pay/upi/{courseRegistrationId}").hasRole("STUDENT").
-				antMatchers("/payment/approve/cash/{courseRegistrationId}").hasRole("ADMIN").
+				.authorizeRequests().
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
