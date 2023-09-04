@@ -37,7 +37,7 @@ import com.wibmo.service.AdminServiceImpl;
  * 
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @CrossOrigin
 @PreAuthorize("hasAuthority('Role.ADMIN')")
 public class AdminController {
