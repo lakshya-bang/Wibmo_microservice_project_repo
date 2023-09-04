@@ -28,7 +28,7 @@ public interface AdminService {
 	public Admin getAdminById(Integer integer);
 	
 	/**
-	 * 
+	 * Fetches all the admins
 	 * @return
 	 */
 	public List<Admin> getAllAdmins();
@@ -40,43 +40,104 @@ public interface AdminService {
 	 */
 	public void add(Admin admin);
 	
-	
+	/**
+	 * Fetches Registered Courses based on given studentId and Semester
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 * @throws StudentNotRegisteredForSemesterException
+	 * @throws UserNotFoundException
+	 * @throws CourseNotExistsInCatalogException
+	 */
 	public List<CourseResponseDTO> getRegisteredCoursesByStudentIdAndSemester(
 			Integer studentId, Integer semester) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
 				UserNotFoundException,
 				CourseNotExistsInCatalogException;
-	
+	/**
+	 * Fetches Registration Status based on given studentId and Semester
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 * @throws StudentNotRegisteredForSemesterException
+	 */
 	public RegistrationStatus getRegistrationStatusByStudentIdAndSemester(
 			Integer studentId, Integer semester) 
 			throws StudentNotRegisteredForSemesterException;
 
+	/**
+	 * Fetches all the Course Registration based on given Registration Status
+	 * @param registrationStatus
+	 * @return
+	 */
 	public List<CourseRegistrationResponseDTO> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus);
 	
+	/**
+	 * Updates the Course Registration Status based on given Registration Ids
+	 * @param registrationStatus
+	 * @param courseRegistrationIds
+	 * @return
+	 * @throws CannotApproveCourseRegistrationPaymentPendingException
+	 */
 	public Boolean updateCourseRegistrationStatusToByRegistrationIds(
 			RegistrationStatus registrationStatus,
 			Collection<Integer> courseRegistrationIds) 
 					throws CannotApproveCourseRegistrationPaymentPendingException;
 	
+	/**
+	 * Updates all the pending Course Registrations to Approved 
+	 * @param registrationStatus
+	 * @return
+	 * @throws CannotApproveCourseRegistrationPaymentPendingException
+	 */
 	public Boolean updateAllPendingCourseRegistrationsTo(
 			RegistrationStatus registrationStatus) 
 					throws CannotApproveCourseRegistrationPaymentPendingException;
 	
+	/**
+	 * adds the course
+	 * @param courseRequestDTO
+	 * @return
+	 */
 	public Boolean add(CourseRequestDTO courseRequestDTO);
 	
+	/**
+	 * adds a list of courses
+	 * @param courseRequestDTOs
+	 * @return
+	 */
 	public Boolean addAll(Collection<CourseRequestDTO> courseRequestDTOs);
 	
+	/**
+	 * Removes course based on given CourseId
+	 * @param courseId
+	 * @return
+	 * @throws CourseNotExistsInCatalogException
+	 * @throws CannotDropCourseAssignedToProfessorException
+	 */
 	public Boolean removeCourseById(Integer courseId) 
 			throws 
 				CourseNotExistsInCatalogException, 
 				CannotDropCourseAssignedToProfessorException ;
 	
+	/**
+	 * Assigns the course to Professor
+	 * @param courseId
+	 * @param professorId
+	 * @throws CourseNotExistsInCatalogException
+	 * @throws UserNotFoundException
+	 */
 	public void assignCourseToProfessor(Integer courseId, Integer professorId) 
 			throws 
 				CourseNotExistsInCatalogException, 
 				UserNotFoundException;
 	
+	/**
+	 * Fetches registered Courses based on given Registration Id.
+	 * @param registrationId
+	 * @return
+	 */
 	public List<Integer> getRegisteredCourseIdsByRegistrationId(Integer registrationId);
 }

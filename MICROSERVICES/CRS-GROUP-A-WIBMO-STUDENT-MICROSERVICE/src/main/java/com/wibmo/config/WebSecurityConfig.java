@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.wibmo.config;
 
 import javax.servlet.Filter;
@@ -20,16 +17,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.wibmo.jwt.JwtAuthenticationEntryPoint;
-import com.wibmo.jwt.JwtRequestFilter;
+import com.wibmo.security.JwtAuthenticationEntryPoint;
+import com.wibmo.security.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true,
 securedEnabled = false,
 jsr250Enabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-	
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -59,7 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				.authorizeRequests().
+				.authorizeRequests().antMatchers("/login", "/register").permitAll().
+				
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
