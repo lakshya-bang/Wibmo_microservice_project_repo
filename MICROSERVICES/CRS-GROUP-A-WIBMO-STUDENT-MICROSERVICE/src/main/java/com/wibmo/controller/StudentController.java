@@ -4,9 +4,11 @@ import java.util.Collection;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +20,9 @@ import com.wibmo.dto.AddDropCourseDTO;
 import com.wibmo.dto.CourseRegistrationRequestDTO;
 import com.wibmo.exception.CourseNotAvailableDueToSeatsFullException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
+//import com.wibmo.exception.IncorrectPasswordException;
 import com.wibmo.exception.InvalidCourseForCourseTypeException;
+//import com.wibmo.exception.NoAccountExistsWithEmailException;
 import com.wibmo.exception.StudentAlreadyRegisteredForAllCoursesOfTypeException;
 import com.wibmo.exception.StudentAlreadyRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentAlreadyRegisteredForSemesterException;
@@ -31,6 +35,7 @@ import com.wibmo.service.StudentServiceImpl;
 @RestController
 @RequestMapping(value = "/api/student")
 @CrossOrigin
+@PreAuthorize("hasAuthority('Role.STUDENT')")
 public class StudentController {
 	
 	@Autowired

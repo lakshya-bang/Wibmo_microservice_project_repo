@@ -12,9 +12,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.converter.CourseConverter;
@@ -30,6 +32,7 @@ import com.wibmo.entity.Payment;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.ReportCard;
 import com.wibmo.entity.Student;
+import com.wibmo.entity.User;
 import com.wibmo.enums.CourseType;
 import com.wibmo.enums.PaymentMode;
 import com.wibmo.enums.RegistrationStatus;
@@ -823,4 +826,5 @@ public class StudentServiceImpl implements StudentService {
 			|| (null != courseRegistration.getAlternativeCourse2Id()
 				&& courseRegistration.getAlternativeCourse2Id().equals(courseId));
 	}
+	
 }
