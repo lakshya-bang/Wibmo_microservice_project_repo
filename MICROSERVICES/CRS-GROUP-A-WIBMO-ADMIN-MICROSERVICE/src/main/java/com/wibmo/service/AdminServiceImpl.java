@@ -364,6 +364,11 @@ public class AdminServiceImpl implements AdminService {
 	
 	// --------------------------------UTILITY METHODS---------------------------
 	
+	/**
+	 * Fetches the Course Ids based on given List of courseRegistration
+	 * @param courseRegistrations
+	 * @return
+	 */
 	private List<Integer> getCourseIds(List<CourseRegistration> courseRegistrations) {
 		List<Integer> courseIds = new ArrayList<>();
 		courseIds.addAll(
@@ -404,7 +409,11 @@ public class AdminServiceImpl implements AdminService {
 					.collect(Collectors.toSet()));
 		return courseIds;
 	}
-
+	
+	/**
+	 * Decreases the number of Seats if the Seat is Filled.
+	 * @param courseIds
+	 */
 	public void decrementNumOfSeatsByCourseIds(List<Integer> courseIds) {
 		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
 		courses.forEach(course -> course.setNoOfSeats(course.getNoOfSeats() - 1));
