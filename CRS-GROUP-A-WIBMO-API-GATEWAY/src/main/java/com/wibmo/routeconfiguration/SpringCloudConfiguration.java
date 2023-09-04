@@ -23,6 +23,9 @@ public class SpringCloudConfiguration {
 				.route(r -> r
 						 .path("/api/authentication/**")
 						 .uri("http://localhost:8081/"))
+				.route(r-> r
+						 .path("/api/admin/**")
+						 .uri("http://localhost:8084/"))
         		 .build();
     }
 
