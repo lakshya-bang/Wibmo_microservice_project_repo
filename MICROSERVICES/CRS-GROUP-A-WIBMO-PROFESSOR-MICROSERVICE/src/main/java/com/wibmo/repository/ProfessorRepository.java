@@ -17,13 +17,32 @@ import com.wibmo.entity.Professor;
  */
 @Repository
 public interface ProfessorRepository extends CrudRepository<Professor, Integer>{
-
+	/**
+	 * Fetches professor by professorId
+	 * @param professorId
+	 * @return Optional<Professor>
+	 */
 	Optional<Professor> findByProfessorId(Integer professorId);
 	
+	
+	/**
+	 * Fetches list of Professors.
+	 * @return List<Professor>
+	 */
 	List<Professor> findAll();
 	
+	/**
+	 * Fetches List of professors with ids in professorIds.
+	 * @param professorIds
+	 * @return List<Professor>
+	 */
 	List<Professor> findAllByProfessorIdIn(Collection<Integer> professorIds);
 
+	/**
+	 * Checks if professor with professorId exists.
+	 * @param professorId
+	 * @return Boolean
+	 */
 	Boolean existsByProfessorId(Integer professorId);
 	
 }

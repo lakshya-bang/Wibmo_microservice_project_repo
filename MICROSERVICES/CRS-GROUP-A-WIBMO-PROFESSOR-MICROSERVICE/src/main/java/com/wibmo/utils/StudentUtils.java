@@ -17,13 +17,23 @@ public class StudentUtils {
 	@Autowired
 	StudentRepository studentRepository;
 	
+	
+	/**
+	 * Checks if the student with studentId exists.
+	 * @param studentId
+	 * @return
+	 */
 	public Boolean isStudentExistsById(Integer studentId) {
 	
 		return studentRepository
 				.findByStudentId(studentId)
 				.isPresent();
 	}
-	
+	/**
+	 * Fetches the current semester by the studentId.
+	 * @param studentId
+	 * @return
+	 */
 	public Integer getCurrentSemesterByStudentId(Integer studentId) {
 		return studentRepository
 				.findByStudentId(studentId)

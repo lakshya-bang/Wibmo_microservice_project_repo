@@ -26,10 +26,22 @@ public class CourseUtils {
 	@Autowired
 	CourseRepository courseRepository;
 	
+	/**
+	 * Checks if the course exists in the Catalog.
+	 * @param courseId
+	 * @return
+	 */
+	
 	public Boolean isCourseExistsInCatalog(Integer courseId) {
 		return courseRepository
 				.existsByCourseId(courseId);
 	}
+	
+	/**
+	 * Gets course details by course Ids.
+	 * @param courseIds
+	 * @return
+	 */
 	
 	public Map<Integer, Course> getCourseIdToCourseMap(Collection<Integer> courseIds) {
 		return courseRepository
@@ -40,6 +52,12 @@ public class CourseUtils {
 						Function.identity()));
 	}
 	
+	/**
+	 * Fetches the course type by courseId.
+	 * @param courseId
+	 * @return
+	 * @throws CourseNotExistsInCatalogException
+	 */
 	public CourseType getCourseTypeByCourseId(Integer courseId) 
 			throws CourseNotExistsInCatalogException {
 		

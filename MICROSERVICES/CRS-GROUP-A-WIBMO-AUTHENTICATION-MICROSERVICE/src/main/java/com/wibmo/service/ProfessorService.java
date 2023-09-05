@@ -12,6 +12,10 @@ import com.wibmo.entity.Professor;
  */
 public interface ProfessorService {
 	
+	/**
+	 * Adds professor to DB.
+	 * @param professor
+	 */
 	public void add(Professor professor);
 
 }

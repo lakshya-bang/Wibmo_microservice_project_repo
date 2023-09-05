@@ -36,7 +36,12 @@ public class UserRegistrationUtil {
 	@Autowired
 	ProfessorService professorService;
 
-	
+	/**
+	 * Saves the user details in the DB by checking the type of user.
+	 * @param userRegistrationDto
+	 * @return
+	 * @throws UserWithEmailAlreadyExistsException
+	 */
 	public User saveRegDetailsUser(UserRegistrationDTO userRegistrationDto) throws UserWithEmailAlreadyExistsException{
 		
 		if(isEmailAlreadyInUse(userRegistrationDto.getUserEmail())) {

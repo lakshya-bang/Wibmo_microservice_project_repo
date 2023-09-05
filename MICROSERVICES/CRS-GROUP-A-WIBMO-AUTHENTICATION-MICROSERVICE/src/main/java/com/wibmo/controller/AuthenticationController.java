@@ -57,7 +57,7 @@ public class AuthenticationController {
 			authenticate(creds.getUserEmail(), creds.getPassword());
 		} catch (DisabledException|BadCredentialsException e) {
 			// TODO Auto-generated catch block
-			return new ResponseEntity("Incorrect Creditials", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity("Incorrect Credential", HttpStatus.UNAUTHORIZED);
 		} catch (UserNotApprovedException e) {
 			return new ResponseEntity(e.getMessage(),HttpStatus.UNAUTHORIZED);
 		}

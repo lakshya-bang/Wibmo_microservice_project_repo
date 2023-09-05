@@ -18,6 +18,12 @@ public class LoginUtil {
 	@Autowired
 	AuthenticationRepository authenticationRepository;
 	
+	/**
+	 * Checks if the user is approved.
+	 * @param userEmail
+	 * @return
+	 * @throws UserNotApprovedException
+	 */
 	public Boolean isApproved(String userEmail) throws UserNotApprovedException{
 		if(authenticationRepository.findByuserEmail(userEmail).getRegistrationStatus().equals(RegistrationStatus.APPROVED)) {
 			return true;

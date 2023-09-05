@@ -41,10 +41,29 @@ public interface ProfessorService {
 	 * @param professor
 	 */
 	public void add(Professor professor);
+	
+	/**
+	 * Returns the list of students registered under a professor.
+	 * @param professorId
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 
 	Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException;
 
+	/**
+	 * Adding Grade details to the DB.
+	 * @param reportCardRequestDTOs
+	 * @throws StudentNotRegisteredForCourseException
+	 * @throws CannotAddGradeStudentRegistrationNotApprovedException
+	 * @throws UserNotFoundException
+	 * @throws CourseNotExistsInCatalogException
+	 * @throws StudentIdCannotBeEmptyException
+	 * @throws CourseIdCannotBeEmptyException
+	 * @throws GradeCannotBeEmptyException
+	 * @throws GradeValueInvalidException
+	 */
 	void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs)
 			throws StudentNotRegisteredForCourseException, CannotAddGradeStudentRegistrationNotApprovedException,
 			UserNotFoundException, CourseNotExistsInCatalogException, StudentIdCannotBeEmptyException,

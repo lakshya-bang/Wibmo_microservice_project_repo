@@ -12,7 +12,10 @@ import com.wibmo.entity.Student;
  */
 public interface StudentService {
 
-
+	/**
+	 * Adds Student to the DB.
+	 * @param student
+	 */
 	public void add(Student student);
 
 }	

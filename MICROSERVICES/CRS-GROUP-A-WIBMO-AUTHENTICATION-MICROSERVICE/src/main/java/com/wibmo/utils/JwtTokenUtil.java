@@ -28,36 +28,84 @@ public class JwtTokenUtil implements Serializable {
 	@Value("${jwt.secret}")
 	private String secret;
 
+	/**
+	 * Retrieves the userName/userEmail from the token.
+	 * @param token
+	 * @return String
+	 */
+	
 	public String getUsernameFromToken(String token) {
 		return getClaimFromToken(token, Claims::getSubject);
 	}
+	
+	/**
+	 * Retrieves issued date from the token.
+	 * @param token
+	 * @return Date
+	 */
 
 	public Date getIssuedAtDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getIssuedAt);
 	}
+	/**
+	 * Retrieves expiration date from the token.
+	 * @param token
+	 * @return Date
+	 */
 
 	public Date getExpirationDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getExpiration);
 	}
+	
+	/**
+	 * Retrieves claims from the token.
+	 * @param <T>
+	 * @param token
+	 * @param claimsResolver
+	 * @return Generic
+	 */
 
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
 	}
+	
+	/**
+	 * Retrieves all the claims from the token.
+	 * @param token
+	 * @return Claims
+	 */
 
 	private Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
+	
+	/**
+	 * Checks if the token is expired.
+	 * @param token
+	 * @return Boolean
+	 */
 
 	private Boolean isTokenExpired(String token) {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
+	
+	/**
+	 * @param token
+	 * @return Boolean
+	 */
 
 	private Boolean ignoreTokenExpiration(String token) {
 		// here you specify tokens, for that the expiration is ignored
 		return false;
 	}
+	
+	/**
+	 * Generates Token.
+	 * @param userDetails
+	 * @return String
+	 */
 
 	public String generateToken(UserDetails userDetails) {
 		String authorities = userDetails.getAuthorities().stream()
@@ -67,16 +115,36 @@ public class JwtTokenUtil implements Serializable {
 		claims.put("roles", authorities);
 		return doGenerateToken(claims, userDetails.getUsername());
 	}
+	
+	/**
+	 * Generates Token.
+	 * @param claims
+	 * @param subject
+	 * @return String
+	 */
 
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
 		
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
+	
+	/**
+	 * Checks if the token can be refreshed.
+	 * @param token
+	 * @return Boolean
+	 */
 
 	public Boolean canTokenBeRefreshed(String token) {
 		return (!isTokenExpired(token) || ignoreTokenExpiration(token));
 	}
+	
+	/**
+	 * Validates a token.
+	 * @param token
+	 * @param userDetails
+	 * @return Boolean
+	 */
 
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);

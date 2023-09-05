@@ -28,6 +28,13 @@ public class CourseRegistrationUtils {
 	@Autowired
 	StudentUtils studentUtils;
 	
+	/**
+	 * Fetches course Registration on the basis of StudentId and Semester
+	 * @param studentId
+	 * @param semester
+	 * @return
+	 */
+	
 	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
 		return courseRegistrationRepository
 				.findByStudentIdAndSemester(studentId, semester)
@@ -35,6 +42,15 @@ public class CourseRegistrationUtils {
 				.orElse(null);
 		
 	}
+	
+	/**
+	 * Checks if the student is registered in the Course.
+	 * @param studentId
+	 * @param courseId
+	 * @return
+	 * @throws UserNotFoundException
+	 * @throws CourseNotExistsInCatalogException
+	 */
 	
 	public Boolean hasRegistrationByStudentIdAndCourseId(
 			Integer studentId, Integer courseId) 
