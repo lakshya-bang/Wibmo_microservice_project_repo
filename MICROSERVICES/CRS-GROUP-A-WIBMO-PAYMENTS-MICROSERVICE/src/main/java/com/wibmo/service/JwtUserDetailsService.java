@@ -20,7 +20,6 @@ public class JwtUserDetailsService implements UserDetailsService{
 	@Autowired
 	private AuthenticationRepository authenticationRepository;
 
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = authenticationRepository.findByuserEmail(username);

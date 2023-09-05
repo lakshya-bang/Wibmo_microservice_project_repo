@@ -34,6 +34,11 @@ public class PaymentController {
 	@Autowired
 	private PaymentServiceImpl paymentService;
 	
+	/**
+	 * Api to get Bill for payment made by course registration id
+	 * @param courseRegistrationId id from registered courses to check bill
+	 * @return Bill or student with courseRegistrationId given
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -46,9 +51,11 @@ public class PaymentController {
 					.getPaymentByCourseRegistrationId(courseRegistrationId), 
 				HttpStatus.OK);
 	}
-	
-	/*
-	 * This API should only be authorized for Admins
+
+	/**
+	 * This API should only be authorized for Admins to approve cash payments
+	 * @param courseRegistrationId id from registered courses to approve cash payments
+	 * @return Http status for if payment is approved or not
 	 */
 	@PreAuthorize("hasAuthority('Role.ADMIN')")
 	@RequestMapping(
@@ -61,6 +68,12 @@ public class PaymentController {
 		return new ResponseEntity(PaymentMode.CASH.toString() + " Payment Approved!", HttpStatus.OK);
 	}
 	
+	/**
+	 * This Api is used to make payment using card
+	 * @param cardDTO Card Details to be entered from client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -78,6 +91,12 @@ public class PaymentController {
 		}
 	}
 	
+	/**
+	 * This Api is used to make payment using NetBanking
+	 * @param netBankingDTO net banking details to be entered by client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
@@ -94,6 +113,12 @@ public class PaymentController {
 		}
 	}
 	
+	/**
+	 * This Api is used to make payment using Upi
+	 * @param upiDTO UPI details to be entered by client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
+	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
