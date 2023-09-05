@@ -40,7 +40,7 @@ import com.wibmo.service.AdminServiceImpl;
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin
-@PreAuthorize("hasAuthority('Role.ADMIN')")
+//@PreAuthorize("hasAuthority('Role.ADMIN')")
 public class AdminController {
 
 	@Autowired

@@ -64,8 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers("/api/authentication/login", "/api/authentication/register", "/v3/api-docs/**",
 			            "/swagger-ui/**",
 			            "/v2/api-docs/**",
-			            "/swagger-resources/**").permitAll().
-				
+			            "/swagger-resources/**").permitAll().and()
+				.authorizeRequests().antMatchers("/api/**").hasAuthority("Role.ADMIN").
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to

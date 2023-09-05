@@ -59,7 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers("/v3/api-docs/**",
 			            "/swagger-ui/**",
 			            "/v2/api-docs/**",
-			            "/swagger-resources/**").permitAll().
+			            "/swagger-resources/**").permitAll().and().
+				authorizeRequests().antMatchers("/api/**").hasAuthority("Role.ADMIN").
 				
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
