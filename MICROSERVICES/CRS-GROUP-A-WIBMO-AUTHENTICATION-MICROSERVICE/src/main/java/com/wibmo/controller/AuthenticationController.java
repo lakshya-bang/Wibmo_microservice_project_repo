@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wibmo.dto.UserRegistrationDTO;
 import com.wibmo.dto.UserRegistrationDetailsDTO;
 import com.wibmo.dto.User_Creds;
+import com.wibmo.exception.UserNotApprovedException;
 import com.wibmo.exception.UserWithEmailAlreadyExistsException;
 import com.wibmo.service.JwtUserDetailsService;
 import com.wibmo.utils.JwtTokenUtil;
+import com.wibmo.utils.LoginUtil;
 
 /**
  * 
@@ -38,6 +40,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	
+	@Autowired
+	private LoginUtil loginUtil;
 
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
@@ -53,6 +58,8 @@ public class AuthenticationController {
 		} catch (DisabledException|BadCredentialsException e) {
 			// TODO Auto-generated catch block
 			return new ResponseEntity("Incorrect Creditials", HttpStatus.UNAUTHORIZED);
+		} catch (UserNotApprovedException e) {
+			return new ResponseEntity(e.getMessage(),HttpStatus.UNAUTHORIZED);
 		}
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(creds.getUserEmail());
@@ -72,19 +79,22 @@ public class AuthenticationController {
 			// TODO Auto-generated catch block
 			return new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(userDTO.getUserEmail());
+//		final UserDetails userDetails = userDetailsService.loadUserByUsername(userDTO.getUserEmail());
+//
+//		final String token = jwtTokenUtil.generateToken(userDetails);
 
-		final String token = jwtTokenUtil.generateToken(userDetails);
-
-		return ResponseEntity.ok(token);
+		return ResponseEntity.ok("Account Sent to Admin for approval.");
 	}
 	
-	private void authenticate(String username, String password) throws DisabledException,BadCredentialsException {
+	private void authenticate(String username, String password) throws DisabledException,BadCredentialsException,UserNotApprovedException {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			loginUtil.isApproved(username);
 		} catch (DisabledException e) {
 			throw e;
 		} catch (BadCredentialsException e) {
+			throw e;
+		} catch(UserNotApprovedException e) {
 			throw e;
 		}
 	}
