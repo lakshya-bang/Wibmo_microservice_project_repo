@@ -140,4 +140,24 @@ public interface AdminService {
 	 * @return
 	 */
 	public List<Integer> getRegisteredCourseIdsByRegistrationId(Integer registrationId);
+	
+	/**
+	 * Updates the Account Registration Status which is given by Admin
+	 * @param registrationStatus
+	 * @param userIds
+	 * @return
+	 * @throws UserNotFoundException
+	 */
+	public Boolean updateAccountRegistrationStatusToByUserIds(
+			RegistrationStatus registrationStatus,
+			Collection<Integer> userIds) 
+					throws UserNotFoundException;
+
+	/**
+	 * updates all Account registration Status 
+	 * @param registrationStatus
+	 * @return
+	 */
+	public Boolean updateAllPendingAccountRegistrationsTo(
+			RegistrationStatus registrationStatus) ;
 }

@@ -31,6 +31,7 @@ import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.service.AdminService;
 import com.wibmo.service.AdminServiceImpl;
 
 /**
@@ -67,7 +68,7 @@ public class AdminController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/get/{studentId}/{semester}")
+		    value = "/course-registration/details/{studentId}/{semester}")
 	public ResponseEntity viewRegistrationDetailsByStudentId(
 			@PathVariable(value = "studentId") Integer studentId, 
 			@PathVariable(value = "semester") Integer semester) {
@@ -83,7 +84,7 @@ public class AdminController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/get/status/{studentId}/{semester}")
+		    value = "/course-registration/status/{studentId}/{semester}")
 	public ResponseEntity viewRegistrationStatusByStudentId(
 			@PathVariable(value = "studentId") Integer studentId,
 			@PathVariable(value = "semester") Integer semester) {
@@ -100,7 +101,7 @@ public class AdminController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/get/pending")
+		    value = "/course-registration/pending")
 	public ResponseEntity viewPendingCourseRegistrations() {
 		return new ResponseEntity(
 				adminService
@@ -111,7 +112,7 @@ public class AdminController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/approve")
+		    value = "/course-registration/approve")
 	public ResponseEntity approveCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
 		try {
@@ -127,7 +128,7 @@ public class AdminController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/approve-all")
+		    value = "/course-registration/approve-all")
 	public ResponseEntity approveAllCourseRegistrations() {
 		try {
 			return new ResponseEntity(
@@ -142,7 +143,7 @@ public class AdminController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/reject")
+		    value = "/course-registration/reject")
 	public ResponseEntity rejectCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds) {
 		try {
@@ -160,7 +161,7 @@ public class AdminController {
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
-		    value = "/reject-all")
+		    value = "/course-registration/reject-all")
 	public ResponseEntity rejectAllCourseRegistrations() {
 		try {
 			return new ResponseEntity(
@@ -176,7 +177,7 @@ public class AdminController {
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.POST,
-			value = "/add")
+			value = "/course/add")
 	public ResponseEntity addCourse(
 			@RequestBody CourseRequestDTO courseRequestDTO) {
 		return new ResponseEntity(adminService.add(courseRequestDTO), HttpStatus.OK);
@@ -185,7 +186,7 @@ public class AdminController {
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.POST,
-			value = "/add-all")
+			value = "/course/add-all")
 	public ResponseEntity addAllCourses(
 			@RequestBody Collection<CourseRequestDTO> courseRequestDTOs) {
 		return new ResponseEntity(adminService.addAll(courseRequestDTOs), HttpStatus.OK);
@@ -194,7 +195,7 @@ public class AdminController {
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.DELETE,
-			value = "/drop/{courseId}")
+			value = "/course/drop/{courseId}")
 	public ResponseEntity removeCourse(@PathVariable Integer courseId) {
 		try {
 			Boolean response = adminService.removeCourseById(courseId);
@@ -211,7 +212,7 @@ public class AdminController {
 	
 	@RequestMapping(produces=MediaType.APPLICATION_JSON,
 			method = RequestMethod.PUT,
-			value = "/assign")
+			value = "/course/assign-professor")
 	public ResponseEntity assignCourseToProfessor(
 			@RequestBody CourseIdProfessorIdDTO professorIdCourseIdDTO) {
 		try {
@@ -227,7 +228,7 @@ public class AdminController {
 	}
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.GET,
-		    value = "/get/courseIds/{registrationId}/")
+		    value = "/course/courseIds/{registrationId}/")
 	public ResponseEntity viewRegistrationCourseIdsByRegistrationId(
 			@PathVariable(value = "registrationId") Integer registrationId) {
 			List<Integer> registeredCourseIds = adminService
@@ -235,4 +236,37 @@ public class AdminController {
 			return new ResponseEntity(registeredCourseIds,HttpStatus.OK);
 		
 		}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/account-registration/approve")
+	public ResponseEntity approveUserAccountRegistrationByIds(
+			@RequestBody Set<Integer> userRegistrationIds) {
+		try {
+			return new ResponseEntity(adminService.
+					updateAccountRegistrationStatusToByUserIds(
+							RegistrationStatus.APPROVED, 
+							userRegistrationIds),HttpStatus.OK);
+		}
+		catch(UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage()
+					, HttpStatus.NOT_FOUND);
+		}
+		
+		
+//		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/account-registration/approve-all")
+	public ResponseEntity approveAllUserAccountRegistrations() {
+		return new ResponseEntity(
+				adminService
+				.updateAllPendingAccountRegistrationsTo(
+						RegistrationStatus.APPROVED)
+				, HttpStatus.OK);
+	}
 }

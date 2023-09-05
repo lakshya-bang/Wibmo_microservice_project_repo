@@ -26,6 +26,7 @@ import com.wibmo.entity.Admin;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
 import com.wibmo.entity.Professor;
+import com.wibmo.entity.User;
 import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
@@ -39,6 +40,7 @@ import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.PaymentRepository;
 import com.wibmo.repository.ProfessorRepository;
+import com.wibmo.repository.UserRepository;
 
 /**
  * 
@@ -62,6 +64,9 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private AdminRepository adminRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private CourseConverter courseConverter;
@@ -418,5 +423,46 @@ public class AdminServiceImpl implements AdminService {
 		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
 		courses.forEach(course -> course.setNoOfSeats(course.getNoOfSeats() - 1));
 		courseRepository.saveAll(courses);
+	}
+	@Override
+	public Boolean updateAccountRegistrationStatusToByUserIds(
+			RegistrationStatus registrationStatus,
+			Collection<Integer> userIds) 
+					throws UserNotFoundException {
+		
+		if(null == userIds || userIds.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		
+		
+		List<User> users = userRepository.findAllByUserIdIn(userIds);
+		
+		if(users.size()!=userIds.size()) {
+			return Boolean.FALSE;
+		}
+		users.forEach(user -> user.setRegistrationStatus(registrationStatus));
+		
+		userRepository.saveAll(users);
+		
+		return Boolean.TRUE;
+		
+	}
+	
+	@Override
+	public Boolean updateAllPendingAccountRegistrationsTo(
+			RegistrationStatus registrationStatus) {
+		
+		List<User> pendingAccounts = userRepository
+					.findAllByRegistrationStatus(
+						RegistrationStatus.PENDING);
+		
+		pendingAccounts.forEach(
+				account -> account
+					.setRegistrationStatus(
+						registrationStatus));
+		
+		userRepository.saveAll(pendingAccounts);
+		
+		return Boolean.TRUE;
 	}
 }
