@@ -36,14 +36,14 @@ public class NetBanking {
 	}
 
 	/**
-	 * @param id the name to set
+	 * @param userName name to set
 	 */
 	public void setName(String userName) {
 		this.userName = userName;
 	}
 
 	/**
-	 * @return the userName
+	 * @return userName
 	 */
 	public String getUserName() {
 		return userName;
