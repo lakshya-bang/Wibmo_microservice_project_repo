@@ -36,8 +36,8 @@ public class PaymentController {
 	
 	/**
 	 * Api to get Bill for payment made by course registration id
-	 * @param courseRegistrationId
-	 * @return
+	 * @param courseRegistrationId id from registered courses to check bill
+	 * @return Bill or student with courseRegistrationId given
 	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
@@ -54,8 +54,8 @@ public class PaymentController {
 
 	/**
 	 * This API should only be authorized for Admins to approve cash payments
-	 * @param courseRegistrationId
-	 * @return
+	 * @param courseRegistrationId id from registered courses to approve cash payments
+	 * @return Http status for if payment is approved or not
 	 */
 	@PreAuthorize("hasAuthority('Role.ADMIN')")
 	@RequestMapping(
@@ -70,9 +70,9 @@ public class PaymentController {
 	
 	/**
 	 * This Api is used to make payment using card
-	 * @param cardDTO
-	 * @param courseRegistrationId
-	 * @return
+	 * @param cardDTO Card Details to be entered from client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
 	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
@@ -93,9 +93,9 @@ public class PaymentController {
 	
 	/**
 	 * This Api is used to make payment using NetBanking
-	 * @param netBankingDTO
-	 * @param courseRegistrationId
-	 * @return
+	 * @param netBankingDTO net banking details to be entered by client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
 	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
@@ -115,9 +115,9 @@ public class PaymentController {
 	
 	/**
 	 * This Api is used to make payment using Upi
-	 * @param upiDTO
-	 * @param courseRegistrationId
-	 * @return
+	 * @param upiDTO UPI details to be entered by client
+	 * @param courseRegistrationId id from registered courses to pay the bill of student
+	 * @return Response message and Http status for if payment is approved or not
 	 */
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(

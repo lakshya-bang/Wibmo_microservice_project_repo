@@ -60,7 +60,7 @@ public class Payment {
 		return courseRegistrationId;
 	}
 	/**
-	 * @param courseRegId the courseRegId to set
+	 * @param courseRegistrationId the courseRegId to set
 	 */
 	public void setCourseRegistrationId(Integer courseRegistrationId) {
 		this.courseRegistrationId = courseRegistrationId;

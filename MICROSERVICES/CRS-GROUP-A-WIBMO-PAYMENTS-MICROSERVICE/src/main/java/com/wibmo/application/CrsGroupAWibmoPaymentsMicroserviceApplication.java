@@ -10,9 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+
 @EnableJpaRepositories("com.wibmo.repository")
 @EntityScan("com.wibmo.entity")
 @EnableWebMvc
+@EnableSwagger2
 @EnableAutoConfiguration
 @Configuration
 @ComponentScan("com.wibmo.*")
@@ -23,5 +27,4 @@ public class CrsGroupAWibmoPaymentsMicroserviceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CrsGroupAWibmoPaymentsMicroserviceApplication.class, args);
 	}
-
 }
