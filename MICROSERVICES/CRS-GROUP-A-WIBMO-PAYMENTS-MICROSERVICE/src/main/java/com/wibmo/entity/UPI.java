@@ -52,5 +52,10 @@ public class UPI {
 	public void setUpiId(String upiId) {
 		this.upiId = upiId;
 	}
+
+	public UPI(String upiId) {
+		this.upiId = upiId;
+	}
+	
 	
 }

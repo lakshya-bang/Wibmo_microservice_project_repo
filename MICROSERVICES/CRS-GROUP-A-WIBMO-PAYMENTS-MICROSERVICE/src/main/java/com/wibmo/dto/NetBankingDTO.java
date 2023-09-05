@@ -34,4 +34,9 @@ public class NetBankingDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public NetBankingDTO(String userName, String password) {
+		super();
+		this.userName = userName;
+		this.password = password;
+	}
 }
