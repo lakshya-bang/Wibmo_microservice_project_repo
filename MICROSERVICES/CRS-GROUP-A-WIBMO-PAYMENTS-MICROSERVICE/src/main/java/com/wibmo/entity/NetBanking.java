@@ -69,5 +69,9 @@ public class NetBanking {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public NetBanking(String userName, String password) {
+		this.userName = userName;
+		this.password = password;
+	}
 }

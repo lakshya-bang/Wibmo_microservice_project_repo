@@ -22,4 +22,10 @@ public class UPIDTO {
 	public void setUpiId(String upiId) {
 		this.upiId = upiId;
 	}
+
+	public UPIDTO(String upiId) {
+		this.upiId = upiId;
+	}
+	
+	
 }
