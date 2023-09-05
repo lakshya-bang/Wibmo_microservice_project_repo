@@ -14,19 +14,22 @@ public class SpringCloudConfiguration {
     	
     	System.out.println("n router");
         return builder.routes()
-        		 .route(r -> r
-        				 .path("/api/student/**")
-        				 .uri("http://localhost:8083/"))
-        		 .route(r -> r
-						 .path("/api/professor/**")
-						 .uri("http://localhost:8082/"))
-				.route(r -> r
-						 .path("/api/authentication/**")
-						 .uri("http://localhost:8081/"))
+        		.route(r -> r
+        				.path("/api/authentication/**")
+        				.uri("http://localhost:8081/"))
+        		.route(r -> r
+        				.path("/api/professor/**")
+        				.uri("http://localhost:8082/"))
+        		.route(r -> r
+        				.path("/api/student/**")
+        				.uri("http://localhost:8083/"))
+				.route(r-> r
+						 .path("/api/admin/**")
+						 .uri("http://localhost:8084/"))
 				.route(r -> r
 						.path("/api/payment/**")
 						.uri("http://localhost:8085/"))
-        		 .build();
+        		.build();
     }
 
 }

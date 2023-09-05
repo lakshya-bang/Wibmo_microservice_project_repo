@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -45,10 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(jwtUserDetailsService);
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-	    return NoOpPasswordEncoder.getInstance();
-	}
 
 	@Bean
 	@Override
@@ -61,10 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/api/authentication/login", "/api/authentication/register", "/v3/api-docs/**",
-			            "/swagger-ui/**",
-			            "/v2/api-docs/**",
-			            "/swagger-resources/**").permitAll().
+				.authorizeRequests().antMatchers("/login", "/register").permitAll().
 				
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
