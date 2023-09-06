@@ -3,10 +3,13 @@ package com.wibmo.service;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.wibmo.dto.CourseRegistrationResponseDTO;
 import com.wibmo.dto.CourseRequestDTO;
 import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Admin;
+import com.wibmo.entity.Notification;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.exception.CannotApproveCourseRegistrationPaymentPendingException;
 import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
@@ -160,4 +163,6 @@ public interface AdminService {
 	 */
 	public Boolean updateAllPendingAccountRegistrationsTo(
 			RegistrationStatus registrationStatus) ;
+	
+	public ResponseEntity<String> SendApproveOrRejectNotification(String jwt);
 }

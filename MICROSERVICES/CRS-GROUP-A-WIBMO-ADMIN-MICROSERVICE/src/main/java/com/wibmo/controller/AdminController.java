@@ -10,15 +10,20 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.wibmo.dto.AddDropCourseDTO;
 import com.wibmo.dto.CourseIdProfessorIdDTO;
@@ -114,13 +119,13 @@ public class AdminController {
 		    method = RequestMethod.PUT,
 		    value = "/course-registration/approve")
 	public ResponseEntity approveCourseRegistrationByIds(
-			@RequestBody Set<Integer> courseRegistrationIds) {
+			@RequestBody Set<Integer> courseRegistrationIds, @RequestHeader(value="Authorization") String jwt) {
 		try {
-			return new ResponseEntity(
-					adminService
-						.updateCourseRegistrationStatusToByRegistrationIds(
-							RegistrationStatus.APPROVED, 
-					courseRegistrationIds), HttpStatus.OK);
+			adminService
+			.updateCourseRegistrationStatusToByRegistrationIds(
+				RegistrationStatus.APPROVED, 
+				courseRegistrationIds);
+			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -129,13 +134,11 @@ public class AdminController {
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
 		    value = "/course-registration/approve-all")
-	public ResponseEntity approveAllCourseRegistrations() {
+	public ResponseEntity approveAllCourseRegistrations(@RequestHeader(value="Authorization") String jwt) {
 		try {
-			return new ResponseEntity(
-					adminService
-						.updateAllPendingCourseRegistrationsTo(
-							RegistrationStatus.APPROVED)
-					, HttpStatus.OK);
+			adminService.updateAllPendingCourseRegistrationsTo(RegistrationStatus.APPROVED);
+			
+			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -145,13 +148,13 @@ public class AdminController {
 		    method = RequestMethod.PUT,
 		    value = "/course-registration/reject")
 	public ResponseEntity rejectCourseRegistrationByIds(
-			@RequestBody Set<Integer> courseRegistrationIds) {
+			@RequestBody Set<Integer> courseRegistrationIds, @RequestHeader(value="Authorization") String jwt) {
 		try {
-			return new ResponseEntity(
-					adminService
-						.updateCourseRegistrationStatusToByRegistrationIds(
-							RegistrationStatus.REJECTED, 
-					courseRegistrationIds), HttpStatus.OK);
+			adminService.updateCourseRegistrationStatusToByRegistrationIds(
+					RegistrationStatus.REJECTED, 
+					courseRegistrationIds);
+			
+			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
@@ -162,13 +165,13 @@ public class AdminController {
 			produces = MediaType.APPLICATION_JSON, 
 		    method = RequestMethod.PUT,
 		    value = "/course-registration/reject-all")
-	public ResponseEntity rejectAllCourseRegistrations() {
+	public ResponseEntity rejectAllCourseRegistrations(@RequestHeader(value="Authorization") String jwt) {
 		try {
-			return new ResponseEntity(
-					adminService
-						.updateAllPendingCourseRegistrationsTo(
-							RegistrationStatus.REJECTED),
-					HttpStatus.OK);
+			adminService
+			.updateAllPendingCourseRegistrationsTo(
+					RegistrationStatus.REJECTED);
+			
+			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
