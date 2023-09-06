@@ -109,5 +109,11 @@ public class CourseRegistrationResponseDTO {
 	public void setRegistrationStatus(RegistrationStatus registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "CourseRegistrationResponseDTO [courseRegistrationId=" + courseRegistrationId + ", studentId="
+				+ studentId + ", semester=" + semester + ", primaryCourses=" + primaryCourses + ", alternativeCourses="
+				+ alternativeCourses + ", registrationStatus=" + registrationStatus + "]";
+	}
 }
