@@ -98,7 +98,7 @@ public interface StudentService {
 	public CourseResponseDTO getCourseDetailsById(Integer courseId);
 	
 	/**
-	 * 
+	 * Fetches the course details for the given collection of course ids.
 	 * 
 	 * @param courseIds
 	 * @return
@@ -106,6 +106,7 @@ public interface StudentService {
 	List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds);
 	
 	/**
+	 * Fetches all courses that can be enrolled for the given semester.
 	 * 
 	 * @param currentSemester
 	 * @return
@@ -113,6 +114,8 @@ public interface StudentService {
 	public List<CourseResponseDTO> getCourseDetailsBySemester(Integer semester);
 	
 	/**
+	 * An efficient approach to have constant loop-up 
+	 * for existence of a Course for a given id.
 	 * 
 	 * @param courseIds
 	 * @return
@@ -120,15 +123,17 @@ public interface StudentService {
 	public Map<Integer, Course> getCourseIdToCourseMap(Collection<Integer> courseIds);
 	
 	/**
+	 * Fetches the CourseType of the course associated with the given course id.
 	 * 
 	 * @param courseId
 	 * @return
-	 * @throws CourseNotExistsInCatalogException 
+	 * @throws CourseNotExistsInCatalogException if course id does not exist.
 	 */
 	public CourseType getCourseTypeByCourseId(Integer courseId) 
 			throws CourseNotExistsInCatalogException;
 	
 	/**
+	 * Checks whether a Course exists in the catalog for the given course id.
 	 * 
 	 * @param courseId
 	 * @return
@@ -136,18 +141,23 @@ public interface StudentService {
 	public Boolean isCourseExistsInCatalog(Integer courseId);
 	
 	/**
+	 * Fetches the Course Catalog.
 	 * 
 	 * @return
 	 */
 	public List<CourseResponseDTO> getAllCourses();
 
 	/**
+	 * Reduces the available seat count by 1 for the courses
+	 * associated with the given list of course ids in the Catalog.
 	 * 
 	 * @param courseIds
 	 */
 	public void decrementNumOfSeatsByCourseIds(List<Integer> courseIds);
 
 	/**
+	 * Checks whether the course associated with the given course id
+	 * has vacant seats.
 	 * 
 	 * @param courseId
 	 * @return
@@ -194,16 +204,19 @@ public interface StudentService {
 				CourseNotExistsInCatalogException;
 	
 	/**
+	 * Fetches the RegistrationStatus for the CourseRegistration associated
+	 * with the given student id and semester.
 	 * 
 	 * @param student
 	 * @return
-	 * @throws StudentNotRegisteredForSemesterException 
+	 * @throws StudentNotRegisteredForSemesterException
 	 */
 	public RegistrationStatus getRegistrationStatusByStudentIdAndSemester(Integer studentId, Integer semester) 
 			throws StudentNotRegisteredForSemesterException;
 	
 	/**
-	 * 
+	 * Adds the given course id for the CourseRegistration associated
+	 * with the given student id and semester.
 	 * 
 	 * @param courseId
 	 * @param student
@@ -237,6 +250,7 @@ public interface StudentService {
 				CourseNotExistsInCatalogException;
 	
 	/**
+	 * Fetches all students registered for the given course id.
 	 * 
 	 * @param courseId
 	 * @throws CourseNotExistsInCatalogException 
@@ -245,6 +259,7 @@ public interface StudentService {
 			throws CourseNotExistsInCatalogException;
 
 	/**
+	 * Fetches those CourseRegistration having the given RegistrationStatus.
 	 * 
 	 * @param regStatus
 	 * @return 
@@ -253,6 +268,7 @@ public interface StudentService {
 			RegistrationStatus registrationStatus);
 	
 	/**
+	 * Checks whether the given student id has any registration for the given course id.
 	 * 
 	 * @param studentId
 	 * @param courseId
@@ -267,6 +283,7 @@ public interface StudentService {
 					CourseNotExistsInCatalogException;
 
 	/**
+	 * Checks whether the given student id has any registration for the given semester.
 	 * 
 	 * @param studentId
 	 * @param semester
@@ -278,6 +295,7 @@ public interface StudentService {
 					throws UserNotFoundException;
 
 	/**
+	 * Fetches the CourseRegistration for the given student id and semester.
 	 * 
 	 * @param studentId
 	 * @param semester
@@ -287,6 +305,7 @@ public interface StudentService {
 			Integer studentId, Integer semester);
 
 	/**
+	 * Fetches all the registered course ids for the given course-registration id
 	 * 
 	 * @param registrationId
 	 * @return
@@ -296,6 +315,7 @@ public interface StudentService {
 	/**************************** Report Card Methods **********************************/
 	
 	/**
+	 * Fetches the grade for the given student id and course id.
 	 * 
 	 * @param studentId
 	 * @param courseId
@@ -312,6 +332,7 @@ public interface StudentService {
 					StudentNotRegisteredForCourseException;
 	
 	/**
+	 * Fetches the ReportCard details for the given student id and semester.
 	 * 
 	 * @param studentId
 	 * @param semester
@@ -326,8 +347,7 @@ public interface StudentService {
 					StudentNotRegisteredForSemesterException;
 	
 	/**
-	 * This method should be called when we need to generate 
-	 * Report Card for All Semesters for the given studentId.
+	 * Fetches the complete semester-wise ReportCard for the given student id.
 	 * 
 	 * @param studentId
 	 * @return
@@ -337,6 +357,7 @@ public interface StudentService {
 			throws UserNotFoundException;
 	
 	/**
+	 * Fetches only the ReportCard details for the given student id and course id.
 	 * 
 	 * @param student
 	 * @param courseId

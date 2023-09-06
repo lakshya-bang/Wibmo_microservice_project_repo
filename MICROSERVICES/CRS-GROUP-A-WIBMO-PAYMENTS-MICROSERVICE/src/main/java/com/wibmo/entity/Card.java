@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "card")
 public class Card {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -111,6 +111,15 @@ public class Card {
 	 * @param cardHolderName the cardHolderName to set
 	 */
 	public void setCardHolderName(String cardHolderName) {
+		this.cardHolderName = cardHolderName;
+	}
+	
+	public Card(Long cardNumber, Integer expiryMonth, Integer expiryYear, Integer cvv,
+			String cardHolderName) {
+		this.cardNumber = cardNumber;
+		this.expiryMonth = expiryMonth;
+		this.expiryYear = expiryYear;
+		this.cvv = cvv;
 		this.cardHolderName = cardHolderName;
 	}
 	
