@@ -14,6 +14,17 @@ public class CourseRegistrationRequestDTO {
 	
 	public CourseRegistrationRequestDTO() {}
 	
+	public CourseRegistrationRequestDTO(
+			Integer studentId, 
+			Integer semester, 
+			List<Integer> primaryCourseIds,
+			List<Integer> alternativeCourseIds) {
+		this.studentId = studentId;
+		this.semester = semester;
+		this.primaryCourseIds = primaryCourseIds;
+		this.alternativeCourseIds = alternativeCourseIds;
+	}
+
 	/**
 	 * @return the student
 	 */
