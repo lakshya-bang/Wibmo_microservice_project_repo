@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +31,7 @@ import com.wibmo.exception.StudentNotEligibleForCourseRegistrationException;
 import com.wibmo.exception.StudentNotRegisteredForCourseInSemesterException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.service.NotificationServiceImpl;
 import com.wibmo.service.StudentServiceImpl;
 
 @RestController
@@ -37,6 +39,9 @@ import com.wibmo.service.StudentServiceImpl;
 @CrossOrigin
 @PreAuthorize("hasAnyAuthority('Role.STUDENT','Role.ADMIN')")
 public class StudentController {
+	
+	@Autowired
+	private NotificationServiceImpl notificationService;
 	
 	@Autowired
 	private StudentServiceImpl studentService;
@@ -286,6 +291,14 @@ public class StudentController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		
+	}
+	/**********************************Notification Route*****************************/
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.GET,
+			value = "/notification")
+	public ResponseEntity viewNotifications(@RequestHeader(value="Authorization") String jwt) {
+		return ResponseEntity.ok(notificationService.viewNotification(jwt));
 	}
 	
 }
