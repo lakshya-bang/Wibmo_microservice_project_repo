@@ -15,13 +15,13 @@ import com.wibmo.repository.AuthenticationRepository;
  */
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
-	
+	@Autowired
 	private AuthenticationRepository authenticationRepository;
 	
 	@Override
 	public User login(String userEmail, String userPassword) {
-		User user = authenticationRepository.authenticate(userEmail, userPassword);
-		return user != null && user.getRegistrationStatus().toString() == "APPROVED" ? user : null;
+		User user = authenticationRepository.findByEmailAndPassword(userEmail, userPassword);
+		return user;
 	}
 
 }

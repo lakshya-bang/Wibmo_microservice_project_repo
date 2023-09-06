@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.entity.User;
 import com.wibmo.enums.RegistrationStatus;
-import com.wibmo.service.AuthenticationService;
 import com.wibmo.service.AuthenticationServiceImpl;
 
 /**

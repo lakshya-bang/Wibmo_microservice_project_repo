@@ -253,9 +253,6 @@ public class AdminController {
 			return new ResponseEntity(e.getMessage()
 					, HttpStatus.NOT_FOUND);
 		}
-		
-		
-//		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -267,6 +264,36 @@ public class AdminController {
 				adminService
 				.updateAllPendingAccountRegistrationsTo(
 						RegistrationStatus.APPROVED)
+				, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON,
+			method = RequestMethod.PUT,
+			value = "/account-registration/reject")
+	public ResponseEntity rejectUserAccountRegistrationsByIds(
+			@RequestBody Collection<Integer> userRegistrationIds) {
+		try {
+			return new ResponseEntity(adminService.
+					updateAccountRegistrationStatusToByUserIds(
+							RegistrationStatus.REJECTED, 
+							userRegistrationIds),HttpStatus.OK);
+		}
+		catch(UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage()
+					, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping(
+			produces = MediaType.APPLICATION_JSON, 
+		    method = RequestMethod.PUT,
+		    value = "/account-registration/reject-all")
+	public ResponseEntity rejectAllUserAccountRegistrations() {
+		return new ResponseEntity(
+				adminService
+				.updateAllPendingAccountRegistrationsTo(
+						RegistrationStatus.REJECTED)
 				, HttpStatus.OK);
 	}
 }

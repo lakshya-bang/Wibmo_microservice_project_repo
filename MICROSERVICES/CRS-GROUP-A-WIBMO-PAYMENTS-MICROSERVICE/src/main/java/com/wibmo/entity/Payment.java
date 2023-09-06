@@ -124,6 +124,18 @@ public class Payment {
 				&& Objects.equals(paymentId, other.paymentId) && paymentMode == other.paymentMode
 				&& Objects.equals(pendingAmount, other.pendingAmount) && Objects.equals(totalAmount, other.totalAmount);
 	}
+	public Payment(Integer paymentID, Integer courseRegistrationId, Integer totalAmount, Integer pendingAmount,
+			PaymentMode paymentMode) {
+		this.paymentId = paymentID;
+		this.courseRegistrationId = courseRegistrationId;
+		this.totalAmount = totalAmount;
+		this.pendingAmount = pendingAmount;
+		this.paymentMode = paymentMode;
+	}
+	public Payment() {
+	}
+	
+	
 
 	
 }
