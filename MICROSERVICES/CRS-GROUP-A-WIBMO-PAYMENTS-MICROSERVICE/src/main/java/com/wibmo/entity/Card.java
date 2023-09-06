@@ -30,6 +30,8 @@ public class Card {
 	@Column(name = "card_holder_name")
 	private String cardHolderName;
 
+	public Card() {
+	}
 	/**
 	 * @return the id
 	 */
