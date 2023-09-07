@@ -180,5 +180,13 @@ public class CourseResponseDTO {
 	public void setProfessorName(String professorName) {
 		this.professorName = professorName;
 	}
+
+	@Override
+	public String toString() {
+		return "CourseResponseDTO [courseId=" + courseId + ", courseTitle=" + courseTitle + ", semester=" + semester
+				+ ", year=" + year + ", department=" + department + ", isCancelled=" + isCancelled + ", noOfSeats="
+				+ noOfSeats + ", courseType=" + courseType + ", professorId=" + professorId + ", professorEmail="
+				+ professorEmail + ", professorName=" + professorName + "]";
+	}
 	
 }

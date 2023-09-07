@@ -365,7 +365,47 @@ public class AdminServiceImpl implements AdminService {
 				.map(courseRegistration -> getCourseIds(Collections.singletonList(courseRegistration)))
 				.orElse(Collections.emptyList());
 	}
+	@Override
+	public Boolean updateAccountRegistrationStatusToByUserIds(
+			RegistrationStatus registrationStatus,
+			Collection<Integer> userIds) 
+					throws UserNotFoundException {
+		
+		if(null == userIds || userIds.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		
+		
+		List<User> users = userRepository.findAllByUserIdIn(userIds);
+		
+		if(users.size()!=userIds.size()) {
+			return Boolean.FALSE;
+		}
+		users.forEach(user -> user.setRegistrationStatus(registrationStatus));
+		
+		userRepository.saveAll(users);
+		
+		return Boolean.TRUE;
+		
+	}
 	
+	@Override
+	public Boolean updateAllPendingAccountRegistrationsTo(
+			RegistrationStatus registrationStatus) {
+		
+		List<User> pendingAccounts = userRepository
+					.findAllByRegistrationStatus(
+						RegistrationStatus.PENDING);
+		
+		pendingAccounts.forEach(
+				account -> account
+					.setRegistrationStatus(
+						registrationStatus));
+		
+		userRepository.saveAll(pendingAccounts);
+		
+		return Boolean.TRUE;
+	}
 	
 	// --------------------------------UTILITY METHODS---------------------------
 	
@@ -424,45 +464,20 @@ public class AdminServiceImpl implements AdminService {
 		courses.forEach(course -> course.setNoOfSeats(course.getNoOfSeats() - 1));
 		courseRepository.saveAll(courses);
 	}
-	@Override
-	public Boolean updateAccountRegistrationStatusToByUserIds(
-			RegistrationStatus registrationStatus,
-			Collection<Integer> userIds) 
-					throws UserNotFoundException {
-		
-		if(null == userIds || userIds.isEmpty()) {
-			return Boolean.FALSE;
-		}
-		
-		
-		List<User> users = userRepository.findAllByUserIdIn(userIds);
-		
-		if(users.size()!=userIds.size()) {
-			return Boolean.FALSE;
-		}
-		users.forEach(user -> user.setRegistrationStatus(registrationStatus));
-		
-		userRepository.saveAll(users);
-		
-		return Boolean.TRUE;
-		
+	public Map<Integer, Course> getcourseIdToCourseMap(List<Integer> courseIds) {
+		return courseRepository
+				.findAllByCourseIdIn(courseIds)
+				.stream()
+				.collect(Collectors.toMap(
+						Course::getCourseId,
+						Function.identity()));
 	}
-	
-	@Override
-	public Boolean updateAllPendingAccountRegistrationsTo(
-			RegistrationStatus registrationStatus) {
-		
-		List<User> pendingAccounts = userRepository
-					.findAllByRegistrationStatus(
-						RegistrationStatus.PENDING);
-		
-		pendingAccounts.forEach(
-				account -> account
-					.setRegistrationStatus(
-						registrationStatus));
-		
-		userRepository.saveAll(pendingAccounts);
-		
-		return Boolean.TRUE;
+	public Map<Integer, Professor> getprofessorIdToProfessorMap(List<Integer> professorIds){
+		return professorRepository
+		.findAllByProfessorIdIn(professorIds)
+		.stream()
+		.collect(Collectors.toMap(
+				Professor::getProfessorId, 
+				Function.identity()));
 	}
 }

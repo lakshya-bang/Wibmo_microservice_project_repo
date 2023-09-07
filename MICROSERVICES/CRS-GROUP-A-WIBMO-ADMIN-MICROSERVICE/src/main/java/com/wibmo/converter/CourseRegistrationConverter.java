@@ -54,7 +54,13 @@ public class CourseRegistrationConverter {
 	public CourseRegistrationResponseDTO convert(
 			CourseRegistration courseRegistration,
 			Map<Integer, Course> courseIdToCourseMap,
-			Map<Integer, Professor> professorIdToProfessorMap) {
+			Map<Integer, Professor> professorIdToProfessorMap,
+			Object... object ) {
+		
+		if(object != null && object.length > 0) {
+			courseConverter = (CourseConverter) object[0];
+		}
+		
 		return new CourseRegistrationResponseDTO(
 				courseRegistration.getRegistrationId(),
 				courseRegistration.getStudentId(),
@@ -77,13 +83,15 @@ public class CourseRegistrationConverter {
 	public List<CourseRegistrationResponseDTO> convertAll(
 			List<CourseRegistration> courseRegistrations,
 			Map<Integer, Course> courseIdToCourseMap,
-			Map<Integer, Professor> professorIdToProfessorMap) {
+			Map<Integer, Professor> professorIdToProfessorMap,
+			Object... object) {
 		return courseRegistrations
 				.stream()
 				.map(courseRegistration -> convert(
 						courseRegistration,
 						courseIdToCourseMap,
-						professorIdToProfessorMap))
+						professorIdToProfessorMap,
+						object))
 				.collect(Collectors.toList());
 	}
 }
