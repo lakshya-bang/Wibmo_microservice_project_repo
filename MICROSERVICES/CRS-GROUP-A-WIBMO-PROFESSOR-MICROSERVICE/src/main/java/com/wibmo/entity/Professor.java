@@ -3,6 +3,7 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -22,8 +23,13 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "professor")
-public class Professor {
+public class Professor implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "professor_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

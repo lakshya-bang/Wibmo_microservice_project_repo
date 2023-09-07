@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Tuple;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import com.wibmo.repository.*;
@@ -68,7 +69,9 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 * @param professorId (Integer)
 	 * @return Professor
 	 */
+
 	@Override
+	@Cacheable(value="professor")
 	public Professor getProfessorById(Integer professorId) throws UserNotFoundException{
 		if(!isProfessorExistsById(professorId)) {
 			throw new UserNotFoundException(professorId,UserType.PROFESSOR);
@@ -83,8 +86,8 @@ public class ProfessorServiceImpl implements ProfessorService {
 	 * @param professorIds (Integer Set)
 	 * @return Map<Integer,Professor>
 	 */
-
 	@Override
+	@Cacheable(value="professor")
 	public Map<Integer, Professor> getProfessorIdToProfessorMap(Set<Integer> professorIds) {
 		return professorRepository
 				.findAllByProfessorIdIn(professorIds)
@@ -102,7 +105,6 @@ public class ProfessorServiceImpl implements ProfessorService {
 	/**
 	 * @param Professor
 	 */
-	
 	@Override
 	public void add(Professor professor) {
 		
@@ -115,8 +117,8 @@ public class ProfessorServiceImpl implements ProfessorService {
 		
 		System.out.println("Account Registration sent to Admin for Approval.");
 	}
-	
 	@Override
+	@Cacheable(value="professor")
 	public Map<Integer, List<Student>> getCourseIdToRegisteredStudentsMappingByProfessorId(Integer professorId)
 			throws UserNotFoundException {
 		
@@ -244,7 +246,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 		reportCardRepository.saveAll(reportCards);
 		
 	}
-
+	@Cacheable(value="professor")
 	private boolean isProfessorExistsById(Integer professorId) {
 		// TODO Auto-generated method stub
 		return professorRepository.existsById(professorId);
