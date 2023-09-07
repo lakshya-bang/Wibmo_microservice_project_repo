@@ -3,6 +3,7 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -22,7 +23,12 @@ import com.wibmo.service.StudentServiceImpl;
  */
 @Entity
 @Table(name = "student")
-public class Student {
+public class Student implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = LogManager.getLogger(StudentServiceImpl.class);
 
 	@Id

@@ -1,5 +1,6 @@
 package com.wibmo.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.wibmo.enums.RegistrationStatus;
@@ -7,8 +8,12 @@ import com.wibmo.enums.RegistrationStatus;
 /**
  * 
  */
-public class CourseRegistrationResponseDTO {
-
+public class CourseRegistrationResponseDTO implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer courseRegistrationId;
 	// TODO: Change to Student
 	private Integer studentId;

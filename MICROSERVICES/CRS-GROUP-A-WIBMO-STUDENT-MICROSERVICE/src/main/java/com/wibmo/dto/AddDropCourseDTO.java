@@ -1,10 +1,16 @@
 package com.wibmo.dto;
 
+import java.io.Serializable;
+
 /**
  * 
  */
-public class AddDropCourseDTO {
+public class AddDropCourseDTO implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer studentId;
 	private Integer semester;
 	private Integer courseId;
