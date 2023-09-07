@@ -93,15 +93,13 @@ public class NotificationServiceImpl implements NotificationService{
 		List<CourseRegistrationResponseDTO> courseRegistrations = adminService.getCourseRegistrationsByRegistrationStatus(
 				RegistrationStatus.PENDING);
 		
-		System.out.println(courseRegistrations);
 		
 		List<Integer> userIds = new ArrayList<>();
 		for (CourseRegistrationResponseDTO cRDTO : courseRegistrations) {
 	        // Get student ID to fetch users
 	        Integer studentId = cRDTO.getStudentId();
-	        Student student = studentRepository.findByStudentId(studentId).get();
-
-	        userIds.add(student.getUserId());
+//	        Student student = studentRepository.findByStudentId(studentId).get();
+	        userIds.add(studentRepository.findUserIdByStudentId(studentId));
 	    }
 		
 		List<Notification> notificationList = new ArrayList<>();
