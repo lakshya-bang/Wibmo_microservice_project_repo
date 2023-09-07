@@ -6,22 +6,30 @@ package com.wibmo.controller;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.wibmo.dto.CardDTO;
 import com.wibmo.dto.NetBankingDTO;
 import com.wibmo.dto.UPIDTO;
+import com.wibmo.entity.Notification;
 import com.wibmo.enums.PaymentMode;
 import com.wibmo.exceptions.CardDetailsNotFoundException;
 import com.wibmo.exceptions.NetBankingDetailsNotFoundException;
 import com.wibmo.exceptions.UPIDetailsNotFoundException;
+import com.wibmo.service.NotificationService;
+import com.wibmo.service.NotificationServiceImpl;
 import com.wibmo.service.PaymentServiceImpl;
 
 /**
@@ -34,6 +42,8 @@ public class PaymentController {
 	@Autowired
 	private PaymentServiceImpl paymentService;
 	
+	@Autowired
+	private NotificationServiceImpl notificationService;
 	/**
 	 * Api to get Bill for payment made by course registration id
 	 * @param courseRegistrationId id from registered courses to check bill
@@ -77,14 +87,16 @@ public class PaymentController {
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
-			method=RequestMethod.PUT,
+			method=RequestMethod.POST,
 			value="/pay/card/{courseRegistrationId}")
 	public ResponseEntity payByCard(
 			@RequestBody CardDTO cardDTO,
-			@PathVariable Integer courseRegistrationId) {
+			@PathVariable Integer courseRegistrationId,
+			@RequestHeader(value="Authorization") String jwt) {
+		
 		try {
 			paymentService.payByCard(cardDTO, courseRegistrationId);
-			return new ResponseEntity("Thank you for paying through " + PaymentMode.CARD,HttpStatus.OK);
+			return notificationService.SendPaymentNotification(jwt.substring(7));
 		}
 		catch(CardDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -100,14 +112,15 @@ public class PaymentController {
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
-			method=RequestMethod.PUT,
+			method=RequestMethod.POST,
 			value="/pay/net-banking/{courseRegistrationId}")
 	public ResponseEntity payByNetBanking(
 			@RequestBody NetBankingDTO netBankingDTO,
-			@PathVariable Integer courseRegistrationId) {
+			@PathVariable Integer courseRegistrationId,
+			@RequestHeader(value="Authorization") String jwt) {
 		try {
 			paymentService.payByNetBanking(netBankingDTO, courseRegistrationId);
-			return new ResponseEntity("Thank you for paying through " + PaymentMode.NETBANKING,HttpStatus.OK);
+			return notificationService.SendPaymentNotification(jwt.substring(7));
 		} catch(NetBankingDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
@@ -122,14 +135,16 @@ public class PaymentController {
 	@PreAuthorize("hasAuthority('Role.STUDENT')")
 	@RequestMapping(
 			produces= MediaType.APPLICATION_JSON,
-			method=RequestMethod.PUT,
+			method=RequestMethod.POST,
 			value="/pay/upi/{courseRegistrationId}")
 	public ResponseEntity payByUPI(
 			@RequestBody UPIDTO upiDTO,
-			@PathVariable Integer courseRegistrationId) {
+			@PathVariable Integer courseRegistrationId,
+			@RequestHeader(value="Authorization") String jwt) {
 		try {
 			paymentService.payByUPI(upiDTO, courseRegistrationId);
-			return new ResponseEntity("Thank you for paying through " + PaymentMode.UPI,HttpStatus.OK);
+			
+			return notificationService.SendPaymentNotification(jwt.substring(7));
 		}
 		catch(UPIDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);

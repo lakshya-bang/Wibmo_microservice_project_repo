@@ -13,6 +13,9 @@ public class CardDTO {
 	private Integer expiryYear;
 	private Integer cvv;
 	
+	public CardDTO() {
+		
+	}
 	/**
 	 * @return the cardNumber
 	 */
