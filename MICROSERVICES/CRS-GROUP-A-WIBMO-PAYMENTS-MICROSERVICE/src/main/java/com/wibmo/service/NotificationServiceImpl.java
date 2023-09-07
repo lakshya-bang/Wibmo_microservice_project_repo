@@ -33,14 +33,18 @@ public class NotificationServiceImpl implements NotificationService{
 	private UserRepository userRepository;
 	
 	@Override
-	public ResponseEntity<String> SendPaymentNotification(String jwt) {
+	public ResponseEntity<String> SendPaymentNotification(String jwt,Boolean paymentStatus) {
 		// TODO Auto-generated method stub
 		 HttpHeaders headers = new HttpHeaders();
 		 headers.setBearerAuth(jwt);
 		 Notification notification = new Notification();
 		 String userEmail=jwtTokenUtil.getUsernameFromToken(jwt);
 		 Optional<User> user = userRepository.findByUserEmail(userEmail);
-		 notification.setNotificationMessage("PAYMENT");
+		 if(paymentStatus==true) {
+		 notification.setNotificationMessage("payment Successful");
+		 }else {
+			 notification.setNotificationMessage("Payment Not Successful");
+		 }
 		 notification.setNotificationUserId(user.get().getUserId());
 		 notification.setNotificationType(NotificationType.PAYMENT);
 		 HttpEntity<Notification> request = new HttpEntity<Notification>(notification);

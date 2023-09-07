@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.wibmo.converter.CourseConverter;
 import com.wibmo.converter.CourseRegistrationConverter;
 import com.wibmo.dto.CourseRegistrationResponseDTO;
@@ -40,8 +41,9 @@ import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.PaymentRepository;
 import com.wibmo.repository.ProfessorRepository;
+import com.wibmo.repository.StudentRepository;
 import com.wibmo.repository.UserRepository;
-
+import com.wibmo.utils.JwtTokenUtil;
 /**
  * 
  */
@@ -73,6 +75,9 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private CourseRegistrationConverter courseRegistrationConverter;
+	
+	@Autowired
+	JwtTokenUtil jwtTokenUtil;
 	
 	@Override
 	public Admin getAdminById(Integer adminId) {
@@ -480,4 +485,5 @@ public class AdminServiceImpl implements AdminService {
 				Professor::getProfessorId, 
 				Function.identity()));
 	}
+
 }
