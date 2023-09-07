@@ -3,6 +3,8 @@
  */
 package com.wibmo.controller;
 
+import java.util.ArrayList;
+
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,15 @@ public class NotificationController {
 	 KafkaTemplate<String, Notification> kafkaTemplate;
 	 
 	
+	 @RequestMapping(
+				produces = MediaType.APPLICATION_JSON, 
+				method = RequestMethod.POST,
+				value = "/send-all-notifications/{topic}")
+	 public ResponseEntity sendAllNotification(@RequestBody ArrayList<Notification> notifications, @PathVariable String topic) {
+		 notifications.stream().forEach(notification -> kafkaTemplate.send(topic,notification));
+		 return ResponseEntity.ok("All the notifications are sent.");
+	 }
+	 
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
 			method = RequestMethod.POST,
