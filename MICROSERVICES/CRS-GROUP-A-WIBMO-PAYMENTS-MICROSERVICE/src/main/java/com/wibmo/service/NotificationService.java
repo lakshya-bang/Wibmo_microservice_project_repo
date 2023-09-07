@@ -11,5 +11,5 @@ import com.wibmo.entity.Notification;
  * 
  */
 public interface NotificationService {
-	public ResponseEntity<String> SendPaymentNotification(String jwt);
+	public ResponseEntity<String> SendPaymentNotification(String jwt,Boolean paymentStatus);
 }

@@ -93,10 +93,10 @@ public class PaymentController {
 			@RequestBody CardDTO cardDTO,
 			@PathVariable Integer courseRegistrationId,
 			@RequestHeader(value="Authorization") String jwt) {
-		
+			Boolean paymentStatus=false;
 		try {
-			paymentService.payByCard(cardDTO, courseRegistrationId);
-			return notificationService.SendPaymentNotification(jwt.substring(7));
+			paymentStatus=paymentService.payByCard(cardDTO, courseRegistrationId);
+			return notificationService.SendPaymentNotification(jwt.substring(7),paymentStatus);
 		}
 		catch(CardDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -118,9 +118,10 @@ public class PaymentController {
 			@RequestBody NetBankingDTO netBankingDTO,
 			@PathVariable Integer courseRegistrationId,
 			@RequestHeader(value="Authorization") String jwt) {
+		Boolean paymentStatus=false;
 		try {
-			paymentService.payByNetBanking(netBankingDTO, courseRegistrationId);
-			return notificationService.SendPaymentNotification(jwt.substring(7));
+			paymentStatus= paymentService.payByNetBanking(netBankingDTO, courseRegistrationId);
+			return notificationService.SendPaymentNotification(jwt.substring(7),paymentStatus);
 		} catch(NetBankingDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
@@ -141,10 +142,11 @@ public class PaymentController {
 			@RequestBody UPIDTO upiDTO,
 			@PathVariable Integer courseRegistrationId,
 			@RequestHeader(value="Authorization") String jwt) {
+		Boolean paymentStatus=false;
 		try {
-			paymentService.payByUPI(upiDTO, courseRegistrationId);
+			paymentStatus=paymentService.payByUPI(upiDTO, courseRegistrationId);
 			
-			return notificationService.SendPaymentNotification(jwt.substring(7));
+			return notificationService.SendPaymentNotification(jwt.substring(7),paymentStatus);
 		}
 		catch(UPIDetailsNotFoundException e) {
 			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
