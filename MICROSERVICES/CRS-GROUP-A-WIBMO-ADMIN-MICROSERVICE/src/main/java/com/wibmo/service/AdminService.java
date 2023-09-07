@@ -2,6 +2,7 @@ package com.wibmo.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
@@ -163,6 +164,4 @@ public interface AdminService {
 	 */
 	public Boolean updateAllPendingAccountRegistrationsTo(
 			RegistrationStatus registrationStatus) ;
-	
-	public ResponseEntity<String> SendApproveOrRejectNotification(String jwt);
 }

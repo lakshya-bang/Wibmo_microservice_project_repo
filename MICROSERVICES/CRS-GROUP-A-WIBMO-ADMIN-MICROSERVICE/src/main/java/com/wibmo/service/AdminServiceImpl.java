@@ -15,12 +15,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
 
 import com.wibmo.converter.CourseConverter;
 import com.wibmo.converter.CourseRegistrationConverter;
@@ -30,10 +26,8 @@ import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Admin;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
-import com.wibmo.entity.Notification;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.User;
-import com.wibmo.enums.NotificationType;
 import com.wibmo.enums.PaymentStatus;
 import com.wibmo.enums.RegistrationStatus;
 import com.wibmo.enums.UserType;
@@ -47,6 +41,7 @@ import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.PaymentRepository;
 import com.wibmo.repository.ProfessorRepository;
+import com.wibmo.repository.StudentRepository;
 import com.wibmo.repository.UserRepository;
 import com.wibmo.utils.JwtTokenUtil;
 /**
@@ -415,25 +410,6 @@ public class AdminServiceImpl implements AdminService {
 		userRepository.saveAll(pendingAccounts);
 		
 		return Boolean.TRUE;
-	}
-	
-	@Override
-	public ResponseEntity<String> SendApproveOrRejectNotification(String jwt) {
-		 HttpHeaders headers = new HttpHeaders();
-		 headers.setBearerAuth(jwt);
-		 Notification notification = new Notification();
-		 String userEmail=jwtTokenUtil.getUsernameFromToken(jwt);
-		 Optional<User> user = userRepository.findByUserEmail(userEmail);
-		 
-		 notification.setNotificationMessage("REGISTRATION");
-		 notification.setNotificationUserId(user.get().getUserId());
-		 notification.setNotificationType(NotificationType.REGISTRATION);
-		 
-		 HttpEntity<Notification> request = new HttpEntity<Notification>(notification);
-		 return new RestTemplate()
-				 .postForEntity(
-				 "http://localhost:8086/api/notification/send-notification/"
-				 +NotificationType.REGISTRATION, request, String.class);
 	}
 	
 	// --------------------------------UTILITY METHODS---------------------------

@@ -38,6 +38,7 @@ import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.AdminService;
 import com.wibmo.service.AdminServiceImpl;
+import com.wibmo.service.NotificationService;
 
 /**
  * 
@@ -50,6 +51,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminServiceImpl adminService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	@RequestMapping(
 			produces = MediaType.APPLICATION_JSON, 
@@ -125,7 +129,7 @@ public class AdminController {
 			.updateCourseRegistrationStatusToByRegistrationIds(
 				RegistrationStatus.APPROVED, 
 				courseRegistrationIds);
-			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
+			return notificationService.SendApproveOrRejectNotification(jwt.substring(7), courseRegistrationIds, "Registration is Approved");
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -138,7 +142,8 @@ public class AdminController {
 		try {
 			adminService.updateAllPendingCourseRegistrationsTo(RegistrationStatus.APPROVED);
 			
-			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
+			return notificationService.SendApproveOrRejectALLNotification(jwt.substring(7), 
+					"Registration is approved");
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -154,7 +159,8 @@ public class AdminController {
 					RegistrationStatus.REJECTED, 
 					courseRegistrationIds);
 			
-			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
+			return notificationService.SendApproveOrRejectNotification(jwt.substring(7), 
+					courseRegistrationIds, "Registration is rejected");
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
@@ -171,7 +177,8 @@ public class AdminController {
 			.updateAllPendingCourseRegistrationsTo(
 					RegistrationStatus.REJECTED);
 			
-			return adminService.SendApproveOrRejectNotification(jwt.substring(7));
+			return notificationService.SendApproveOrRejectALLNotification(jwt.substring(7), 
+					"Registration is rejected");
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
