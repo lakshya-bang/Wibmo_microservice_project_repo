@@ -110,11 +110,13 @@ public class NotificationServiceImpl implements NotificationService{
 		
 		List<Notification> notificationList = new ArrayList<>();
 	    for(Optional<User> user: users) {
-			 Notification notification = new Notification();
-			 notification.setNotificationUserId(user.get().getUserId());
-			 notification.setNotificationMessage(notificationMessage);
-			 notification.setNotificationType(NotificationType.REGISTRATION);
-			 notificationList.add(notification);
+	    	if(user.isPresent()) {
+				 Notification notification = new Notification();
+				 notification.setNotificationUserId(user.get().getUserId());
+				 notification.setNotificationMessage(notificationMessage);
+				 notification.setNotificationType(NotificationType.REGISTRATION);
+				 notificationList.add(notification);
+	    	}
 		 }
 	    HttpEntity<List<Notification>> request = new HttpEntity<>(notificationList);
 	    
