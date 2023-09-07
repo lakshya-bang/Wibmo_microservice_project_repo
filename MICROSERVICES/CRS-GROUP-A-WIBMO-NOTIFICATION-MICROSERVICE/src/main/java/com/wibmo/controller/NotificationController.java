@@ -45,7 +45,11 @@ public class NotificationController {
 				method = RequestMethod.POST,
 				value = "/send-all-notifications/{topic}")
 	 public ResponseEntity sendAllNotification(@RequestBody ArrayList<Notification> notifications, @PathVariable String topic) {
-		 notifications.stream().forEach(notification -> kafkaTemplate.send(topic,notification));
+		 notifications.stream().forEach(notification -> 
+		 {
+			 System.out.println(notification);
+			 kafkaTemplate.send(topic,notification);
+		 });
 		 return ResponseEntity.ok("All the notifications are sent.");
 	 }
 	 
