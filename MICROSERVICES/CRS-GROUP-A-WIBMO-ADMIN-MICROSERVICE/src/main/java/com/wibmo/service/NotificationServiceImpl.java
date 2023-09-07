@@ -66,20 +66,21 @@ public class NotificationServiceImpl implements NotificationService{
 		                return userRepository.findByUserId(userId);
 		            }).collect(Collectors.toList());
 		 
-		 Notification notification = new Notification();
-		 List<HttpEntity<Notification>> requests = new ArrayList<>();
-		 for(Optional<User> user: users) {
-			 notification.setNotificationUserId(user.get().getUserId());
-			 notification.setNotificationMessage(notificationMessage);
-			 notification.setNotificationType(NotificationType.REGISTRATION);
-			 
-			 HttpEntity<Notification> request = new HttpEntity<Notification>(notification);
-			 requests.add(request);
-		 }
 		 
-		 return new RestTemplate().postForEntity(
+		 List<Notification> notificationList = new ArrayList<>();
+		 for(Optional<User> user: users) {
+			 if(user.isPresent()) {
+				 Notification notification = new Notification();
+				 notification.setNotificationUserId(user.get().getUserId());
+				 notification.setNotificationMessage(notificationMessage);
+				 notification.setNotificationType(NotificationType.REGISTRATION);
+				 notificationList.add(notification);
+			 }
+		 }
+		 HttpEntity<List<Notification>> request = new HttpEntity<>(notificationList);
+		 return new RestTemplate().exchange(
 		            "http://localhost:8086/api/notification/send-all-notifications/REGISTRATION",
-		            requests, String.class);
+		            HttpMethod.POST, request, String.class);
 	}
 
 	@Override
@@ -107,21 +108,20 @@ public class NotificationServiceImpl implements NotificationService{
 	        }
 	    }
 		
-		List<HttpEntity<Notification>> requests = new ArrayList<>();
-	    
-	    for (Optional<User> user : users) {
-	        Notification notification = new Notification();
-	        notification.setNotificationMessage(notificationMessage);
-	        notification.setNotificationUserId(user.get().getUserId());
-	        notification.setNotificationType(NotificationType.REGISTRATION);
-
-	        requests.add(new HttpEntity<>(notification));
-	    }
+		List<Notification> notificationList = new ArrayList<>();
+	    for(Optional<User> user: users) {
+			 Notification notification = new Notification();
+			 notification.setNotificationUserId(user.get().getUserId());
+			 notification.setNotificationMessage(notificationMessage);
+			 notification.setNotificationType(NotificationType.REGISTRATION);
+			 notificationList.add(notification);
+		 }
+	    HttpEntity<List<Notification>> request = new HttpEntity<>(notificationList);
 	    
 	    return new RestTemplate()
-	            .postForEntity(
+	            .exchange(
 	            		"http://localhost:8086/api/notification/send-all-notifications/REGISTRATION",
-	                    requests,
+	            		HttpMethod.POST, request,
 	                    String.class);
 	}
 }
