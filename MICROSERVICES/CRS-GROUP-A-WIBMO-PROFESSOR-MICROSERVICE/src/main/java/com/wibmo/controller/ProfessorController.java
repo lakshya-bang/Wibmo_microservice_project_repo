@@ -35,7 +35,7 @@ import com.wibmo.exception.UserNotFoundException;
 @RestController
 @RequestMapping(value = "/api/professor")
 @CrossOrigin
-@PreAuthorize("hasAnyAuthority('Role.PROFESSOR')")
+@PreAuthorize("hasAuthority('Role.PROFESSOR')")
 public class ProfessorController {
 	
 	private static final Logger logger = LogManager.getLogger(ProfessorController.class);

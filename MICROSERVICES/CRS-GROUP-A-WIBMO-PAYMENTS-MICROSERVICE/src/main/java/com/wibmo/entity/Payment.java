@@ -3,6 +3,7 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -21,8 +22,13 @@ import com.wibmo.enums.PaymentMode;
  */
 @Entity
 @Table(name = "payment")
-public class Payment {
+public class Payment implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "payment_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
