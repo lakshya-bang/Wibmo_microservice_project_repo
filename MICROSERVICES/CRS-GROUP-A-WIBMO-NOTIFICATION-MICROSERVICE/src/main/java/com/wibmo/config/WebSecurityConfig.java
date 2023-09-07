@@ -64,9 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers("/api/authentication/login", "/api/authentication/register", "/v3/api-docs/**",
 			            "/swagger-ui/**",
 			            "/v2/api-docs/**",
-			            "/swagger-resources/**").permitAll().
+			            "/swagger-resources/**").permitAll()
 				// all other requests need to be authenticated
-				anyRequest().authenticated().and().
+				.anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
 				// store user's state.
 				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
