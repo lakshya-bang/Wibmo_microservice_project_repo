@@ -1,12 +1,18 @@
 package com.wibmo.dto;
 
+import java.io.Serializable;
+
 import com.wibmo.enums.CourseType;
 
 /**
  * 
  */
-public class CourseResponseDTO {
+public class CourseResponseDTO implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer courseId;
 	private String courseTitle;
 	private Integer semester;

@@ -37,7 +37,7 @@ import com.wibmo.service.StudentServiceImpl;
 @RestController
 @RequestMapping(value = "/api/student")
 @CrossOrigin
-@PreAuthorize("hasAnyAuthority('Role.STUDENT','Role.ADMIN')")
+@PreAuthorize("hasAuthority('Role.STUDENT')")
 public class StudentController {
 	
 	@Autowired

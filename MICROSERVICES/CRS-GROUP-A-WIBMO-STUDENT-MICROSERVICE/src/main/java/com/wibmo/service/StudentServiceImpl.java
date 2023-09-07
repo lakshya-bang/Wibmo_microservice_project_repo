@@ -16,6 +16,9 @@ import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +102,7 @@ public class StudentServiceImpl implements StudentService {
 	private ReportCardConverter reportCardConverter;
 	
 	@Override
+	@Cacheable(value="student")
 	public Student getStudentById(Integer studentId) {
 		Optional<Student> studentOptional = studentRepository.findByStudentId(studentId);
 		return studentOptional.isPresent()
@@ -107,11 +111,13 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="student")
 	public List<Student> getAllStudents() {
 		return studentRepository.findAll();
 	}
 	
 	@Override
+	@Cacheable(value="student")
 	public List<Student> getAllStudentsByIds(Collection<Integer> studentIds) {
 		logger.info("student ids: " + studentIds);
 		//TODO: check if all studentIds Exists
@@ -161,6 +167,7 @@ public class StudentServiceImpl implements StudentService {
 	/**************************** Course Methods *****************************/
 	
 	@Override
+	@Cacheable(value="course")
 	public CourseResponseDTO getCourseDetailsById(Integer courseId) {
 		Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
 		if(courseOptional.isEmpty()) {
@@ -178,6 +185,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="course")
 	public List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds) {
 		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
 		return courseConverter.convertAll(
@@ -188,6 +196,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="course")
 	public List<CourseResponseDTO> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
 		return courseConverter.convertAll(
@@ -199,6 +208,7 @@ public class StudentServiceImpl implements StudentService {
 	
 	// TODO: This implementation can be moved to Join query in Database
 	@Override
+	@Cacheable(value="course")
 	public List<CourseResponseDTO> getCourseDetailsBySemester(Integer semester) {
 		List<Course> courses = courseRepository.findAllBySemester(semester);
 		return courseConverter.convertAll(
@@ -415,6 +425,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@CachePut(key="#crid", value="course-registration")
 	public void addCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				StudentNotRegisteredForSemesterException, 
@@ -484,6 +495,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	@CacheEvict(key="#crid", value="course-registration")
 	public void dropCourse(Integer courseId, Integer studentId, Integer semester) 
 			throws 
 				CourseNotExistsInCatalogException,
@@ -591,6 +603,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="course-registration")
 	public List<CourseRegistrationResponseDTO> getCourseRegistrationsByRegistrationStatus(
 			RegistrationStatus registrationStatus){
 		List<CourseRegistration> courseRegistrations = courseRegistrationRepository
@@ -649,6 +662,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable("course-registration")
 	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
 		return courseRegistrationRepository
 				.findByStudentIdAndSemester(studentId, semester)
@@ -771,6 +785,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+//	@Cacheable(value="Admin_course")
 	public List<ReportCardResponseDTO> getReportCardByStudentIdAndSemester(Integer studentId, Integer semester) 
 			throws 
 			UserNotFoundException, 

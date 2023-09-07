@@ -1,5 +1,6 @@
 package com.wibmo.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,9 +15,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "report_card")
-public class ReportCard {
+public class ReportCard implements Serializable {
 	
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @Column(name = "report_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer reportId;			// report_id (PK)
