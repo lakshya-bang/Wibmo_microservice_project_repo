@@ -74,4 +74,5 @@ public class NetBanking {
 		this.userName = userName;
 		this.password = password;
 	}
+	public NetBanking() {}
 }

@@ -39,4 +39,5 @@ public class NetBankingDTO {
 		this.userName = userName;
 		this.password = password;
 	}
+	public NetBankingDTO() {}
 }

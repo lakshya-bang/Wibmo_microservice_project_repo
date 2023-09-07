@@ -27,5 +27,5 @@ public class UPIDTO {
 		this.upiId = upiId;
 	}
 	
-	
+	public UPIDTO() {}
 }

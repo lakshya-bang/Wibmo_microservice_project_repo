@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService{
 		 }
 		 notification.setNotificationUserId(user.get().getUserId());
 		 notification.setNotificationType(NotificationType.PAYMENT);
-		 HttpEntity<Notification> request = new HttpEntity<Notification>(notification);
+		 HttpEntity<Notification> request = new HttpEntity<Notification>(notification,headers);
 		 return new RestTemplate().exchange("http://localhost:8086/api/notification/send-notification/PAYMENT", HttpMethod.POST, request, String.class);
 	}
 	

@@ -76,7 +76,7 @@ public class StudentController {
 	@RequestMapping(
 			produces=MediaType.APPLICATION_JSON,
 			method=RequestMethod.GET,
-			value="/course/{id}")
+			value="/course/id={id}")
 	public ResponseEntity getCourseById(@PathVariable("id") Integer courseId) {
 		try {
 			return new ResponseEntity(
@@ -103,7 +103,7 @@ public class StudentController {
 	
 	@RequestMapping(produces = MediaType.APPLICATION_JSON,
 			method = RequestMethod.GET,
-			value = "/course/{semester}")
+			value = "/course/semester={semester}")
 	public ResponseEntity viewCourseDetailsBySemester(
 			@PathVariable Integer semester) {
 		try {

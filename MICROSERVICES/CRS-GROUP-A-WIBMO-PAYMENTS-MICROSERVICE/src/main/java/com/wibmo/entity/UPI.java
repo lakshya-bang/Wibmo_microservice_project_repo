@@ -57,5 +57,6 @@ public class UPI {
 		this.upiId = upiId;
 	}
 	
+	public UPI() {}
 	
 }

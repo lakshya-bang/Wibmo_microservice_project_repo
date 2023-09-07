@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,8 +22,13 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "student")
-public class Student {
+public class Student implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "student_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -134,6 +141,7 @@ public class Student {
 	public void setCurrentSemester(Integer currentSemester) {
 		this.currentSemester = currentSemester;
 	}
+
 
 	@Override
 	public String toString() {
