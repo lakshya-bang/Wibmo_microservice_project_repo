@@ -7,7 +7,10 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.dto.CardDTO;
@@ -57,6 +60,7 @@ public class PaymentServiceImpl implements PaymentService{
 	}
 	
 	@Override
+	@Cacheable(value="Payment_payment")
 	public Payment getPaymentByCourseRegistrationId(Integer courseRegistrationId) {
 		
 		if(null == courseRegistrationId) {
@@ -70,6 +74,7 @@ public class PaymentServiceImpl implements PaymentService{
 	}
 
 	@Override
+	@CachePut(value="Payment_approve",key="#courseRegistrationId")
 	public Boolean approveCashPayment(Integer courseRegistrationId) {
 		
 		return pay(PaymentMode.CASH, courseRegistrationId);
@@ -148,6 +153,7 @@ public class PaymentServiceImpl implements PaymentService{
 	}
 
 	@Override
+	@Cacheable(value="Payment_paymentStatus")
 	public PaymentStatus getPaymentStatusByCourseRegistrationId(Integer courseRegistrationId) {
 		return paymentRepository
 			.findByCourseRegistrationId(courseRegistrationId)
@@ -160,6 +166,7 @@ public class PaymentServiceImpl implements PaymentService{
 	 * card Repository services integrated
 	 */
 	@Override
+	@Cacheable(value="Payment_verify_card")
 	public Boolean verfiy(CardDTO cardDTO) {
 		Optional<Card> cardOptional = cardRepository
 				.findByCardNumberAndExpiryMonthAndExpiryYearAndCvv(
@@ -174,6 +181,7 @@ public class PaymentServiceImpl implements PaymentService{
 	 * Net-banking Repository Services integrated
 	 */
 	@Override
+	@Cacheable(value="Payment_verify_netBanking")
 	public Boolean verify(NetBankingDTO netBankingDTO) {
 		Optional<NetBanking> netBankingOptional = 
 				netBankingRepository.findByUserNameAndPassword(
@@ -186,6 +194,7 @@ public class PaymentServiceImpl implements PaymentService{
 	 * UPI repository Services integrated
 	 */
 	@Override
+	@Cacheable(value="Payment_verify_upi")
 	public Boolean verify(UPIDTO upiDTO) {
 		return upiRepository
 				.findByUpiId(upiDTO.getUpiId())
