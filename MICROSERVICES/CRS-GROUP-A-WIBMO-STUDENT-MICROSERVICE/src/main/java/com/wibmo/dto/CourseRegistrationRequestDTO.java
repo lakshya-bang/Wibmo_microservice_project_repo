@@ -1,12 +1,17 @@
 package com.wibmo.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 
  */
-public class CourseRegistrationRequestDTO {
+public class CourseRegistrationRequestDTO implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer studentId;
 	private Integer semester;
 	private List<Integer> primaryCourseIds;

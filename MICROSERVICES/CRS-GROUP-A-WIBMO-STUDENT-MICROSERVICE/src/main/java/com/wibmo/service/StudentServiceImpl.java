@@ -102,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
 	private ReportCardConverter reportCardConverter;
 	
 	@Override
-	@Cacheable(key="#sid", value="get-by-id")
+	@Cacheable(value="student")
 	public Student getStudentById(Integer studentId) {
 		Optional<Student> studentOptional = studentRepository.findByStudentId(studentId);
 		return studentOptional.isPresent()
@@ -111,12 +111,13 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="student")
 	public List<Student> getAllStudents() {
 		return studentRepository.findAll();
 	}
 	
 	@Override
-	@Cacheable(key="#sids", value="get-by-ids")
+	@Cacheable(value="student")
 	public List<Student> getAllStudentsByIds(Collection<Integer> studentIds) {
 		logger.info("student ids: " + studentIds);
 		//TODO: check if all studentIds Exists
@@ -166,7 +167,7 @@ public class StudentServiceImpl implements StudentService {
 	/**************************** Course Methods *****************************/
 	
 	@Override
-	@Cacheable(key="#cid", value="get-by-id")
+	@Cacheable(value="course")
 	public CourseResponseDTO getCourseDetailsById(Integer courseId) {
 		Optional<Course> courseOptional = courseRepository.findByCourseId(courseId);
 		if(courseOptional.isEmpty()) {
@@ -184,7 +185,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
-	@Cacheable(key="#cids", value="get-by-ids")
+	@Cacheable(value="course")
 	public List<CourseResponseDTO> getCourseDetailsByIds(Collection<Integer> courseIds) {
 		List<Course> courses = courseRepository.findAllByCourseIdIn(courseIds);
 		return courseConverter.convertAll(
@@ -195,6 +196,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable(value="course")
 	public List<CourseResponseDTO> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
 		return courseConverter.convertAll(
@@ -660,6 +662,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Cacheable("course-registration")
 	public CourseRegistration getCourseRegistrationByStudentIdAndSemester(Integer studentId, Integer semester) {
 		return courseRegistrationRepository
 				.findByStudentIdAndSemester(studentId, semester)
@@ -735,7 +738,6 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
-	@Cacheable(value="report-card")
 	public ReportCardResponseDTO getReportCardByStudentIdAndCourseId(Integer studentId, Integer courseId) 
 			throws 
 				UserNotFoundException, 
@@ -783,7 +785,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	@Cacheable(value="report-card")
+//	@Cacheable(value="Admin_course")
 	public List<ReportCardResponseDTO> getReportCardByStudentIdAndSemester(Integer studentId, Integer semester) 
 			throws 
 			UserNotFoundException, 

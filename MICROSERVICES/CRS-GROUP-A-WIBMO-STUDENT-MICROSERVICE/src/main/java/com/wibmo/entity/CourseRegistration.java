@@ -3,6 +3,8 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,8 +25,13 @@ import com.wibmo.enums.RegistrationStatus;
  */
 @Entity
 @Table(name = "registered_courses")
-public class CourseRegistration {
+public class CourseRegistration implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "registration_id")

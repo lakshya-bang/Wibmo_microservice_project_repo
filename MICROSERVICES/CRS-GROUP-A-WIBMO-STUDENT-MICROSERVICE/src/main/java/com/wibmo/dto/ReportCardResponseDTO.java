@@ -1,10 +1,16 @@
 package com.wibmo.dto;
 
+import java.io.Serializable;
+
 /**
  * 
  */
-public class ReportCardResponseDTO {
+public class ReportCardResponseDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer courseId;
 	private String courseTitle;
 	private String grade;

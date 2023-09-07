@@ -3,6 +3,7 @@
  */
 package com.wibmo.entity;
 
+import java.io.Serializable;
 import java.lang.annotation.Inherited;
 
 import javax.persistence.Column;
@@ -27,9 +28,14 @@ import com.wibmo.enums.CourseType;
  */
 @Entity
 @Table(name = "course")
-public class Course {
-    
-    @Id
+public class Course implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @Column(name = "course_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @NotNull
