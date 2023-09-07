@@ -16,6 +16,4 @@ public interface NotificationService {
 			Set<Integer> courseRegistrationIds, 
 			String notificationMessage);
 	
-	public ResponseEntity SendApproveOrRejectALLNotification (String jwt, 
-			String notificationMessage);
 }

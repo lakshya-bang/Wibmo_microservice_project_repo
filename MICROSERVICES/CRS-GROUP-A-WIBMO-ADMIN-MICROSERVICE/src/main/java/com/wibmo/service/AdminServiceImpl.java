@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.wibmo.converter.CourseConverter;
 import com.wibmo.converter.CourseRegistrationConverter;
 import com.wibmo.dto.CourseRegistrationResponseDTO;
@@ -36,14 +35,14 @@ import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.jwt.JwtToken;
 import com.wibmo.repository.AdminRepository;
 import com.wibmo.repository.CourseRegistrationRepository;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.PaymentRepository;
 import com.wibmo.repository.ProfessorRepository;
-import com.wibmo.repository.StudentRepository;
 import com.wibmo.repository.UserRepository;
-import com.wibmo.utils.JwtTokenUtil;
+
 /**
  * 
  */
@@ -51,6 +50,9 @@ import com.wibmo.utils.JwtTokenUtil;
 public class AdminServiceImpl implements AdminService {
 	
 	private static Logger logger =LogManager.getLogger(AdminServiceImpl.class);
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	@Autowired
 	private CourseRegistrationRepository courseRegistrationRepository;
@@ -75,9 +77,6 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private CourseRegistrationConverter courseRegistrationConverter;
-	
-	@Autowired
-	JwtTokenUtil jwtTokenUtil;
 	
 	@Override
 	public Admin getAdminById(Integer adminId) {
@@ -232,16 +231,25 @@ public class AdminServiceImpl implements AdminService {
 				}
 			}
 		}
-		
+		Set<Integer> courseRegistrationApprovedIds = new HashSet<Integer>();
 		courseRegistrations.forEach(courseRegistration -> {
 			courseRegistration.setRegistrationStatus(registrationStatus);
 			/*
 			 * Also, decrement available seat count
 			 */
+			courseRegistrationApprovedIds.add(courseRegistration.getRegistrationId());
 			decrementNumOfSeatsByCourseIds(
 						getRegisteredCourseIdsByRegistrationId(
 								courseRegistration.getRegistrationId()));
 		});
+		
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+			notificationService.SendApproveOrRejectNotification(JwtToken.token, courseRegistrationApprovedIds, "Registration is approved.");
+			}
+			else if(RegistrationStatus.REJECTED.equals(registrationStatus)) {
+				notificationService.SendApproveOrRejectNotification(JwtToken.token, courseRegistrationApprovedIds, "Registration is rejected.");
+			}
+			courseRegistrationRepository.saveAll(courseRegistrations);
 		
 		courseRegistrationRepository.saveAll(courseRegistrations);
 		
@@ -270,9 +278,11 @@ public class AdminServiceImpl implements AdminService {
 				}
 			}
 		}
-		
+		Set<Integer> courseRegistrationIds = new HashSet<Integer>();
 		courseRegistrations.forEach(courseRegistration -> {
 				courseRegistration.setRegistrationStatus(registrationStatus);
+				courseRegistrationIds.add(courseRegistration.getRegistrationId());
+				
 				/*
 				 * Also, decrement available seat count
 				 */
@@ -280,7 +290,12 @@ public class AdminServiceImpl implements AdminService {
 							getRegisteredCourseIdsByRegistrationId(
 									courseRegistration.getRegistrationId()));
 		});
-		
+		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
+		notificationService.SendApproveOrRejectNotification(JwtToken.token, courseRegistrationIds, "Registration is approved.");
+		}
+		else if(RegistrationStatus.REJECTED.equals(registrationStatus)) {
+			notificationService.SendApproveOrRejectNotification(JwtToken.token, courseRegistrationIds, "Registration is rejected.");
+		}
 		courseRegistrationRepository.saveAll(courseRegistrations);
 		
 		return Boolean.TRUE;
@@ -485,5 +500,4 @@ public class AdminServiceImpl implements AdminService {
 				Professor::getProfessorId, 
 				Function.identity()));
 	}
-
 }

@@ -36,6 +36,7 @@ import com.wibmo.exception.CannotDropCourseAssignedToProfessorException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.StudentNotRegisteredForSemesterException;
 import com.wibmo.exception.UserNotFoundException;
+import com.wibmo.jwt.JwtToken;
 import com.wibmo.service.AdminService;
 import com.wibmo.service.AdminServiceImpl;
 import com.wibmo.service.NotificationService;
@@ -125,11 +126,12 @@ public class AdminController {
 	public ResponseEntity approveCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds, @RequestHeader(value="Authorization") String jwt) {
 		try {
+			JwtToken.token = jwt.substring(7);
 			adminService
 			.updateCourseRegistrationStatusToByRegistrationIds(
 				RegistrationStatus.APPROVED, 
 				courseRegistrationIds);
-			return notificationService.SendApproveOrRejectNotification(jwt.substring(7), courseRegistrationIds, "Registration is Approved");
+			return ResponseEntity.ok("All the registrations are approved!");
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -140,10 +142,10 @@ public class AdminController {
 		    value = "/course-registration/approve-all")
 	public ResponseEntity approveAllCourseRegistrations(@RequestHeader(value="Authorization") String jwt) {
 		try {
+			JwtToken.token = jwt.substring(7);
 			adminService.updateAllPendingCourseRegistrationsTo(RegistrationStatus.APPROVED);
 			
-			return notificationService.SendApproveOrRejectALLNotification(jwt.substring(7), 
-					"Registration is approved");
+			return ResponseEntity.ok("All the registrations are approved!");
 		} catch (CannotApproveCourseRegistrationPaymentPendingException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
@@ -155,12 +157,12 @@ public class AdminController {
 	public ResponseEntity rejectCourseRegistrationByIds(
 			@RequestBody Set<Integer> courseRegistrationIds, @RequestHeader(value="Authorization") String jwt) {
 		try {
+			JwtToken.token = jwt.substring(7);
 			adminService.updateCourseRegistrationStatusToByRegistrationIds(
 					RegistrationStatus.REJECTED, 
 					courseRegistrationIds);
 			
-			return notificationService.SendApproveOrRejectNotification(jwt.substring(7), 
-					courseRegistrationIds, "Registration is rejected");
+			return ResponseEntity.ok("All the registrations are rejected!");
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
@@ -173,12 +175,12 @@ public class AdminController {
 		    value = "/course-registration/reject-all")
 	public ResponseEntity rejectAllCourseRegistrations(@RequestHeader(value="Authorization") String jwt) {
 		try {
+			JwtToken.token = jwt.substring(7);
 			adminService
 			.updateAllPendingCourseRegistrationsTo(
 					RegistrationStatus.REJECTED);
 			
-			return notificationService.SendApproveOrRejectALLNotification(jwt.substring(7), 
-					"Registration is rejected");
+			return ResponseEntity.ok("All the registrations are rejected!");
 		} catch (Exception e) {
 			// We never reach here in case of Reject
 			return new ResponseEntity(HttpStatus.OK);
