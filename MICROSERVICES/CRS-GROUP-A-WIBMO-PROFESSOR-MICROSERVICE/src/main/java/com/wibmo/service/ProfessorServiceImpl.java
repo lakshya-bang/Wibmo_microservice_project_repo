@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.Tuple;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.wibmo.repository.*;
 import com.wibmo.utils.CourseRegistrationUtils;
 import com.wibmo.utils.CourseUtils;
+import com.wibmo.utils.JwtTokenUtil;
 import com.wibmo.utils.StudentUtils;
 import com.wibmo.converter.ReportCardConverter;
 import com.wibmo.dto.ReportCardRequestDTO;
@@ -34,6 +36,7 @@ import com.wibmo.exception.CourseIdCannotBeEmptyException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.GradeCannotBeEmptyException;
 import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.UserNotFoundException;
@@ -44,6 +47,16 @@ import com.wibmo.exception.UserNotFoundException;
 @Service
 @Component
 public class ProfessorServiceImpl implements ProfessorService {
+	
+	@Autowired
+	JwtTokenUtil jwtTokenUtil;
+	
+	@Autowired
+	HttpServletRequest request;
+	
+	@Autowired
+	CourseRepository courseRepository;
+	
 	@Autowired
 	ProfessorRepository professorRepository;
 	
@@ -159,7 +172,8 @@ public class ProfessorServiceImpl implements ProfessorService {
 				StudentIdCannotBeEmptyException,
 				CourseIdCannotBeEmptyException,
 				GradeCannotBeEmptyException,
-				GradeValueInvalidException {
+				GradeValueInvalidException,
+				ProfessorNotAssignedForCourseException{
 		
 		if(null == reportCardRequestDTOs) {
 			return;
@@ -201,7 +215,6 @@ public class ProfessorServiceImpl implements ProfessorService {
 			Integer semester = studentUtils.getCurrentSemesterByStudentId(studentId);
 			CourseRegistration courseRegistration = courseRegistrationUtils
 					.getCourseRegistrationByStudentIdAndSemester(studentId, semester);
-			System.out.println("2.1");	
 			if(RegistrationStatus.INVALID_REGISTRATION_STATUSES.contains(courseRegistration.getRegistrationStatus())) {
 				throw new CannotAddGradeStudentRegistrationNotApprovedException(
 						studentId, courseRegistration.getRegistrationStatus());
@@ -209,6 +222,10 @@ public class ProfessorServiceImpl implements ProfessorService {
 			if(!courseRegistrationUtils.hasRegistrationByStudentIdAndCourseId(studentId, courseId)) {
 				
 				throw new StudentNotRegisteredForCourseException(studentId, courseId);
+			}
+			if(!checkIfProfessorTeaches(reportCard.getCourseId())) {
+				String userName = jwtTokenUtil.getUsernameFromToken(request.getHeader("Authorization").substring(7));
+				throw new ProfessorNotAssignedForCourseException(professorRepository.findByProfessorUserName(userName).getProfessorId(),reportCard.getCourseId());
 			}
 			
 		}
@@ -250,6 +267,18 @@ public class ProfessorServiceImpl implements ProfessorService {
 	private boolean isProfessorExistsById(Integer professorId) {
 		// TODO Auto-generated method stub
 		return professorRepository.existsById(professorId);
+	}
+	
+	//**************************************************************************************************
+	
+	private boolean checkIfProfessorTeaches(Integer courseId) {
+		String userName = jwtTokenUtil.getUsernameFromToken(request.getHeader("Authorization").substring(7));
+		Integer userId = professorRepository.findByProfessorUserName(userName).getProfessorId();
+		Integer userIdInCourse = courseRepository.findByCourseId(courseId).get().getProfessorId();
+		if(userId.equals(userIdInCourse)) {
+			return true;
+		}
+		return false;
 	}
 	
 }

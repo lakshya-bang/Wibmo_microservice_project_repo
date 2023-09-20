@@ -12,6 +12,7 @@ import com.wibmo.exception.CourseIdCannotBeEmptyException;
 import com.wibmo.exception.CourseNotExistsInCatalogException;
 import com.wibmo.exception.GradeCannotBeEmptyException;
 import com.wibmo.exception.GradeValueInvalidException;
+import com.wibmo.exception.ProfessorNotAssignedForCourseException;
 import com.wibmo.exception.StudentIdCannotBeEmptyException;
 import com.wibmo.exception.StudentNotRegisteredForCourseException;
 import com.wibmo.exception.UserNotFoundException;
@@ -63,10 +64,11 @@ public interface ProfessorService {
 	 * @throws CourseIdCannotBeEmptyException
 	 * @throws GradeCannotBeEmptyException
 	 * @throws GradeValueInvalidException
+	 * @throws ProfessorNotAssignedForCourseException 
 	 */
 	void addAll(List<ReportCardRequestDTO> reportCardRequestDTOs)
 			throws StudentNotRegisteredForCourseException, CannotAddGradeStudentRegistrationNotApprovedException,
 			UserNotFoundException, CourseNotExistsInCatalogException, StudentIdCannotBeEmptyException,
-			CourseIdCannotBeEmptyException, GradeCannotBeEmptyException, GradeValueInvalidException;
+			CourseIdCannotBeEmptyException, GradeCannotBeEmptyException, GradeValueInvalidException, ProfessorNotAssignedForCourseException;
 
 }

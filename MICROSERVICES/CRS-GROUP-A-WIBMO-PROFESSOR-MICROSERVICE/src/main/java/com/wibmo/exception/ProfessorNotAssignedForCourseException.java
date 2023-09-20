@@ -9,6 +9,10 @@ public class ProfessorNotAssignedForCourseException extends Exception {
 		this.courseId=courseId;
 	}
 	
+	public ProfessorNotAssignedForCourseException(Integer courseId) {
+		this.courseId=courseId;
+	}
+	
 	public String getMessage() {
 		return "Professor with Id: " + professorId + " is not assigned to course with Id : "+ courseId;
 	}

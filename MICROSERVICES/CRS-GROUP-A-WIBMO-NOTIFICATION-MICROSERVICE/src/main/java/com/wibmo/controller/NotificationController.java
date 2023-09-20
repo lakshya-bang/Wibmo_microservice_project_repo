@@ -70,7 +70,7 @@ public class NotificationController {
 	public ResponseEntity receiveNotification(@PathVariable Integer userId) {
 		try {
 		java.util.List<Notification> notifications = notificationService.retrieveMessages(userId);
-		return new ResponseEntity(notifications,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity(notifications,HttpStatus.OK);
 		}
 		catch(Exception e) {
 			return new ResponseEntity("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);

@@ -47,7 +47,8 @@ public class ReportCardController {
 				| StudentIdCannotBeEmptyException 
 				| CourseIdCannotBeEmptyException 
 				| GradeCannotBeEmptyException 
-				| GradeValueInvalidException e) {
+				| GradeValueInvalidException 
+				| ProfessorNotAssignedForCourseException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.OK);
 		}
 		
