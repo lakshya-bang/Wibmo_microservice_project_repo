@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -44,5 +45,8 @@ public interface ProfessorRepository extends CrudRepository<Professor, Integer>{
 	 * @return Boolean
 	 */
 	Boolean existsByProfessorId(Integer professorId);
+
+	@Query("Select professor FROM Professor professor WHERE professor.professorEmail=:userName")
+	Professor findByProfessorUserName(String userName);
 	
 }

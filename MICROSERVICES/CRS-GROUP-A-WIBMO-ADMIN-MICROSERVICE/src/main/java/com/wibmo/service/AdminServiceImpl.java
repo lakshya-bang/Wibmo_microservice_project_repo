@@ -25,6 +25,7 @@ import com.wibmo.dto.CourseResponseDTO;
 import com.wibmo.entity.Admin;
 import com.wibmo.entity.Course;
 import com.wibmo.entity.CourseRegistration;
+import com.wibmo.entity.Payment;
 import com.wibmo.entity.Professor;
 import com.wibmo.entity.User;
 import com.wibmo.enums.PaymentStatus;
@@ -271,8 +272,11 @@ public class AdminServiceImpl implements AdminService {
 		if(RegistrationStatus.APPROVED.equals(registrationStatus)) {
 			for(CourseRegistration courseRegistration : courseRegistrations) {
 				if(PaymentStatus.UNPAID.equals(
-						paymentRepository.findByCourseRegistrationId(
-						courseRegistration.getRegistrationId()))) {
+						paymentRepository
+						.findByCourseRegistrationId(courseRegistration.getRegistrationId())
+						.map(payment -> payment.getPendingAmount() == 0 
+							? PaymentStatus.PAID : PaymentStatus.UNPAID)
+						.orElse(null))) {
 					throw new CannotApproveCourseRegistrationPaymentPendingException(
 							courseRegistration.getRegistrationId());
 				}
